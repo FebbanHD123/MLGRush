@@ -1,0 +1,8 @@
+name: AdvancedMLGRugh
+version: 1.0
+main: de.febanhd.mlgrush.MLGRush
+
+commands:
+  setup:
+  setqueue:
+  setlobby:
