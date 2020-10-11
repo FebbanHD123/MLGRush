@@ -1,16 +1,19 @@
 package de.febanhd.mlgrush;
 
-import de.febanhd.mlgrush.commands.CreateMapTemplateCommand;
+import de.febanhd.mlgrush.commands.SetupMapCommand;
 import de.febanhd.mlgrush.commands.SetLobbyCommand;
 import de.febanhd.mlgrush.commands.SetQueueCommand;
+import de.febanhd.mlgrush.commands.TPTemplateCommand;
 import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.listener.GameListener;
 import de.febanhd.mlgrush.listener.InteractListener;
 import de.febanhd.mlgrush.listener.InventoryListener;
 import de.febanhd.mlgrush.listener.PlayerConnectionListener;
 import de.febanhd.mlgrush.map.MapManager;
+import de.febanhd.mlgrush.map.setup.MapTemplateWorld;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -22,21 +25,26 @@ public class MLGRush extends JavaPlugin {
 
     @Getter
     private static MLGRush instance;
-    public static final String PREFIX = "§8[§cA-MLGRush§8] §r";
+    public static String PREFIX = "§8[§cAdvancedMLGRush§8] §r";
 
     private MapManager mapManager;
     private GameHandler gameHandler;
+    private MapTemplateWorld mapTemplateWorld;
 
     @Override
     public void onEnable() {
         instance = this;
 
+        this.loadConfig();
+        MLGRush.PREFIX = ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("prefix"));
+
         this.mapManager = new MapManager();
         this.gameHandler = new GameHandler();
 
-        this.getCommand("setup").setExecutor(new CreateMapTemplateCommand());
+        this.getCommand("setupmap").setExecutor(new SetupMapCommand());
         this.getCommand("setlobby").setExecutor(new SetLobbyCommand());
         this.getCommand("setqueue").setExecutor(new SetQueueCommand());
+        this.getCommand("tptemplate").setExecutor(new TPTemplateCommand());
 
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new InventoryListener(), this);
@@ -45,6 +53,9 @@ public class MLGRush extends JavaPlugin {
         pm.registerEvents(new GameListener(this.gameHandler), this);
 
         this.startProtectionTask();
+
+        this.mapTemplateWorld = new MapTemplateWorld();
+        this.mapTemplateWorld.create();
     }
 
     @Override
@@ -55,6 +66,11 @@ public class MLGRush extends JavaPlugin {
         if(this.gameHandler.getLobbyHandler().getQueueEntity() != null) {
             this.gameHandler.getLobbyHandler().getQueueEntity().remove();
         }
+    }
+
+    private void loadConfig() {
+        this.getConfig().options().copyDefaults(true);
+        this.saveDefaultConfig();
     }
 
     private void startProtectionTask() {
@@ -70,5 +86,9 @@ public class MLGRush extends JavaPlugin {
                 });
             }
         }, 0, 5);
+    }
+
+    public static String getMessage(String key) {
+        return PREFIX + ChatColor.translateAlternateColorCodes('&', MLGRush.getInstance().getConfig().getString(key));
     }
 }

@@ -1,5 +1,6 @@
 package de.febanhd.mlgrush.map.setup;
 
+import com.google.common.collect.Lists;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.map.MapTemplate;
 import de.febanhd.mlgrush.map.elements.BedObject;
@@ -14,7 +15,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.ArrayList;
+
 public class MapSetupSession implements Listener {
+
+    public static final ArrayList<Player> PLAYERS = Lists.newArrayList();
+
+    public static boolean isInSetup(Player player) {
+        return MapSetupSession.PLAYERS.contains(player);
+    }
 
     private Player player;
     private int currentStep;
@@ -30,6 +39,7 @@ public class MapSetupSession implements Listener {
 
 
     public MapSetupSession(Player player) {
+        MapSetupSession.PLAYERS.add(player);
         this.player = player;
         this.currentStep = 0;
         this.running = true;
@@ -97,6 +107,8 @@ public class MapSetupSession implements Listener {
 
             player.sendMessage(MLGRush.PREFIX + "§aSetup beendet.");
             player.sendMessage(MLGRush.PREFIX + "§4Achtung: §cBitte beachte, dass du dieses Template also die Blöcke, die du soeben als Region angegeben hast, nicht ändern darfst.");
+
+            MapSetupSession.PLAYERS.remove(player);
         });
     }
 

@@ -80,7 +80,7 @@ public class Map {
                 callback.accept(true);
                 Bukkit.getScheduler().cancelTask(this.deletingTaskID);
             }
-            for(int i = 0; i < blocks.size() && i < 5; i++) {
+            for(int i = 0; i < blocks.size() && i < 7; i++) {
                 Block block = blocks.get(i);
                 block.setType(Material.AIR);
                 blocks.remove(block);

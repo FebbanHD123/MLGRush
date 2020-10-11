@@ -1,0 +1,32 @@
+#Dev: FebanHD
+#SourceCode: https://github.com/FebbanHD123/MLGRush
+
+#settings
+
+points.for_win: 10
+
+#The queue-entity type (List of all entities: http://spigotjpwiki.github.io/org/bukkit/entity/EntityType.html)
+queue_entity_type: ENDER_CRYSTAL
+
+#The time in seconds when you cannot move
+no_move_time: 1.5
+
+#Blocks per Tick which will place
+map_generation.spawningrate: 10
+
+#messages
+
+prefix: '&8[&cAdvancedMLGRush&8] &r'
+
+nopermissions: '&cDazu hast du keine Rechte!'
+
+queue_entity_name: '&5&lWarteschlange &8(&7Rechtsklick&8)'
+
+messages.queue.enter: '&7Du hast die &5Warteschlange &7betreten.'
+messages.queue.quit: '&7Du hast die &5Warteschlange &7verlassen.'
+messages.map_selection_cancel: '&cDie Mapauswahl wurde abgebrochen!'
+messages.round_win: '&7Du hast die Runde &agewonnen!'
+messages.round_loose: '&7Du hast die Runde &cverlohren!'
+messages.round_cancel_playerquit: '&cDie Runde wurde abgebrochen, da dein Gegner den Server verlassen hat.'
+messages.map_creation.cancel: '&cDer Vorgang wurde abgebrochen, da dein Gegner den Server verlassen hat.'
+messages.already_in_setup: '&cDu bist bereits in einem Map-Setup.'

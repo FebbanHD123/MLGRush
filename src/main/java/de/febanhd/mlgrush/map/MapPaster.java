@@ -102,7 +102,9 @@ public class MapPaster {
                 callback.accept(true);
                 Bukkit.getScheduler().cancelTask(this.taskID);
            }
-            for(int i = 0; i < blocks.size() && i < 5; i++) {
+           int rate = MLGRush.getInstance().getConfig().getInt("map_generation.spawningrate");
+           if(rate <= 0) rate = 5;
+            for(int i = 0; i < blocks.size() && i < rate; i++) {
                 Block block = blocks.get(i);
                 Block blockToPlace = blockMap.get(block);
 
@@ -119,7 +121,7 @@ public class MapPaster {
             }catch (ArithmeticException e) {
                 e.printStackTrace();
             }
-        }, 0, 2);
+        }, 0, 1);
     }
 
     private Cuboid calculateRegion(ArrayList<Block> blocks) {

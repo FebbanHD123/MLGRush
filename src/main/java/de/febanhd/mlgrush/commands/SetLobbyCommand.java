@@ -12,7 +12,7 @@ public class SetLobbyCommand implements CommandExecutor {
         if(sender instanceof Player) {
             Player player = (Player)sender;
             if(!player.hasPermission("mlgrush.setlobby")) {
-                player.sendMessage(MLGRush.PREFIX + "§cDazu hast du keine Rechte!");
+                player.sendMessage(MLGRush.getMessage("nopermissions"));
                 return false;
             }
             MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyLocation(player.getLocation());

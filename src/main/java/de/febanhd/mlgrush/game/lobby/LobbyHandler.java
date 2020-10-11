@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
@@ -25,12 +26,15 @@ public class LobbyHandler {
     private Location lobbyLocation, queueEntityLocation;
     private Entity queueEntity;
 
-    public static final String QUEUE_ENTITY_NAME = "§5§lWarteschlange §8(§7Rechtsklick§8)";
+    public static String queueEntityName = "";
 
     public LobbyHandler(GameHandler gameHandler) {
+        LobbyHandler.queueEntityName = ChatColor.translateAlternateColorCodes('&', MLGRush.getInstance().getConfig().getString("queue_entity_name"));
         this.gameHandler = gameHandler;
         this.loadLocations();
-        this.spawnQueue(EntityType.ENDER_CRYSTAL);
+        Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
+            this.spawnQueue(EntityType.valueOf(MLGRush.getInstance().getConfig().getString("queue_entity_type")));
+        }, 20 * 10);
     }
 
     public void loadLocations() {
@@ -72,7 +76,7 @@ public class LobbyHandler {
     }
 
     public void setQueueEntityLocation(Location location) {
-        this.lobbyLocation = location;
+        this.queueEntityLocation = location;
         File file = new File(MLGRush.getInstance().getDataFolder(), "queue.json");
         try {
             if(!file.exists()) {
@@ -89,6 +93,7 @@ public class LobbyHandler {
     }
 
     private void spawnQueue(EntityType entityType) {
+        if(this.queueEntityLocation == null) return;
         for(Entity e : this.queueEntityLocation.getWorld().getNearbyEntities(this.queueEntityLocation, 5, 5, 5)) {
             if (!(e instanceof Player)) {
                 e.remove();
@@ -96,7 +101,7 @@ public class LobbyHandler {
         }
         Entity entity = this.queueEntityLocation.getWorld().spawnEntity(this.queueEntityLocation, entityType);
         entity.setCustomNameVisible(true);
-        entity.setCustomName(LobbyHandler.QUEUE_ENTITY_NAME);
+        entity.setCustomName(LobbyHandler.queueEntityName);
         net.minecraft.server.v1_8_R3.Entity nms = ((CraftEntity) entity).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
         nms.e(tag);
@@ -109,6 +114,10 @@ public class LobbyHandler {
         }, 20);
 
         this.queueEntity = entity;
+    }
+
+    public void setLobbyItems(Player player) {
+        player.getInventory().clear();
     }
 
 }

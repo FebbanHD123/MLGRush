@@ -6,11 +6,9 @@ import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.map.generator.VoidGenerator;
 import de.febanhd.mlgrush.util.Actionbar;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
@@ -48,23 +46,19 @@ public class MapManager {
 
     public void joinGame(MapTemplate template, Player player1, Player player2, Consumer<Map> callback) {
         final UUID taskUUID = UUID.randomUUID();
-        String playerName1 = player1.getDisplayName(), playerName2 = player2.getDisplayName();
         final MapPaster paster = this.generateMap(template, map -> {
             Bukkit.getScheduler().cancelTask(this.tasks.get(taskUUID));
-            if(player1.isOnline() && player2.isOnline()) {
-                map.setPlayer1(player1);
-                map.setPlayer2(player2);
-                player1.teleport(map.getSpawnLocation()[0]);
-                player2.teleport(map.getSpawnLocation()[1]);
-            }else {
+            if(!player1.isOnline() || !player2.isOnline()) {
                 map.delete();
-                if(player1.isOnline()) {
-                    player1.sendMessage(MLGRush.PREFIX + "§cDer Vorgang wurde abgebrochen da " + playerName2 + " §cden Server verlassen hat.");
-                }else {
-                    player2.sendMessage(MLGRush.PREFIX + "§cDer Vorgang wurde abgebrochen da " + playerName1 + " §cden Server verlassen hat.");
-                }
                 return;
             }
+            map.setPlayer1(player1);
+            map.setPlayer2(player2);
+            player1.teleport(map.getSpawnLocation()[0]);
+            player2.teleport(map.getSpawnLocation()[1]);
+            player1.setGameMode(GameMode.SURVIVAL);
+            player2.setGameMode(GameMode.SURVIVAL);
+
             callback.accept(map);
         });
         this.tasks.put(taskUUID, Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
@@ -73,7 +67,20 @@ public class MapManager {
                 actionbar.send(player1);
             if(player2.isOnline())
                 actionbar.send(player2);
+
+            if(!player1.isOnline() || !player2.isOnline()) {
+                this.cancelPasting(player1, player2, taskUUID);
+            }
         }, 0, 1));
+    }
+
+    private void cancelPasting(Player player1, Player player2, UUID taskID) {
+        Bukkit.getScheduler().cancelTask(this.tasks.get(taskID));
+        if(player1.isOnline()) {
+            player1.sendMessage(MLGRush.getMessage("messages.map_creation.cancel"));
+        }else {
+            player2.sendMessage(MLGRush.getMessage("messages.map_creation.cancel"));
+        }
     }
 
     public void addMapTemplate(MapTemplate template) {
@@ -113,7 +120,7 @@ public class MapManager {
     public void deleteWorld(World world) {
         File file = world.getWorldFolder();
         for(Player player : world.getPlayers()) {
-            player.kickPlayer(MLGRush.PREFIX + "§cDer Server startet neu.");
+            player.kickPlayer(MLGRush.PREFIX + "");
         }
         Bukkit.unloadWorld(world, false);
 

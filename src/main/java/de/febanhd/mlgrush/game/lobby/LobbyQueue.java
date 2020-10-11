@@ -11,10 +11,6 @@ public class LobbyQueue {
     @Getter
     private ArrayList<Player> players = Lists.newArrayList();
 
-    public void clear() {
-        players.clear();
-    }
-
     public Player getPlayer(int i) {
         return this.players.get(i);
     }

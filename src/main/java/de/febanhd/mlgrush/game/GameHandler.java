@@ -28,11 +28,11 @@ public class GameHandler {
     public void toggleQueue(Player player) {
         if(this.queue.isInQueue(player)) {
             queue.remove(player);
-            player.sendMessage(MLGRush.PREFIX + "§7Du hast die " + LobbyHandler.QUEUE_ENTITY_NAME + " §cverlassen§7.");
+            player.sendMessage(MLGRush.getMessage("messages.queue.quit"));
             player.playSound(player.getLocation(), Sound.ANVIL_BREAK, 2, 1);
         }else {
             this.addToQueue(player);
-            player.sendMessage(MLGRush.PREFIX + "§7Du hast die " + LobbyHandler.QUEUE_ENTITY_NAME + " §abetreten§7.");
+            player.sendMessage(MLGRush.getMessage("messages.queue.enter"));
             player.playSound(player.getLocation(), Sound.ANVIL_BREAK, 3, 2);
         }
     }

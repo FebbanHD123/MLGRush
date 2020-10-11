@@ -11,7 +11,7 @@ public class InteractListener implements Listener {
 
     @EventHandler
     public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
-        if(event.getRightClicked().getCustomName().equals(LobbyHandler.QUEUE_ENTITY_NAME)) {
+        if(event.getRightClicked().getCustomName() != null && event.getRightClicked().getCustomName().equals(LobbyHandler.queueEntityName)) {
             event.setCancelled(true);
             MLGRush.getInstance().getGameHandler().toggleQueue(event.getPlayer());
         }
@@ -19,6 +19,6 @@ public class InteractListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
-        if(event.getEntity().getCustomName() != null && event.getEntity().getCustomName().equals(LobbyHandler.QUEUE_ENTITY_NAME)) event.setCancelled(true);
+        if(event.getEntity().getCustomName() != null && event.getEntity().getCustomName().equals(LobbyHandler.queueEntityName)) event.setCancelled(true);
     }
 }

@@ -1,8 +1,9 @@
-name: AdvancedMLGRugh
+name: AdvancedMLGRush
 version: 1.0
 main: de.febanhd.mlgrush.MLGRush
 
 commands:
-  setup:
+  setupmap:
   setqueue:
   setlobby:
+  tptemplate:

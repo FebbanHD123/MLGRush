@@ -6,15 +6,11 @@ import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.inventory.MapChoosingGui;
 import de.febanhd.mlgrush.map.Map;
 import de.febanhd.mlgrush.map.MapTemplate;
-import de.febanhd.mlgrush.scoreboard.IngameScoreboard;
 import de.febanhd.mlgrush.util.Actionbar;
 import de.febanhd.mlgrush.util.ItemBuilder;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -33,7 +29,7 @@ public class GameSession {
     private Map map;
     @Setter
     private boolean selectingWorld, running;
-    private int pointsForWin, resseterTaskID;
+    private int pointsForWin, resseterTaskID, taskID;
     private HashMap<Player, Integer> points;
 
     public GameSession(Player player1, Player player2, int pointsForWin) {
@@ -48,7 +44,7 @@ public class GameSession {
             return;
         }
         this.selectingWorld = true;
-        this.pointsForWin = pointsForWin;
+        this.pointsForWin = MLGRush.getInstance().getConfig().getInt("points.for_win");
         this.points = Maps.newHashMap();
         this.points.put(player1, 0);
         this.points.put(player2, 0);
@@ -88,7 +84,7 @@ public class GameSession {
         }
         player.teleport(location);
         if(death) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 2, 10));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int)Math.round(20D * MLGRush.getInstance().getConfig().getDouble("no_move_time")), 10));
             player.playSound(player.getLocation(), Sound.VILLAGER_HIT, 2, 1);
         }
         this.setItems(player);
@@ -96,10 +92,10 @@ public class GameSession {
 
     private void setItems(Player player) {
         player.getInventory().clear();
-        player.getInventory().setItem(0, new ItemBuilder(Material.STICK).addEnchant(Enchantment.KNOCKBACK, 1).setDisplayName("§eStick").build());
-        player.getInventory().setItem(1, new ItemBuilder(Material.SANDSTONE, 64).setDisplayName("§eBlöcke").build());
-        player.getInventory().setItem(3, new ItemBuilder(Material.SANDSTONE, 64).setDisplayName("§eBlöcke").build());
-        player.getInventory().setItem(2, new ItemBuilder(Material.WOOD_PICKAXE).setDisplayName("§cSpitzhacke").setUnbreakable(true).addEnchant(Enchantment.DIG_SPEED, 1).build());
+        player.getInventory().setItem(0, new ItemBuilder(Material.STICK).addEnchant(Enchantment.KNOCKBACK, 1).setDisplayName("§cStick").build());
+        player.getInventory().setItem(1, new ItemBuilder(Material.SANDSTONE, 64).build());
+        player.getInventory().setItem(3, new ItemBuilder(Material.SANDSTONE, 64).build());
+        player.getInventory().setItem(2, new ItemBuilder(Material.WOOD_PICKAXE).setUnbreakable(true).addEnchant(Enchantment.DIG_SPEED, 1).build());
     }
 
     public void startGame() {
@@ -108,8 +104,6 @@ public class GameSession {
             this.running = true;
             this.setItems(player1);
             this.setItems(player2);
-            IngameScoreboard.send(player1, this);
-            IngameScoreboard.send(player2, this);
             PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 30, 100, false);
             player1.addPotionEffect(effect);
             player2.addPotionEffect(effect);
@@ -117,13 +111,14 @@ public class GameSession {
                 this.respawn(player1, false);
                 this.respawn(player2, false);
             }, 20);
+            this.startIngameTask();
         });
     }
 
     public void cancelMapChoosing() {
         this.selectingWorld = false;
-        player1.sendMessage(MLGRush.PREFIX + "§cDie Mapauswahl wurde abgebrochen.");
-        player2.sendMessage(MLGRush.PREFIX + "§cDie Mapauswahl wurde abgebrochen.");
+        player1.sendMessage(MLGRush.getMessage("messages.map_selection_cancel"));
+        player2.sendMessage(MLGRush.getMessage("messages.map_selection_cancel"));
         player1.closeInventory();
         player2.closeInventory();
         MLGRush.getInstance().getGameHandler().getGameSessions().remove(this);
@@ -131,14 +126,17 @@ public class GameSession {
 
     public void stopGame(Player winner) {
         this.running = false;
+        this.stopIngameTask();
 
         Location location = MLGRush.getInstance().getGameHandler().getLobbyHandler().getLobbyLocation();
 
         if(player1 != null) {
             player1.teleport(location);
+            MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player1);
         }
         if(player2 != null) {
             player2.teleport(location);
+            MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player2);
         }
 
         if(this.map != null) {
@@ -150,13 +148,15 @@ public class GameSession {
                 looser = winner.getUniqueId().equals(player1.getUniqueId()) ? player2 : player1;
             }catch (Exception e) {}
 
-            winner.sendMessage(MLGRush.PREFIX + "§aDu hast die Runde §2gewonnen!");
+            winner.sendMessage(MLGRush.getMessage("messages.round_win"));
 
             if(looser != null)
-                looser.sendMessage(MLGRush.PREFIX + "§cDu hast die Runde §4verloren!");
+                looser.sendMessage(MLGRush.getMessage("messages.round_loose"));
         }else {
-            if(player1 != null) player1.sendMessage(MLGRush.PREFIX + "§cDie Runde wurde abgebrochen, da dein Gegner den Server verlassen hat.");
-            if(player2 != null) player2.sendMessage(MLGRush.PREFIX + "§cDie Runde wurde abgebrochen, da dein Gegner den Server verlassen hat.");
+            if (player1 != null)
+                player1.sendMessage(MLGRush.getMessage("messages.round_cancel_playerquit"));
+            if (player2 != null)
+                player2.sendMessage(MLGRush.getMessage("messages.round_cancel_playerquit"));
         }
         MLGRush.getInstance().getGameHandler().getGameSessions().remove(this);
     }
@@ -180,9 +180,6 @@ public class GameSession {
         if(points >= this.pointsForWin) {
             this.stopGame(player);
         }
-
-        IngameScoreboard.send(player1, this);
-        IngameScoreboard.send(player2, this);
     }
 
     private void resetPlacedBlocks() {
@@ -200,6 +197,19 @@ public class GameSession {
                 blocks.remove(block);
             }
         }, 0, 1);
+    }
+
+    private void startIngameTask() {
+        this.taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
+            String actionbarString = ChatColor.RED + player1.getDisplayName() + " §7" + this.getPoints(player1) + " §8| §7" + this.getPoints(player2) + " " + ChatColor.BLUE + player2.getDisplayName();
+            Actionbar actionbar = new Actionbar(actionbarString);
+            actionbar.send(player1);
+            actionbar.send(player2);
+        }, 0, 5);
+    }
+
+    public void stopIngameTask() {
+        Bukkit.getScheduler().cancelTask(this.taskID);
     }
 
     public int getPoints(Player player) {
