@@ -1,5 +1,6 @@
 #Dev: FebanHD
 #SourceCode: https://github.com/FebbanHD123/MLGRush
+#config-version: 1.0
 
 #settings
 
@@ -26,7 +27,7 @@ messages.queue.enter: '&7Du hast die &5Warteschlange &7betreten.'
 messages.queue.quit: '&7Du hast die &5Warteschlange &7verlassen.'
 messages.map_selection_cancel: '&cDie Mapauswahl wurde abgebrochen!'
 messages.round_win: '&7Du hast die Runde &agewonnen!'
-messages.round_loose: '&7Du hast die Runde &cverlohren!'
+messages.round_loose: '&7Du hast die Runde &cverloren!'
 messages.round_cancel_playerquit: '&cDie Runde wurde abgebrochen, da dein Gegner den Server verlassen hat.'
 messages.map_creation.cancel: '&cDer Vorgang wurde abgebrochen, da dein Gegner den Server verlassen hat.'
 messages.already_in_setup: '&cDu bist bereits in einem Map-Setup.'

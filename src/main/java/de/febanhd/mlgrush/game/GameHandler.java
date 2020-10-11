@@ -39,12 +39,11 @@ public class GameHandler {
 
     private void addToQueue(Player player) {
         this.queue.add(player);
-        if(this.queue.isFull()) {
+        if (this.queue.isFull()) {
             Player player1 = queue.getPlayer(0);
             Player player2 = queue.getPlayer(1);
+            this.queue.clear();
             this.gameSessions.add(new GameSession(player1, player2, 15));
-            this.queue.remove(player1);
-            this.queue.remove(player2);
         }
     }
 

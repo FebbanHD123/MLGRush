@@ -44,7 +44,7 @@ public class GameListener implements Listener {
         Player player = event.getPlayer();
         if(gameHandler.isInSession(player)) {
             GameSession session = gameHandler.getSessionByPlayer(player);
-            if(!session.isIngame()) {
+            if(!session.isRunning()) {
                 if(player.getGameMode() != GameMode.CREATIVE) {
                     event.setCancelled(true);
                 }
@@ -65,7 +65,7 @@ public class GameListener implements Listener {
         Player player = event.getPlayer();
         if(gameHandler.isInSession(player)) {
             GameSession session = gameHandler.getSessionByPlayer(player);
-            if(!session.isIngame()) {
+            if(!session.isRunning()) {
                 if(player.getGameMode() != GameMode.CREATIVE) {
                     event.setCancelled(true);
                 }

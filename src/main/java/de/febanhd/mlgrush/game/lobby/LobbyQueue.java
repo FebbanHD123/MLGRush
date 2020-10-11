@@ -22,6 +22,10 @@ public class LobbyQueue {
         this.players.remove(player);
     }
 
+    public void clear() {
+        this.players.clear();
+    }
+
     public boolean isFull() {
         return this.players.size() >= 2;
     }
