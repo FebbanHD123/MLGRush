@@ -1,7 +1,10 @@
 package de.febanhd.mlgrush.game.lobby;
 
+import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameHandler;
+import de.febanhd.mlgrush.gui.InventorySortingGui;
+import de.febanhd.mlgrush.util.ItemBuilder;
 import de.febanhd.mlgrush.util.LocationUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +12,7 @@ import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -18,6 +22,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
 
 @Getter
 public class LobbyHandler {
@@ -118,6 +123,9 @@ public class LobbyHandler {
 
     public void setLobbyItems(Player player) {
         player.getInventory().clear();
+        player.getInventory().setItem(0, new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName(MLGRush.getString("items.challanger")).setUnbreakable(true).build());
+        player.getInventory().setItem(3, new ItemBuilder(Material.CHEST).setDisplayName(InventorySortingGui.GUI_NAME).build());
+        player.getInventory().setItem(5, new ItemBuilder(Material.PAPER).setDisplayName("§cComing Soon").build());
+        player.getInventory().setItem(8, new ItemBuilder(Material.PAPER).setDisplayName("§cComing Soon").build());
     }
-
 }

@@ -1,5 +1,5 @@
 name: AdvancedMLGRush
-version: 1.1.1
+version: 1.1.3
 main: de.febanhd.mlgrush.MLGRush
 
 commands:
@@ -9,3 +9,4 @@ commands:
   tptemplate:
   leave:
   stats:
+  sortinv:

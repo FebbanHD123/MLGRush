@@ -1,16 +1,19 @@
 package de.febanhd.mlgrush.listener;
 
+import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.GameSession;
 import de.febanhd.mlgrush.map.Map;
 import de.febanhd.mlgrush.map.elements.BedObject;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -34,6 +37,27 @@ public class GameListener implements Listener {
             }else {
                 event.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler
+    public void onDamageEntityByEntity(EntityDamageByEntityEvent event) {
+        if(event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
+            Player damager = (Player) event.getDamager();
+            GameHandler gameHandler = MLGRush.getInstance().getGameHandler();
+            if(gameHandler.isInSession(damager)) return;
+            if(gameHandler.isInSession(player)) {
+                player.sendMessage(MLGRush.getMessage("messages.lobby.already_one_opponent"));
+                return;
+            }
+            event.setCancelled(true);
+            if(gameHandler.getTarget(damager) == player) return;
+            gameHandler.setTarget(damager, player);
+            damager.sendMessage(MLGRush.getMessage("messages.lobby.challenged").replaceAll("%player%", player.getDisplayName()));
+            player.sendMessage(MLGRush.getMessage("messages.lobby.challenged_by_player").replaceAll("%player%", damager.getDisplayName()));
+            damager.playSound(damager.getLocation(), Sound.LEVEL_UP, 2, 1);
+            player.playSound(player.getLocation(), Sound.CHICKEN_EGG_POP, 2, 1);
         }
     }
 

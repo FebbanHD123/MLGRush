@@ -1,6 +1,6 @@
 #Dev: FebanHD
 #SourceCode: https://github.com/FebbanHD123/MLGRush
-#config-version: 1.2
+#config-version: 1.5
 
 #settings
 
@@ -17,6 +17,9 @@ no_move_time: 1.5
 
 #Blocks per Tick which will place
 map_generation.spawningrate: 10
+
+#The distance between the maps (in blocks) it should be more than your largest map width
+paste.distance: 150
 
 #messages
 
@@ -41,3 +44,17 @@ messages.leave.usage: '&7Benutze &e/leave &7um die Runde zu verlassen.'
 messages.stats.command: '&7Stats von &e%player% %n%&7Kills: &e%kills% %n%&7Tode: &e%deaths%%n%&7K/D: &e%kd% %n%&7Spiele gwonnen: &e%wins% %n%&7Spiele verloren: &e%looses% %n%&7Betten abgebaut: &e%beds%'
 messages.stats.loading: '&7Lade Stats...'
 messages.stats.not_found: '&cDieser Spieler hat keine Stats.'
+
+messages.inventorysorting.error: '&cEs ist ein Fehler beim Speichern deiner Sortierung aufgetreten. Achte darauf das alle Items im Inventar vorhanden sind!'
+messages.inventorysorting.error_in_round: '&cDu darfst diesen Command aktuell nicht ausfueren.'
+messages.inventorysorting.succesfully: '&7Deine Inventarsortierung wurde &agespeichert&7.'
+
+messages.lobby.already_one_opponent: '&cDieser Spieler hat bereits einen Gegner!'
+messages.lobby.challenged: '&7Du hast &a%player% &7herrausgefordert&7.'
+messages.lobby.challenged_by_player: '&7Du wurdest von &a%player% &7herrausgefordert.'
+
+items.stick: '&cStick'
+items.challanger: '&5Herrausforderer &8(&7Spieler Schlagen&8)'
+
+guiname.inventorysorting: '&eInventarsortierung'
+guiname.mapchoosing: '&eWeale die Map'

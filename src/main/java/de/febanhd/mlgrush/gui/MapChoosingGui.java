@@ -1,4 +1,4 @@
-package de.febanhd.mlgrush.inventory;
+package de.febanhd.mlgrush.gui;
 
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.map.MapTemplate;
@@ -10,7 +10,7 @@ import org.bukkit.inventory.Inventory;
 
 public class MapChoosingGui {
 
-    public static final String GUI_NAME = "§eWähle deine Map";
+    public static String GUI_NAME = "§eWähle deine Map";
 
     public void open(Player player) {
         Inventory inv = Bukkit.createInventory(null, 9 * 6, GUI_NAME);

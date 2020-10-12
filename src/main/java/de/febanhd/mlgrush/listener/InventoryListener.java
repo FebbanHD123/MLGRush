@@ -2,14 +2,19 @@ package de.febanhd.mlgrush.listener;
 
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameSession;
-import de.febanhd.mlgrush.inventory.MapChoosingGui;
+import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySorting;
+import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
+import de.febanhd.mlgrush.gui.InventorySortingGui;
+import de.febanhd.mlgrush.gui.MapChoosingGui;
 import de.febanhd.mlgrush.map.MapTemplate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -41,6 +46,10 @@ public class InventoryListener implements Listener {
                 }
 
             }
+        }else if (openInv.getTitle().equals(InventorySortingGui.GUI_NAME)) {
+            if(!openInv.equals(clickedInv)) {
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -53,6 +62,18 @@ public class InventoryListener implements Listener {
                     new MapChoosingGui().open(player);
                 }, 3);
             }
+        }else if(event.getInventory().getTitle().equals(InventorySortingGui.GUI_NAME)) {
+            InventorySorting sorting = InventorySortingCach.getSorting((Player) event.getPlayer());
+            sorting.updateItems(event.getInventory(), correct -> {
+                if(correct) {
+                    player.sendMessage(MLGRush.getMessage("messages.inventorysorting.succesfully"));
+                    player.playSound(player.getLocation(), Sound.ORB_PICKUP, 2, 1);
+                }else {
+                    player.sendMessage(MLGRush.getMessage("messages.inventorysorting.error"));
+                }
+                event.getPlayer().getInventory().clear();
+                MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player);
+            });
         }
     }
 }

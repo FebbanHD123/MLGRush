@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 
 public class MapManager {
 
-    public static final int DISTANCE = 50;
+    public static int DISTANCE = 150;
     public static final int START_X = 0;
 
     @Getter

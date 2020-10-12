@@ -1,25 +1,23 @@
 package de.febanhd.mlgrush.game;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
-import de.febanhd.mlgrush.inventory.MapChoosingGui;
+import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySorting;
+import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
+import de.febanhd.mlgrush.gui.MapChoosingGui;
 import de.febanhd.mlgrush.map.Map;
 import de.febanhd.mlgrush.map.MapTemplate;
 import de.febanhd.mlgrush.stats.StatsCach;
 import de.febanhd.mlgrush.util.Actionbar;
-import de.febanhd.mlgrush.util.ItemBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 @Getter
 public class GameSession {
@@ -33,7 +31,7 @@ public class GameSession {
     private int pointsForWin, resseterTaskID, taskID;
     private HashMap<Player, Integer> points;
 
-    public GameSession(Player player1, Player player2, int pointsForWin) {
+    public GameSession(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
         if(player1.equals(player2)) {
@@ -95,10 +93,8 @@ public class GameSession {
 
     private void setItems(Player player) {
         player.getInventory().clear();
-        player.getInventory().setItem(0, new ItemBuilder(Material.STICK).addEnchant(Enchantment.KNOCKBACK, 1).setDisplayName("§cStick").build());
-        player.getInventory().setItem(1, new ItemBuilder(Material.SANDSTONE, 64).build());
-        player.getInventory().setItem(3, new ItemBuilder(Material.SANDSTONE, 64).build());
-        player.getInventory().setItem(2, new ItemBuilder(Material.WOOD_PICKAXE).setUnbreakable(true).addEnchant(Enchantment.DIG_SPEED, 1).build());
+        InventorySorting sorting = InventorySortingCach.getSorting(player);
+        sorting.setToInventory(player.getInventory());
     }
 
     public void startGame() {

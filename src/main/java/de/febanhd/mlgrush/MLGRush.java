@@ -2,6 +2,10 @@ package de.febanhd.mlgrush;
 
 import de.febanhd.mlgrush.commands.*;
 import de.febanhd.mlgrush.game.GameHandler;
+import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
+import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingDataHandler;
+import de.febanhd.mlgrush.gui.InventorySortingGui;
+import de.febanhd.mlgrush.gui.MapChoosingGui;
 import de.febanhd.mlgrush.listener.GameListener;
 import de.febanhd.mlgrush.listener.InteractListener;
 import de.febanhd.mlgrush.listener.InventoryListener;
@@ -44,6 +48,7 @@ public class MLGRush extends JavaPlugin {
     private SimpleSQL sqlHandler;
 
     private StatsDataHandler statsDataHandler;
+    private InventorySortingDataHandler inventorySortingDataHandler;
 
     @Override
     public void onEnable() {
@@ -61,6 +66,7 @@ public class MLGRush extends JavaPlugin {
         this.getCommand("tptemplate").setExecutor(new TPTemplateCommand());
         this.getCommand("leave").setExecutor(new LeaveCommand());
         this.getCommand("stats").setExecutor(new StatsCommand());
+        this.getCommand("sortinv").setExecutor(new SortInvCommand());
 
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new InventoryListener(), this);
@@ -75,8 +81,12 @@ public class MLGRush extends JavaPlugin {
 
         this.loadSql();
         this.statsDataHandler = new StatsDataHandler(this.sqlHandler);
+        this.inventorySortingDataHandler = new InventorySortingDataHandler(this.sqlHandler);
 
-        Bukkit.getOnlinePlayers().forEach(player -> StatsCach.loadStats(player.getUniqueId()));
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            StatsCach.loadStats(player.getUniqueId());
+            InventorySortingCach.loadSorting(player);
+        });
     }
 
     @Override
@@ -94,6 +104,12 @@ public class MLGRush extends JavaPlugin {
     private void loadConfig() {
         this.getConfig().options().copyDefaults(true);
         this.saveDefaultConfig();
+
+        MapChoosingGui.GUI_NAME = MLGRush.getString("guiname.mapchoosing");
+        InventorySortingGui.GUI_NAME = MLGRush.getString("guiname.inventorysorting");
+        if(this.getConfig().contains("paste.distance")) {
+            MapManager.DISTANCE = this.getConfig().getInt("paste.distance");
+        }
     }
 
     private void loadSql() {
@@ -112,6 +128,7 @@ public class MLGRush extends JavaPlugin {
         
         if(this.sqlHandler.getConnector().getConnection() != null)
             this.sqlHandler.createBuilder("CREATE TABLE IF NOT EXISTS mlg_stats (UUID VARCHAR(100) PRIMARY KEY, kills INT NOT NULL , deaths INT NOT NULL , wins INT NOT NULL , looses INT NOT NULL, beds INT NOT NULL)").updateSync();
+            this.sqlHandler.createBuilder("CREATE TABLE IF NOT EXISTS mlg_inv (UUID VARCHAR(100) PRIMARY KEY, value TEXT NOT NULL)").updateSync();
     }
 
     private void startProtectionTask() {
@@ -136,6 +153,15 @@ public class MLGRush extends JavaPlugin {
         else
             message = PREFIX + ChatColor.translateAlternateColorCodes('&', MLGRush.getInstance().getConfig().getString(key));
 
+        return message;
+    }
+
+    public static String getString(String key) {
+        String message;
+        if(!MLGRush.getInstance().getConfig().contains(key))
+            message = "§cNot Found";
+        else
+            message = ChatColor.translateAlternateColorCodes('&', MLGRush.getInstance().getConfig().getString(key));
         return message;
     }
 }

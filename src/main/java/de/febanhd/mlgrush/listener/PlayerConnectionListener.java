@@ -1,18 +1,19 @@
 package de.febanhd.mlgrush.listener;
 
 import de.febanhd.mlgrush.MLGRush;
+import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.GameSession;
+import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
 import de.febanhd.mlgrush.map.setup.MapSetupSession;
 import de.febanhd.mlgrush.stats.StatsCach;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.UUID;
 
 public class PlayerConnectionListener implements Listener {
 
@@ -25,14 +26,21 @@ public class PlayerConnectionListener implements Listener {
             player.setFoodLevel(40);
             player.setMaxHealth(20);
             player.setHealth(player.getMaxHealth());
-            player.teleport(MLGRush.getInstance().getGameHandler().getLobbyHandler().getLobbyLocation());
             player.getInventory().clear();
             if(!player.isOp())
                 player.setGameMode(GameMode.ADVENTURE);
             MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player);
+
+            Location lobbyLocation = MLGRush.getInstance().getGameHandler().getLobbyHandler().getLobbyLocation();
+            if(lobbyLocation != null) {
+                player.teleport(lobbyLocation);
+            }else {
+                player.sendMessage(MLGRush.PREFIX + "§cBitte Setzte die Lobby-Position mit /setlobby!!!");
+            }
         }, 3);
 
         StatsCach.loadStats(player.getUniqueId());
+        InventorySortingCach.loadSorting(player);
     }
 
     @EventHandler
@@ -53,5 +61,14 @@ public class PlayerConnectionListener implements Listener {
         if(gameSession != null && gameSession.isRunning()) {
             gameSession.stopGame(null, player);
         }
+
+        MLGRush.getInstance().getGameHandler().removeChallangerFromMap(player);
+
+        Bukkit.getScheduler().runTaskLaterAsynchronously(MLGRush.getInstance(), () -> {
+            if(!player.isOnline()) {
+                StatsCach.remove(player.getUniqueId());
+                InventorySortingCach.remove(player);
+            }
+        }, 10);
     }
 }
