@@ -3,6 +3,7 @@ package de.febanhd.mlgrush.listener;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameSession;
 import de.febanhd.mlgrush.map.setup.MapSetupSession;
+import de.febanhd.mlgrush.stats.StatsCach;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -10,6 +11,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.UUID;
 
 public class PlayerConnectionListener implements Listener {
 
@@ -28,6 +31,8 @@ public class PlayerConnectionListener implements Listener {
                 player.setGameMode(GameMode.ADVENTURE);
             MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player);
         }, 3);
+
+        StatsCach.loadStats(player.getUniqueId());
     }
 
     @EventHandler
@@ -46,7 +51,7 @@ public class PlayerConnectionListener implements Listener {
             gameSession.getPlayer2().closeInventory();
         }
         if(gameSession != null && gameSession.isRunning()) {
-            gameSession.stopGame(null);
+            gameSession.stopGame(null, player);
         }
     }
 }

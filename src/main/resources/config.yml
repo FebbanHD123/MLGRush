@@ -1,8 +1,11 @@
 #Dev: FebanHD
 #SourceCode: https://github.com/FebbanHD123/MLGRush
-#config-version: 1.0
+#config-version: 1.2
 
 #settings
+
+#The databse-type (MySQL, SQLLite)
+database: SQLLite
 
 points.for_win: 10
 
@@ -28,6 +31,13 @@ messages.queue.quit: '&7Du hast die &5Warteschlange &7verlassen.'
 messages.map_selection_cancel: '&cDie Mapauswahl wurde abgebrochen!'
 messages.round_win: '&7Du hast die Runde &agewonnen!'
 messages.round_loose: '&7Du hast die Runde &cverloren!'
-messages.round_cancel_playerquit: '&cDie Runde wurde abgebrochen, da dein Gegner den Server verlassen hat.'
+messages.round_cancel_playerquit: '&cDie Runde wurde abgebrochen, da dein Gegner die Runde verlassen hat.'
 messages.map_creation.cancel: '&cDer Vorgang wurde abgebrochen, da dein Gegner den Server verlassen hat.'
-messages.already_in_setup: '&cDu bist bereits in einem Map-Setup.'
+messages.not_in_round: '&cDu bist bereits in keine Runde!'
+messages.leave_round: '&7Du hast die Runde verlassen.'
+messages.leave.usage: '&7Benutze &e/leave &7um die Runde zu verlassen.'
+
+#%n% steht für eine neue linie in der Nachricht
+messages.stats.command: '&7Stats von &e%player% %n%&7Kills: &e%kills% %n%&7Tode: &e%deaths%%n%&7K/D: &e%kd% %n%&7Spiele gwonnen: &e%wins% %n%&7Spiele verloren: &e%looses% %n%&7Betten abgebaut: &e%beds%'
+messages.stats.loading: '&7Lade Stats...'
+messages.stats.not_found: '&cDieser Spieler hat keine Stats.'

@@ -6,6 +6,7 @@ import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.inventory.MapChoosingGui;
 import de.febanhd.mlgrush.map.Map;
 import de.febanhd.mlgrush.map.MapTemplate;
+import de.febanhd.mlgrush.stats.StatsCach;
 import de.febanhd.mlgrush.util.Actionbar;
 import de.febanhd.mlgrush.util.ItemBuilder;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.UUID;
 
 @Getter
 public class GameSession {
@@ -86,6 +87,8 @@ public class GameSession {
         if(death) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int)Math.round(20D * MLGRush.getInstance().getConfig().getDouble("no_move_time")), 10));
             player.playSound(player.getLocation(), Sound.VILLAGER_HIT, 2, 1);
+            StatsCach.getStats(player.getUniqueId()).addDeaths();
+            StatsCach.getStats(otherPlayer.getUniqueId()).addKill();
         }
         this.setItems(player);
     }
@@ -107,6 +110,8 @@ public class GameSession {
             PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 30, 100, false);
             player1.addPotionEffect(effect);
             player2.addPotionEffect(effect);
+            player1.sendMessage(MLGRush.getMessage("messages.leave.usage"));
+            player2.sendMessage(MLGRush.getMessage("messages.leave.usage"));
             Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
                 this.respawn(player1, false);
                 this.respawn(player2, false);
@@ -124,39 +129,50 @@ public class GameSession {
         MLGRush.getInstance().getGameHandler().getGameSessions().remove(this);
     }
 
-    public void stopGame(Player winner) {
-        this.running = false;
-        this.stopIngameTask();
+    public void stopGame(Player winner, Player quiter) {
+        try {
+            this.running = false;
+            this.stopIngameTask();
 
-        Location location = MLGRush.getInstance().getGameHandler().getLobbyHandler().getLobbyLocation();
+            Location location = MLGRush.getInstance().getGameHandler().getLobbyHandler().getLobbyLocation();
 
-        if(player1 != null) {
-            player1.teleport(location);
-            MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player1);
-        }
-        if(player2 != null) {
-            player2.teleport(location);
-            MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player2);
-        }
+            if (player1 != null) {
+                player1.teleport(location);
+                MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player1);
+            }
+            if (player2 != null) {
+                player2.teleport(location);
+                MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player2);
+            }
 
-        if(this.map != null) {
-            this.map.delete();
-        }
-        if(winner != null) {
-            Player looser = null;
-            try {
+            if (this.map != null) {
+                this.map.delete();
+            }
+            if (winner != null) {
+                Player looser;
+
                 looser = winner.getUniqueId().equals(player1.getUniqueId()) ? player2 : player1;
-            }catch (Exception e) {}
 
-            winner.sendMessage(MLGRush.getMessage("messages.round_win"));
-
-            if(looser != null)
+                winner.sendMessage(MLGRush.getMessage("messages.round_win"));
                 looser.sendMessage(MLGRush.getMessage("messages.round_loose"));
-        }else {
-            if (player1 != null)
-                player1.sendMessage(MLGRush.getMessage("messages.round_cancel_playerquit"));
-            if (player2 != null)
-                player2.sendMessage(MLGRush.getMessage("messages.round_cancel_playerquit"));
+
+                StatsCach.getStats(winner.getUniqueId()).addWin();
+                StatsCach.getStats(looser.getUniqueId()).addLoose();
+            } else {
+                if (player1 != null && player1 != quiter) {
+                    player1.sendMessage(MLGRush.getMessage("messages.round_cancel_playerquit"));
+                    winner = player1;
+                }
+                if (player2 != null && player2 != quiter) {
+                    player2.sendMessage(MLGRush.getMessage("messages.round_cancel_playerquit"));
+                    winner = player2;
+                }
+
+                StatsCach.getStats(quiter.getUniqueId()).addLoose();
+                StatsCach.getStats(winner.getUniqueId()).addWin();
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
         }
         MLGRush.getInstance().getGameHandler().getGameSessions().remove(this);
     }
@@ -177,24 +193,23 @@ public class GameSession {
 
         this.resetPlacedBlocks();
 
+        StatsCach.getStats(player.getUniqueId()).addBedDestroyed();
+
         if(points >= this.pointsForWin) {
-            this.stopGame(player);
+            this.stopGame(player, player);
         }
     }
 
     private void resetPlacedBlocks() {
-        CopyOnWriteArrayList<Block> blocks = Lists.newCopyOnWriteArrayList();
-        blocks.addAll(this.map.getPlacedBlocks());
-        this.map.getPlacedBlocks().clear();
         this.resseterTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
-            if(blocks.size() <= 0) {
+            if(this.map.getPlacedBlocks().size() <= 0) {
                 Bukkit.getScheduler().cancelTask(this.resseterTaskID);
                 return;
             }
-            for(int i = 0; i < blocks.size() && i < 5; i++) {
-                Block block = blocks.get(i);
+            for(int i = 0; i < this.map.getPlacedBlocks().size() && i < 15; i++) {
+                Block block = this.map.getPlacedBlocks().get(i);
                 block.setType(Material.AIR);
-                blocks.remove(block);
+                this.map.getPlacedBlocks().remove(block);
             }
         }, 0, 1);
     }

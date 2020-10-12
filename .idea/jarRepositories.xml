@@ -16,5 +16,25 @@
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="febanhd-repo" />
+      <option name="name" value="febanhd-repo" />
+      <option name="url" value="http://91.218.66.7:8081/service/rest/repository/browse/febanhd-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="febanhd-releases" />
+      <option name="name" value="febanhd-releases" />
+      <option name="url" value="http://91.218.66.7:8081/repository/febanhd-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="febanhd-releases" />
+      <option name="name" value="febanhd-releases" />
+      <option name="url" value="http://91.218.66.7:8081/service/rest/repository/browse/febanhd-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="febanhd-releases" />
+      <option name="name" value="febanhd-releases" />
+      <option name="url" value="http://91.218.66.7:8081/service/rest/repositoryfebanhd-releases/" />
+    </remote-repository>
   </component>
 </project>

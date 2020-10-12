@@ -6,7 +6,39 @@
 
     <groupId>de.febanhd</groupId>
     <artifactId>AdvancedMLGRush</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.1</version>
+
+    <repositories>
+        <repository>
+            <id>febanhd-releases</id>
+            <url>http://91.218.66.7:8081/repository/febanhd-releases/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>de.febanhd</groupId>
+            <artifactId>simplesql</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -17,22 +49,20 @@
                     <target>8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
-
-    <dependencies>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
-        </dependency>
-    </dependencies>
 
 </project>

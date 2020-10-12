@@ -1,5 +1,5 @@
 name: AdvancedMLGRush
-version: 1.0.1
+version: 1.1.1
 main: de.febanhd.mlgrush.MLGRush
 
 commands:
@@ -7,3 +7,5 @@ commands:
   setqueue:
   setlobby:
   tptemplate:
+  leave:
+  stats:
