@@ -6,6 +6,7 @@ import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingDataHandler;
 import de.febanhd.mlgrush.gui.InventorySortingGui;
 import de.febanhd.mlgrush.gui.MapChoosingGui;
+import de.febanhd.mlgrush.gui.SpectatorGui;
 import de.febanhd.mlgrush.listener.GameListener;
 import de.febanhd.mlgrush.listener.InteractListener;
 import de.febanhd.mlgrush.listener.InventoryListener;
@@ -107,6 +108,7 @@ public class MLGRush extends JavaPlugin {
 
         MapChoosingGui.GUI_NAME = MLGRush.getString("guiname.mapchoosing");
         InventorySortingGui.GUI_NAME = MLGRush.getString("guiname.inventorysorting");
+        SpectatorGui.GUI_NAME = MLGRush.getString("guiname.spectator");
         if(this.getConfig().contains("paste.distance")) {
             MapManager.DISTANCE = this.getConfig().getInt("paste.distance");
         }
@@ -114,16 +116,15 @@ public class MLGRush extends JavaPlugin {
 
     private void loadSql() {
         String databseType = this.getConfig().getString("database");
-        if(databseType.equalsIgnoreCase("sqllite")) {
+        if(databseType.equalsIgnoreCase("mysql")) {
+            this.sqlHandler = new SimpleSQL(new MySQLDatabaseConnector(new SpigotDatabaseConfig(this)));
+        }else {
             File file = new File(this.getDataFolder().getPath() + "/databse");
             if(this.getDataFolder().exists())
                 this.getDataFolder().mkdir();
             if(!file.exists())file.mkdir();
 
             this.sqlHandler = new SimpleSQL(new SQLLiteDatabaseConnector(new SQLLiteDatabaseConfig(file.getAbsolutePath(), "database")));
-
-        }else if(databseType.equalsIgnoreCase("mysql")) {
-            this.sqlHandler = new SimpleSQL(new MySQLDatabaseConnector(new SpigotDatabaseConfig(this)));
         }
         
         if(this.sqlHandler.getConnector().getConnection() != null)

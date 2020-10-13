@@ -6,6 +6,7 @@ import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySorting;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
 import de.febanhd.mlgrush.gui.InventorySortingGui;
 import de.febanhd.mlgrush.gui.MapChoosingGui;
+import de.febanhd.mlgrush.gui.SpectatorGui;
 import de.febanhd.mlgrush.map.MapTemplate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,6 +51,18 @@ public class InventoryListener implements Listener {
             if(!openInv.equals(clickedInv)) {
                 event.setCancelled(true);
             }
+        }else if (openInv.getTitle().equals(SpectatorGui.GUI_NAME)) {
+            event.setCancelled(true);
+            if(!stack.hasItemMeta()) return;
+            String dpName = ChatColor.stripColor(stack.getItemMeta().getDisplayName());
+            Player target = this.getPlayerByDisplayName(dpName);
+            if(target == null || !MLGRush.getInstance().getGameHandler().isInSession(target)) {
+                player.closeInventory();
+                player.sendMessage(MLGRush.getMessage("messages.lobby.is_not_in_round"));
+                return;
+            }
+            MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler().spectate(player, target);
+            player.closeInventory();
         }
     }
 
@@ -75,5 +88,14 @@ public class InventoryListener implements Listener {
                 MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player);
             });
         }
+    }
+
+    private Player getPlayerByDisplayName(String dpName) {
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            if(player.getDisplayName().equals(dpName)) {
+                return player;
+            }
+        }
+        return null;
     }
 }

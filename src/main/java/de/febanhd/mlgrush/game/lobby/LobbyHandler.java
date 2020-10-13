@@ -3,6 +3,7 @@ package de.febanhd.mlgrush.game.lobby;
 import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameHandler;
+import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
 import de.febanhd.mlgrush.gui.InventorySortingGui;
 import de.febanhd.mlgrush.util.ItemBuilder;
 import de.febanhd.mlgrush.util.LocationUtil;
@@ -22,7 +23,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
 
 @Getter
 public class LobbyHandler {
@@ -30,12 +30,14 @@ public class LobbyHandler {
     private GameHandler gameHandler;
     private Location lobbyLocation, queueEntityLocation;
     private Entity queueEntity;
+    private SpectatorHandler spectatorHandler;
 
     public static String queueEntityName = "";
 
     public LobbyHandler(GameHandler gameHandler) {
         LobbyHandler.queueEntityName = ChatColor.translateAlternateColorCodes('&', MLGRush.getInstance().getConfig().getString("queue_entity_name"));
         this.gameHandler = gameHandler;
+        this.spectatorHandler = new SpectatorHandler();
         this.loadLocations();
         Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
             this.spawnQueue(EntityType.valueOf(MLGRush.getInstance().getConfig().getString("queue_entity_type")));
@@ -125,7 +127,7 @@ public class LobbyHandler {
         player.getInventory().clear();
         player.getInventory().setItem(0, new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName(MLGRush.getString("items.challanger")).setUnbreakable(true).build());
         player.getInventory().setItem(3, new ItemBuilder(Material.CHEST).setDisplayName(InventorySortingGui.GUI_NAME).build());
-        player.getInventory().setItem(5, new ItemBuilder(Material.PAPER).setDisplayName("§cComing Soon").build());
+        player.getInventory().setItem(5, this.spectatorHandler.getSpectatorItem());
         player.getInventory().setItem(8, new ItemBuilder(Material.PAPER).setDisplayName("§cComing Soon").build());
     }
 }

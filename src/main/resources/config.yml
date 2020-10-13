@@ -52,9 +52,15 @@ messages.inventorysorting.succesfully: '&7Deine Inventarsortierung wurde &agespe
 messages.lobby.already_one_opponent: '&cDieser Spieler hat bereits einen Gegner!'
 messages.lobby.challenged: '&7Du hast &a%player% &7herrausgefordert&7.'
 messages.lobby.challenged_by_player: '&7Du wurdest von &a%player% &7herrausgefordert.'
+messages.lobby.already_challanged: '&7Du hast &a%player% &7bereits herrausgefordert.'
+
+messages.lobby.is_not_in_round: '&7Dieser Spieler ist in keiner Runde.'
 
 items.stick: '&cStick'
 items.challanger: '&5Herrausforderer &8(&7Spieler Schlagen&8)'
+items.spectator: '&5Spieler zuschauen'
+items.cancel: '§cAbrechen'
 
 guiname.inventorysorting: '&eInventarsortierung'
 guiname.mapchoosing: '&eWeale die Map'
+guiname.spectator: '&5Spieler zuschauen'

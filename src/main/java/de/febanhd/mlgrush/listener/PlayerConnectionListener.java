@@ -4,6 +4,7 @@ import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.GameSession;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
+import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
 import de.febanhd.mlgrush.map.setup.MapSetupSession;
 import de.febanhd.mlgrush.stats.StatsCach;
 import org.bukkit.Bukkit;
@@ -60,6 +61,11 @@ public class PlayerConnectionListener implements Listener {
         }
         if(gameSession != null && gameSession.isRunning()) {
             gameSession.stopGame(null, player);
+        }
+
+        SpectatorHandler spectatorHandler = MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler();
+        if(spectatorHandler.isSpectating(player)) {
+            spectatorHandler.cancelSpectating(player);
         }
 
         MLGRush.getInstance().getGameHandler().removeChallangerFromMap(player);

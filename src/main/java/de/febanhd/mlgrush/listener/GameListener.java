@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -45,14 +46,18 @@ public class GameListener implements Listener {
         if(event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
             Player damager = (Player) event.getDamager();
+            if(!damager.getItemInHand().getType().equals(Material.DIAMOND_SWORD)) return;
             GameHandler gameHandler = MLGRush.getInstance().getGameHandler();
             if(gameHandler.isInSession(damager)) return;
             if(gameHandler.isInSession(player)) {
-                player.sendMessage(MLGRush.getMessage("messages.lobby.already_one_opponent"));
+                damager.sendMessage(MLGRush.getMessage("messages.lobby.already_one_opponent"));
                 return;
             }
             event.setCancelled(true);
-            if(gameHandler.getTarget(damager) == player) return;
+            if(gameHandler.getTarget(damager) == player) {
+                damager.sendMessage(MLGRush.getMessage("messages.lobby.already_challanged").replaceAll("%player%", player.getDisplayName()));
+                return;
+            }
             gameHandler.setTarget(damager, player);
             damager.sendMessage(MLGRush.getMessage("messages.lobby.challenged").replaceAll("%player%", player.getDisplayName()));
             player.sendMessage(MLGRush.getMessage("messages.lobby.challenged_by_player").replaceAll("%player%", damager.getDisplayName()));

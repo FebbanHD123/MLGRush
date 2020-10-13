@@ -2,7 +2,9 @@ package de.febanhd.mlgrush.listener;
 
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.lobby.LobbyHandler;
+import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
 import de.febanhd.mlgrush.gui.InventorySortingGui;
+import de.febanhd.mlgrush.gui.SpectatorGui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,6 +32,15 @@ public class InteractListener implements Listener {
             if(!MLGRush.getInstance().getGameHandler().isInSession(player)) {
                 if(stack.getType().equals(Material.CHEST) && (stack.hasItemMeta() && stack.getItemMeta().getDisplayName().equals(InventorySortingGui.GUI_NAME))) {
                     player.chat("/sortinv");
+                    event.setCancelled(true);
+                } else if(stack.equals(MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler().getSpectatorItem())) {
+                    new SpectatorGui().open(player);
+                    event.setCancelled(true);
+                } else {
+                    SpectatorHandler spectatorHandler = MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler();
+                    if(spectatorHandler.isSpectating(player) && stack.getType().equals(Material.BARRIER)) {
+                        spectatorHandler.cancelSpectating(player);
+                    }
                 }
             }
         }

@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySorting;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
+import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
 import de.febanhd.mlgrush.gui.MapChoosingGui;
 import de.febanhd.mlgrush.map.Map;
 import de.febanhd.mlgrush.map.MapTemplate;
@@ -17,7 +18,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 @Getter
 public class GameSession {
@@ -30,6 +33,8 @@ public class GameSession {
     private boolean selectingWorld, running;
     private int pointsForWin, resseterTaskID, taskID;
     private HashMap<Player, Integer> points;
+
+    private final String id = UUID.randomUUID().toString().split("-")[0];
 
     public GameSession(Player player1, Player player2) {
         this.player1 = player1;
@@ -167,6 +172,9 @@ public class GameSession {
                 StatsCach.getStats(quiter.getUniqueId()).addLoose();
                 StatsCach.getStats(winner.getUniqueId()).addWin();
             }
+            SpectatorHandler spectatorHandler = MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler();
+            spectatorHandler.getPlayersWithCertainTarget(player1).forEach(spectatorHandler::cancelSpectating);
+            spectatorHandler.getPlayersWithCertainTarget(player2).forEach(spectatorHandler::cancelSpectating);
         }catch (Exception e) {
             e.printStackTrace();
         }
