@@ -21,6 +21,8 @@ map_generation.spawningrate: 10
 #The distance between the maps (in blocks) it should be more than your largest map width
 paste.distance: 150
 
+bstats: true
+
 #messages
 
 prefix: '&8[&cAdvancedMLGRush&8] &r'

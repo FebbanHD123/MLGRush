@@ -27,6 +27,11 @@
       <option name="url" value="http://91.218.66.7:8081/repository/febanhd-releases/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="CodeMC" />
+      <option name="name" value="CodeMC" />
+      <option name="url" value="https://repo.codemc.org/repository/maven-public/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="febanhd-releases" />
       <option name="name" value="febanhd-releases" />
       <option name="url" value="http://91.218.66.7:8081/service/rest/repository/browse/febanhd-releases/" />
@@ -35,6 +40,11 @@
       <option name="id" value="febanhd-releases" />
       <option name="name" value="febanhd-releases" />
       <option name="url" value="http://91.218.66.7:8081/service/rest/repositoryfebanhd-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="CodeMC" />
+      <option name="name" value="CodeMC" />
+      <option name="url" value="https://repo.codemc.org/repository/maven-public" />
     </remote-repository>
   </component>
 </project>

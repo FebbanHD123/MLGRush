@@ -21,6 +21,7 @@ import de.febanhd.simpleutils.sql.database.config.sqllite.SQLLiteDatabaseConfig;
 import de.febanhd.simpleutils.sql.database.connection.MySQLDatabaseConnector;
 import de.febanhd.simpleutils.sql.database.connection.SQLLiteDatabaseConnector;
 import lombok.Getter;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -88,6 +89,19 @@ public class MLGRush extends JavaPlugin {
             StatsCach.loadStats(player.getUniqueId());
             InventorySortingCach.loadSorting(player);
         });
+
+        boolean useBStats = true;
+        if(this.getConfig().contains("bstats")) {
+            try {
+                useBStats = this.getConfig().getBoolean("bstats");
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if(useBStats) {
+            Metrics metrics = new Metrics(this, 9112);
+            metrics.addCustomChart(new Metrics.SimplePie("pluginVersion", () -> getDescription().getVersion()));
+        }
     }
 
     @Override
