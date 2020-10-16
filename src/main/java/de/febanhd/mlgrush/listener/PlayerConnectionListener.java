@@ -68,6 +68,12 @@ public class PlayerConnectionListener implements Listener {
             spectatorHandler.cancelSpectating(player);
         }
 
+        Bukkit.getOnlinePlayers().forEach(players -> {
+            if(spectatorHandler.isSpectating(players)) {
+                player.hidePlayer(players);
+            }
+        });
+
         MLGRush.getInstance().getGameHandler().removeChallangerFromMap(player);
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(MLGRush.getInstance(), () -> {

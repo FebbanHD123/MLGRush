@@ -1,6 +1,8 @@
 name: AdvancedMLGRush
 version: ${project.version}
 main: de.febanhd.mlgrush.MLGRush
+author: FebanHD
+description:
 
 commands:
   setupmap:

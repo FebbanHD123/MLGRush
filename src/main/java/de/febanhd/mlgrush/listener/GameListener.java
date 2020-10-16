@@ -3,6 +3,7 @@ package de.febanhd.mlgrush.listener;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.GameSession;
+import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
 import de.febanhd.mlgrush.map.Map;
 import de.febanhd.mlgrush.map.elements.BedObject;
 import org.bukkit.GameMode;
@@ -33,7 +34,7 @@ public class GameListener implements Listener {
     public void onDamage(EntityDamageEvent event) {
         if(event.getEntity() instanceof Player) {
             Player player = (Player)event.getEntity();
-            if(gameHandler.isInSession(player)) {
+            if(gameHandler.isInSession(player) && gameHandler.getSessionByPlayer(player).isIngame()) {
                 event.setDamage(0);
             }else {
                 event.setCancelled(true);
@@ -46,6 +47,11 @@ public class GameListener implements Listener {
         if(event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
             Player damager = (Player) event.getDamager();
+            SpectatorHandler spectatorHandler = MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler();
+            if(spectatorHandler.isSpectating(damager) || spectatorHandler.isSpectating(player)) {
+                event.setCancelled(true);
+                return;
+            }
             if(!damager.getItemInHand().getType().equals(Material.DIAMOND_SWORD)) return;
             GameHandler gameHandler = MLGRush.getInstance().getGameHandler();
             if(gameHandler.isInSession(damager)) return;

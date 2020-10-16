@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.util.ItemBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,6 +27,9 @@ public class SpectatorHandler {
         spectators.add(player);
         this.targetMap.put(player, target);
         player.teleport(target.getLocation());
+        Bukkit.getOnlinePlayers().forEach(players -> {
+            players.hidePlayer(player);
+        });
         this.setItems(player);
     }
 
@@ -34,6 +38,9 @@ public class SpectatorHandler {
         player.teleport(MLGRush.getInstance().getGameHandler().getLobbyHandler().getLobbyLocation());
         MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player);
         player.removePotionEffect(PotionEffectType.INVISIBILITY);
+        Bukkit.getOnlinePlayers().forEach(players -> {
+            players.showPlayer(player);
+        });
         this.targetMap.remove(player);
     }
 

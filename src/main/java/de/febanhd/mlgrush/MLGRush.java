@@ -13,6 +13,7 @@ import de.febanhd.mlgrush.listener.InventoryListener;
 import de.febanhd.mlgrush.listener.PlayerConnectionListener;
 import de.febanhd.mlgrush.map.MapManager;
 import de.febanhd.mlgrush.map.setup.MapTemplateWorld;
+import de.febanhd.mlgrush.scoreboards.ScoreboardManager;
 import de.febanhd.mlgrush.stats.StatsCach;
 import de.febanhd.mlgrush.stats.StatsDataHandler;
 import de.febanhd.simpleutils.sql.SimpleSQL;
@@ -51,6 +52,8 @@ public class MLGRush extends JavaPlugin {
 
     private StatsDataHandler statsDataHandler;
     private InventorySortingDataHandler inventorySortingDataHandler;
+
+    private ScoreboardManager scoreboardManager;
 
     @Override
     public void onEnable() {
@@ -102,6 +105,8 @@ public class MLGRush extends JavaPlugin {
             Metrics metrics = new Metrics(this, 9112);
             metrics.addCustomChart(new Metrics.SimplePie("pluginVersion", () -> getDescription().getVersion()));
         }
+
+        this.scoreboardManager = new ScoreboardManager();
     }
 
     @Override

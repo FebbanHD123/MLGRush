@@ -26,7 +26,7 @@ public class StatsCach {
                 return stats;
             }
         }
-        return null;
+        return new PlayerStats(UUID.randomUUID(), 0, 0, 0, 0, 0);
     }
 
     public static void remove(UUID uuid) {

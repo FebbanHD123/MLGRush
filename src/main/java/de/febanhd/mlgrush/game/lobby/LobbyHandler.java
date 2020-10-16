@@ -39,9 +39,13 @@ public class LobbyHandler {
         this.gameHandler = gameHandler;
         this.spectatorHandler = new SpectatorHandler();
         this.loadLocations();
-        Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
-            this.spawnQueue(EntityType.valueOf(MLGRush.getInstance().getConfig().getString("queue_entity_type")));
-        }, 20 * 10);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
+            try {
+                this.spawnQueue(EntityType.valueOf(MLGRush.getInstance().getConfig().getString("queue_entity_type")));
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 20 * 10, 20 * 20);
     }
 
     public void loadLocations() {
@@ -128,6 +132,5 @@ public class LobbyHandler {
         player.getInventory().setItem(0, new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName(MLGRush.getString("items.challanger")).setUnbreakable(true).build());
         player.getInventory().setItem(3, new ItemBuilder(Material.CHEST).setDisplayName(InventorySortingGui.GUI_NAME).build());
         player.getInventory().setItem(5, this.spectatorHandler.getSpectatorItem());
-        player.getInventory().setItem(8, new ItemBuilder(Material.PAPER).setDisplayName("§cComing Soon").build());
     }
 }

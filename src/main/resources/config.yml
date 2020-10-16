@@ -4,8 +4,8 @@
 
 #settings
 
-#The databse-type (MySQL, SQLLite)
-database: SQLLite
+#The databse-type (MySQL, SQLite)
+database: SQLite
 
 points.for_win: 10
 

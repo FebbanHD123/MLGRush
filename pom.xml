@@ -6,7 +6,7 @@
 
     <groupId>de.febanhd</groupId>
     <artifactId>AdvancedMLGRush</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.3</version>
 
     <repositories>
         <repository>
@@ -25,7 +25,12 @@
             <groupId>de.febanhd</groupId>
             <artifactId>simplesql</artifactId>
             <version>1.0.2</version>
-            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.febanhd</groupId>
+            <artifactId>simplescoreboard</artifactId>
+            <version>1.0.2</version>
         </dependency>
 
         <dependency>
