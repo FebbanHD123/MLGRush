@@ -42,6 +42,12 @@ public class PlayerConnectionListener implements Listener {
 
         StatsCach.loadStats(player.getUniqueId());
         InventorySortingCach.loadSorting(player);
+
+        if(player.hasPermission("mlgrush.notify") &&
+                !MLGRush.getInstance().getUpdateChecker().getCachedVersion().equals(MLGRush.getInstance().getDescription().getVersion())) {
+            player.sendMessage(MLGRush.PREFIX + "§7Es gibt eine neuere Version von AdvancedMLGRush (" + MLGRush.getInstance().getUpdateChecker().getCachedVersion() +
+                    "). Downloade diese hier: §nhttps://www.spigotmc.org/resources/mlgrush-%E2%9C%85-the-most-advanced-mlgrush-system-unendlich-maps-mit-nur-einem-template.84672/");
+        }
     }
 
     @EventHandler

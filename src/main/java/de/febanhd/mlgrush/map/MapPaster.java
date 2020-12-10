@@ -11,6 +11,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_8_R3.block.CraftBlock;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -111,8 +113,7 @@ public class MapPaster {
                 Location location = block.getLocation();
 
                 location.getBlock().setType(blockToPlace.getType());
-
-                location.getBlock().setData(blockToPlace.getData());
+                MLGRush.getInstance().getNmsBase().setBlockData(location.getBlock(), blockToPlace.getData());
 
                 blocks.remove(block);
             }

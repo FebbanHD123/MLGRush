@@ -4,10 +4,8 @@ import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameSession;
-import de.febanhd.mlgrush.util.ItemBuilder;
 import de.febanhd.mlgrush.util.SkullBuilder;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +30,7 @@ public class SpectatorGui {
         Inventory inventory = Bukkit.createInventory(null, 9 * 6, GUI_NAME);
         for(int i = 0; i < players.size() && i < inventory.getSize(); i++) {
             Player target = players.get(i);
-            GameProfile profile = ((CraftPlayer)target).getProfile();
+            GameProfile profile = MLGRush.getInstance().getNmsBase().getGameProfile(target);
             GameSession session = MLGRush.getInstance().getGameHandler().getSessionByPlayer(target);
 
             ItemStack stack = SkullBuilder.getSkull(profile);

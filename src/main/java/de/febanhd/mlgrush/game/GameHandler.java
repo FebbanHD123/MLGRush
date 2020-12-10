@@ -10,12 +10,14 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameHandler {
 
     @Getter
     private final CopyOnWriteArrayList<GameSession> gameSessions = Lists.newCopyOnWriteArrayList();
+    private HashMap<UUID, Long> lastClicked = Maps.newHashMap();
 
     @Getter
     private final LobbyQueue queue;
@@ -30,15 +32,20 @@ public class GameHandler {
     }
 
     public void toggleQueue(Player player) {
+        if(this.lastClicked.containsKey(player.getUniqueId())) {
+            if(this.lastClicked.get(player.getUniqueId()) + 200 > System.currentTimeMillis()) {
+                this.lastClicked.put(player.getUniqueId(), System.currentTimeMillis());
+                return;
+            }
+        }
         if(this.queue.isInQueue(player)) {
             queue.remove(player);
             player.sendMessage(MLGRush.getMessage("messages.queue.quit"));
-            player.playSound(player.getLocation(), Sound.ANVIL_BREAK, 2, 1);
         }else {
             this.addToQueue(player);
             player.sendMessage(MLGRush.getMessage("messages.queue.enter"));
-            player.playSound(player.getLocation(), Sound.ANVIL_BREAK, 3, 2);
         }
+        lastClicked.put(player.getUniqueId(), System.currentTimeMillis());
     }
 
     private void addToQueue(Player player) {

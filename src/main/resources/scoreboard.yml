@@ -1,0 +1,25 @@
+#The DisplayName of the Scoreboard (Stands at the top in the middle)
+title: '&cAdvancedMLGRush'
+
+#In which interval should the scoreboard be renewed.
+#The value is given in seconds
+updateInterval: 5
+
+#ALL placeholders:
+
+#%kills% - Kills of the player
+#%deaths% - Deaths of the player
+#%wins% - Wins of the player
+#%looses% - Looses of the player
+#%beds% - Destroyed Beds of the player
+#%player% - The name of the player
+#%online% - The number of Online-Players
+
+rows:
+  '7': ' '
+  '6': '&cSiege'
+  '5': '&8➡ %wins%'
+  '4': ' '
+  '3': '&cLooses'
+  '2': '&8➡ %looses%'
+  '1': ' '

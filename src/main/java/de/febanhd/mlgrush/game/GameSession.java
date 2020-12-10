@@ -9,7 +9,6 @@ import de.febanhd.mlgrush.gui.MapChoosingGui;
 import de.febanhd.mlgrush.map.Map;
 import de.febanhd.mlgrush.map.MapTemplate;
 import de.febanhd.mlgrush.stats.StatsCach;
-import de.febanhd.mlgrush.util.Actionbar;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.*;
@@ -18,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -33,12 +31,14 @@ public class GameSession {
     private boolean selectingWorld, running;
     private int pointsForWin, resseterTaskID, taskID;
     private HashMap<Player, Integer> points;
+    private final boolean infiniteBlocks;
 
     private final String id = UUID.randomUUID().toString().split("-")[0];
 
     public GameSession(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
+        this.infiniteBlocks = MLGRush.getInstance().getConfig().getBoolean("infinite.blocks");
         if(player1.equals(player2)) {
             try {
                 throw new IllegalArgumentException("Player1 and Player2 can't be the same.");
@@ -58,7 +58,7 @@ public class GameSession {
     }
 
     public boolean isIngame() {
-        return !selectingWorld;
+        return running;
     }
 
     private void openInv() {
@@ -89,7 +89,6 @@ public class GameSession {
         player.teleport(location);
         if(death) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int)Math.round(20D * MLGRush.getInstance().getConfig().getDouble("no_move_time")), 10));
-            player.playSound(player.getLocation(), Sound.VILLAGER_HIT, 2, 1);
             StatsCach.getStats(player.getUniqueId()).addDeaths();
             StatsCach.getStats(otherPlayer.getUniqueId()).addKill();
         }
@@ -190,11 +189,6 @@ public class GameSession {
         this.setItems(player1);
         this.setItems(player2);
 
-        Player otherPlayer = player.equals(player1) ? player2 : player1;
-
-        player.playSound(player.getLocation(), Sound.LEVEL_UP, 2, 1);
-        otherPlayer.playSound(player.getLocation(), Sound.VILLAGER_DEATH, 2, 1);
-
         this.resetPlacedBlocks();
 
         StatsCach.getStats(player.getUniqueId()).addBedDestroyed();
@@ -221,9 +215,8 @@ public class GameSession {
     private void startIngameTask() {
         this.taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
             String actionbarString = ChatColor.RED + player1.getDisplayName() + " §7" + this.getPoints(player1) + " §8| §7" + this.getPoints(player2) + " " + ChatColor.BLUE + player2.getDisplayName();
-            Actionbar actionbar = new Actionbar(actionbarString);
-            actionbar.send(player1);
-            actionbar.send(player2);
+            MLGRush.getInstance().getNmsBase().sendActionbar(player1, actionbarString);
+            MLGRush.getInstance().getNmsBase().sendActionbar(player2, actionbarString);
         }, 0, 5);
     }
 

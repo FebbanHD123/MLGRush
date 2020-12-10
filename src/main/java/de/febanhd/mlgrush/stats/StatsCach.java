@@ -33,4 +33,13 @@ public class StatsCach {
         PlayerStats stats = getStats(uuid);
         playerStats.remove(stats);
     }
+
+    public static boolean contains(UUID uuid) {
+        for(PlayerStats stats : StatsCach.playerStats) {
+            if(stats.getUuid().equals(uuid)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

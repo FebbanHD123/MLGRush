@@ -1,6 +1,6 @@
 #Dev: FebanHD
 #SourceCode: https://github.com/FebbanHD123/MLGRush
-#config-version: 1.5
+#config-version: 1.6
 
 #settings
 
@@ -20,6 +20,9 @@ map_generation.spawningrate: 10
 
 #The distance between the maps (in blocks) it should be more than your largest map width
 paste.distance: 150
+
+#If this is true, players no longer lose blocks while building
+infinite.blocks: false
 
 bstats: true
 
@@ -57,6 +60,8 @@ messages.lobby.challenged_by_player: '&7Du wurdest von &a%player% &7herrausgefor
 messages.lobby.already_challanged: '&7Du hast &a%player% &7bereits herrausgefordert.'
 
 messages.lobby.is_not_in_round: '&7Dieser Spieler ist in keiner Runde.'
+
+actionbar.loadmap: '&eMap wird Geladen: §6%percent%'
 
 items.stick: '&cStick'
 items.challanger: '&5Herrausforderer &8(&7Spieler Schlagen&8)'

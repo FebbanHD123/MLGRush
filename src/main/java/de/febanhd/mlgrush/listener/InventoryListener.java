@@ -30,7 +30,7 @@ public class InventoryListener implements Listener {
         Player player = (Player)event.getWhoClicked();
         ItemStack stack = event.getCurrentItem();
         if(stack == null || stack.getType() == Material.AIR) return;
-        if(openInv.getTitle().equals(MapChoosingGui.GUI_NAME)) {
+        if(player.getOpenInventory().getTitle().equals(MapChoosingGui.GUI_NAME)) {
             event.setCancelled(true);
             if(openInv.equals(clickedInv)) {
                 GameSession gameSession = MLGRush.getInstance().getGameHandler().getSessionByPlayer(player);
@@ -47,11 +47,11 @@ public class InventoryListener implements Listener {
                 }
 
             }
-        }else if (openInv.getTitle().equals(InventorySortingGui.GUI_NAME)) {
+        }else if (player.getOpenInventory().getTitle().equals(InventorySortingGui.GUI_NAME)) {
             if(!openInv.equals(clickedInv)) {
                 event.setCancelled(true);
             }
-        }else if (openInv.getTitle().equals(SpectatorGui.GUI_NAME)) {
+        }else if (player.getOpenInventory().getTitle().equals(SpectatorGui.GUI_NAME)) {
             event.setCancelled(true);
             if(!stack.hasItemMeta()) return;
             String dpName = ChatColor.stripColor(stack.getItemMeta().getDisplayName());
@@ -75,12 +75,11 @@ public class InventoryListener implements Listener {
                     new MapChoosingGui().open(player);
                 }, 3);
             }
-        }else if(event.getInventory().getTitle().equals(InventorySortingGui.GUI_NAME)) {
+        }else if(player.getOpenInventory().getTitle().equals(InventorySortingGui.GUI_NAME)) {
             InventorySorting sorting = InventorySortingCach.getSorting((Player) event.getPlayer());
             sorting.updateItems(event.getInventory(), correct -> {
                 if(correct) {
                     player.sendMessage(MLGRush.getMessage("messages.inventorysorting.succesfully"));
-                    player.playSound(player.getLocation(), Sound.ORB_PICKUP, 2, 1);
                 }else {
                     player.sendMessage(MLGRush.getMessage("messages.inventorysorting.error"));
                 }

@@ -2,13 +2,21 @@ name: AdvancedMLGRush
 version: ${project.version}
 main: de.febanhd.mlgrush.MLGRush
 author: FebanHD
-description:
+description: A mlgrush system
+api-version: 1.13
 
 commands:
   setupmap:
+    description: STart the setup of a map
   setqueue:
+    description: To set the queue
   setlobby:
+    description: To set the lobby
   tptemplate:
+    description: To teleport yourself to the template world
   leave:
+    description: Leave a match
   stats:
+    description: Show your stats
   sortinv:
+    description: Sort yourr inv

@@ -56,14 +56,18 @@ public class StatsCommand implements CommandExecutor {
                     this.sendStats(sender, statsDataHandler.getPlayerStats(uuid), targetName);
                 });
             } else {
-                UUIDFetcher.getUUID(targetName, uuid -> {
-                    StatsDataHandler statsDataHandler = MLGRush.getInstance().getStatsDataHandler();
-                    if(uuid == null || !statsDataHandler.hasStats(uuid)) {
-                        sender.sendMessage(MLGRush.getMessage("messages.stats.not_found"));
-                    }else {
-                        this.sendStats(sender, statsDataHandler.getPlayerStats(uuid), targetName);
-                    }
-                });
+                try {
+                    UUIDFetcher.getUUID(targetName, uuid -> {
+                        StatsDataHandler statsDataHandler = MLGRush.getInstance().getStatsDataHandler();
+                        if (uuid == null || !statsDataHandler.hasStats(uuid)) {
+                            sender.sendMessage(MLGRush.getMessage("messages.stats.not_found"));
+                        } else {
+                            this.sendStats(sender, statsDataHandler.getPlayerStats(uuid), targetName);
+                        }
+                    });
+                }catch (Exception e) {
+                    sender.sendMessage(MLGRush.getMessage("messages.stats.not_found"));
+                }
             }
         }
         return false;

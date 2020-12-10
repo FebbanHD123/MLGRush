@@ -1,6 +1,5 @@
 package de.febanhd.mlgrush.game.lobby;
 
-import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
@@ -8,13 +7,10 @@ import de.febanhd.mlgrush.gui.InventorySortingGui;
 import de.febanhd.mlgrush.util.ItemBuilder;
 import de.febanhd.mlgrush.util.LocationUtil;
 import lombok.Getter;
-import lombok.Setter;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -105,26 +101,23 @@ public class LobbyHandler {
 
     private void spawnQueue(EntityType entityType) {
         if(this.queueEntityLocation == null) return;
-        for(Entity e : this.queueEntityLocation.getWorld().getNearbyEntities(this.queueEntityLocation, 5, 5, 5)) {
-            if (!(e instanceof Player)) {
-                e.remove();
+        try {
+            for(Entity e : this.queueEntityLocation.getWorld().getNearbyEntities(this.queueEntityLocation, 5, 5, 5)) {
+                if (e.getType().equals(entityType)) {
+                    e.remove();
+                }
             }
+        }catch (Exception e) {
         }
-        Entity entity = this.queueEntityLocation.getWorld().spawnEntity(this.queueEntityLocation, entityType);
-        entity.setCustomNameVisible(true);
-        entity.setCustomName(LobbyHandler.queueEntityName);
-        net.minecraft.server.v1_8_R3.Entity nms = ((CraftEntity) entity).getHandle();
-        NBTTagCompound tag = new NBTTagCompound();
-        nms.e(tag);
-        tag.setInt("NoAI", 1);
-        tag.setBoolean("Silent", true);
-        nms.f(tag);
-
-        Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
-            entity.teleport(this.queueEntityLocation);
-        }, 20);
-
-        this.queueEntity = entity;
+        this.queueEntity = MLGRush.getInstance().getNmsBase().spawnQueueEntity(entityType, this.queueEntityLocation);
+//        Entity entity = this.queueEntityLocation.getWorld().spawnEntity(this.queueEntityLocation, entityType);
+//        entity.setCustomNameVisible(true);
+//        entity.setCustomName(LobbyHandler.queueEntityName);
+//        this.setNoAIAndSilent(entity);
+//
+//        Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
+//            entity.teleport(this.queueEntityLocation);
+//        }, 20);
     }
 
     public void setLobbyItems(Player player) {

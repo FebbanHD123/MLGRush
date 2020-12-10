@@ -4,15 +4,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.map.generator.VoidGenerator;
-import de.febanhd.mlgrush.util.Actionbar;
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -62,11 +59,11 @@ public class MapManager {
             callback.accept(map);
         });
         this.tasks.put(taskUUID, Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
-            Actionbar actionbar = new Actionbar("§eMap wird Geladen: §6" + paster.getProgressPercent() + "%");
+            String actionBarString = MLGRush.getMessage("actionbar.loadmap").replaceAll("%percent%", String.valueOf(paster.getProgressPercent()));
             if(player1.isOnline())
-                actionbar.send(player1);
+                MLGRush.getInstance().getNmsBase().sendActionbar(player1, actionBarString);
             if(player2.isOnline())
-                actionbar.send(player2);
+                MLGRush.getInstance().getNmsBase().sendActionbar(player2, actionBarString);
 
             if(!player1.isOnline() || !player2.isOnline()) {
                 this.cancelPasting(player1, player2, taskUUID);

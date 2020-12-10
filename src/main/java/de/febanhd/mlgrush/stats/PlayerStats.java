@@ -10,7 +10,6 @@ public class PlayerStats {
 
     private final UUID uuid;
     private int kills, deaths, wins, looses, bedDestroyed;
-    private final StatsDataHandler statsDataHandler;
 
     public PlayerStats(UUID uuid, int kills, int deaths, int wins, int looses, int bedDestroyed) {
         this.uuid = uuid;
@@ -18,32 +17,31 @@ public class PlayerStats {
         this.deaths = deaths;
         this.wins = wins;
         this.looses = looses;
-        this.statsDataHandler = MLGRush.getInstance().getStatsDataHandler();
         this.bedDestroyed = bedDestroyed;
     }
 
     public void addKill() {
         kills++;
-        this.statsDataHandler.setValueAsync("kills", uuid, kills);
+        MLGRush.getInstance().getStatsDataHandler().setValueAsync("kills", uuid, kills);
     }
 
     public void addDeaths() {
         deaths++;
-        this.statsDataHandler.setValueAsync("deaths", uuid, deaths);
+        MLGRush.getInstance().getStatsDataHandler().setValueAsync("deaths", uuid, deaths);
     }
 
     public void addWin() {
         wins++;
-        this.statsDataHandler.setValueAsync("wins", uuid, this.wins);
+        MLGRush.getInstance().getStatsDataHandler().setValueAsync("wins", uuid, this.wins);
     }
 
     public void addLoose() {
         looses++;
-        this.statsDataHandler.setValueAsync("looses", uuid, this.looses);
+        MLGRush.getInstance().getStatsDataHandler().setValueAsync("looses", uuid, this.looses);
     }
 
     public void addBedDestroyed() {
         this.bedDestroyed++;
-        this.statsDataHandler.setValueAsync("beds", uuid, this.bedDestroyed);
+        MLGRush.getInstance().getStatsDataHandler().setValueAsync("beds", uuid, this.bedDestroyed);
     }
 }

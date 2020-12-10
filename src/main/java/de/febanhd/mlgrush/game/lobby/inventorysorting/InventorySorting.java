@@ -14,18 +14,26 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
 @Getter
 public class InventorySorting {
 
-    private Player player;
-    private ArrayList<ItemElement> elements;
+    private final Player player;
+    private final ArrayList<ItemElement> elements;
 
     public InventorySorting(Player player, ArrayList<ItemElement> elements) {
-        this.elements = elements;
         this.player = player;
+
+        ArrayList<ItemStack> items = Lists.newArrayList();
+        elements.forEach(element -> items.add(element.getStack()));
+        this.elements = Lists.newArrayList(elements);
+        if(!this.isValid(items)) {
+            this.elements.clear();
+            this.elements.addAll(InventorySortingDataHandler.DEFAULT_ELEMENTS);
+        }
     }
 
     @Override
@@ -42,13 +50,21 @@ public class InventorySorting {
     }
 
     public static InventorySorting fromString(Player player, String str) {
-        JSONObject jsonObject = new JSONObject(str);
-        JSONArray elementArray = jsonObject.getJSONArray("elements");
-        ArrayList<ItemElement> elements = Lists.newArrayList();
-        elementArray.forEach(object -> {
-            elements.add(ItemElement.fromString(object.toString()));
-        });
-        return new InventorySorting(player, elements);
+        try {
+            JSONObject jsonObject = new JSONObject(str);
+            JSONArray elementArray = jsonObject.getJSONArray("elements");
+            ArrayList<ItemElement> elements = Lists.newArrayList();
+            elementArray.forEach(object -> {
+                elements.add(ItemElement.fromString(object.toString()));
+            });
+            return new InventorySorting(player, elements);
+        }catch (Exception e) {
+            e.printStackTrace();
+            player.sendMessage(MLGRush.PREFIX + "§cBeim Laden deiner Inventarsortierung ist ein Fehler aufgetreten! Sie wurde auf Default gesetzt!");
+            InventorySorting sorting = new InventorySorting(player, InventorySortingDataHandler.DEFAULT_ELEMENTS);
+            MLGRush.getInstance().getInventorySortingDataHandler().updateSorting(sorting);
+            return sorting;
+        }
     }
 
     public void setToInventory(Inventory inventory) {
@@ -65,15 +81,32 @@ public class InventorySorting {
                 items.put(i, stack);
             }
         }
-        if(this.elements.size() == items.size()) {
+        if(this.isValid(items.values())) {
             this.elements.clear();
             items.forEach((slot, stack) -> elements.add(new ItemElement(stack, slot)));
-            callback.accept(true);
             MLGRush.getInstance().getInventorySortingDataHandler().updateSorting(this);
+            callback.accept(true);
         }else {
             callback.accept(false);
         }
     }
+
+    private boolean isValid(Collection<ItemStack> items) {
+        int rightAmount = InventorySortingDataHandler.DEFAULT_ELEMENTS.stream().mapToInt(itemElement -> itemElement.getStack().getAmount()).sum();
+        int invStackAmount = 0;
+        for(ItemStack stack : items) {
+            if(stack != null)
+                invStackAmount += stack.getAmount();
+        }
+        ArrayList<ItemStack> normalItems = Lists.newArrayList();
+        InventorySortingDataHandler.DEFAULT_ELEMENTS.forEach(element -> normalItems.add(element.getStack()));
+        for(int  i = 0; i < this.elements.size(); i++) {
+            if(!normalItems.contains(this.elements.get(i).getStack())) return false;
+        }
+        return this.elements.size() == items.size() && rightAmount == invStackAmount;
+    }
+
+
 
     public static class ItemElement  {
 

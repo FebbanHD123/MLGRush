@@ -1,5 +1,6 @@
 package de.febanhd.mlgrush;
 
+import de.febanhd.mlgrush.api.AdvancedMLGRushAPI;
 import de.febanhd.mlgrush.commands.*;
 import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
@@ -12,10 +13,14 @@ import de.febanhd.mlgrush.listener.InteractListener;
 import de.febanhd.mlgrush.listener.InventoryListener;
 import de.febanhd.mlgrush.listener.PlayerConnectionListener;
 import de.febanhd.mlgrush.map.MapManager;
+import de.febanhd.mlgrush.map.MapTemplate;
 import de.febanhd.mlgrush.map.setup.MapTemplateWorld;
+import de.febanhd.mlgrush.nms.NMSBase;
 import de.febanhd.mlgrush.scoreboards.ScoreboardManager;
 import de.febanhd.mlgrush.stats.StatsCach;
 import de.febanhd.mlgrush.stats.StatsDataHandler;
+import de.febanhd.mlgrush.updatechecker.UpdateChecker;
+import de.febanhd.mlgrush.util.ApiversionChecker;
 import de.febanhd.simpleutils.sql.SimpleSQL;
 import de.febanhd.simpleutils.sql.database.config.mc.SpigotDatabaseConfig;
 import de.febanhd.simpleutils.sql.database.config.sqllite.SQLLiteDatabaseConfig;
@@ -27,11 +32,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -55,12 +62,20 @@ public class MLGRush extends JavaPlugin {
 
     private ScoreboardManager scoreboardManager;
 
+    private UpdateChecker updateChecker;
+
+    private boolean legacy;
+
+    private NMSBase nmsBase;
+
     @Override
     public void onEnable() {
         instance = this;
 
         this.loadConfig();
         MLGRush.PREFIX = ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("prefix"));
+
+        this.detectVersion();
 
         this.mapManager = new MapManager();
         this.gameHandler = new GameHandler();
@@ -106,7 +121,14 @@ public class MLGRush extends JavaPlugin {
             metrics.addCustomChart(new Metrics.SimplePie("pluginVersion", () -> getDescription().getVersion()));
         }
 
-        this.scoreboardManager = new ScoreboardManager();
+//        this.scoreboardManager = new ScoreboardManager();
+
+        this.updateChecker = new UpdateChecker(this, MLGRush.getExecutorService(), 84672);
+        this.updateChecker.getVersion(version -> {
+           if(!version.equals(this.getDescription().getVersion())) {
+               this.getLogger().info("There is a new version of AdvancedMLGRush (" + version + "). Please update your current version to avoid bugs.");
+           }
+        });
     }
 
     @Override
@@ -119,6 +141,18 @@ public class MLGRush extends JavaPlugin {
         }
 
         this.sqlHandler.closeConnections();
+    }
+
+    private void detectVersion() {
+        String version = ApiversionChecker.getVersion();
+        this.legacy = version.contains("1.8") || version.contains("1.9") || version.contains("1.10") || version.contains("1.11") || version.contains("1.12");
+        this.nmsBase = ApiversionChecker.getNMSBase();
+        if(this.nmsBase == null) {
+            Bukkit.getConsoleSender().sendMessage(MLGRush.PREFIX + "§4Your server version is not supported! Are you sure you have the latest server file of your version? And that your version is supported at all?");
+            Bukkit.getPluginManager().disablePlugin(this);
+        }else {
+            Bukkit.getConsoleSender().sendMessage(MLGRush.PREFIX + "§aDetected server version: " + version);
+        }
     }
 
     private void loadConfig() {
@@ -146,9 +180,13 @@ public class MLGRush extends JavaPlugin {
             this.sqlHandler = new SimpleSQL(new SQLLiteDatabaseConnector(new SQLLiteDatabaseConfig(file.getAbsolutePath(), "database")));
         }
         
-        if(this.sqlHandler.getConnector().getConnection() != null)
+        if(this.sqlHandler.getConnector().getConnection() != null) {
             this.sqlHandler.createBuilder("CREATE TABLE IF NOT EXISTS mlg_stats (UUID VARCHAR(100) PRIMARY KEY, kills INT NOT NULL , deaths INT NOT NULL , wins INT NOT NULL , looses INT NOT NULL, beds INT NOT NULL)").updateSync();
             this.sqlHandler.createBuilder("CREATE TABLE IF NOT EXISTS mlg_inv (UUID VARCHAR(100) PRIMARY KEY, value TEXT NOT NULL)").updateSync();
+        }else {
+            Bukkit.getConsoleSender().sendMessage(PREFIX + "§cThe plugin was disabled because it could not establish a database connection! (MySQL or SQLite)");
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
     }
 
     private void startProtectionTask() {
@@ -158,7 +196,7 @@ public class MLGRush extends JavaPlugin {
                 world.setStorm(false);
                 world.setTime(10000);
                 world.getEntities().forEach(entity -> {
-                    if(!(entity instanceof Player) && !entity.equals(this.gameHandler.getLobbyHandler().getQueueEntity()) && entity.getType() != EntityType.DROPPED_ITEM) {
+                    if(entity instanceof Monster && entity != this.getGameHandler().getLobbyHandler().getQueueEntity()) {
                         entity.remove();
                     }
                 });

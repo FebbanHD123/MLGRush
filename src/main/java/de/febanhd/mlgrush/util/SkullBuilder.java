@@ -43,7 +43,7 @@ public class SkullBuilder {
         return getSkull(skinURL, 1);
     }
     public static ItemStack getSkull(GameProfile gameProfile, int amount) {
-        ItemStack skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 3);
+        ItemStack skull = Materials.PLAYER_HEAD.getStack().build();
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
         try {
             Field profileField = skullMetaClass.getDeclaredField("profile");

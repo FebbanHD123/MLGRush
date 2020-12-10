@@ -21,62 +21,6 @@ import java.util.Map;
 
 public class InventoryUtil {
 
-    public static String inventoryToString(Inventory inventory) {
-        ByteArrayOutputStream outStream = null;
-        BukkitObjectOutputStream out = null;
-        String str = "";
-        try {
-            outStream = new ByteArrayOutputStream();
-            out = new BukkitObjectOutputStream(outStream);
-
-            out.writeObject(inventory.getTitle());
-            out.writeInt(inventory.getSize());
-            out.writeObject(contentsToString(inventory));
-
-            str = Base64.getEncoder().encodeToString(outStream.toByteArray());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                out.close();
-                outStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return str;
-    }
-
-    public static Inventory inventoryFromString(String str) {
-        ByteArrayInputStream inStream = null;
-        BukkitObjectInputStream in = null;
-        Inventory inv = null;
-        try {
-            inStream = new ByteArrayInputStream(Base64.getDecoder().decode(str));
-            in = new BukkitObjectInputStream(inStream);
-
-            String title = (String) in.readObject();
-            int size = in.readInt();
-
-            inv = Bukkit.createInventory(null, size, title);
-
-            Map<Integer, ItemStack> contents = contentsFromString((String)in.readObject());
-            for(Map.Entry<Integer, ItemStack> entry : contents.entrySet()) {
-                inv.setItem(entry.getKey(), entry.getValue());
-            }
-        }catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                inStream.close();
-                in.close();
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return inv;
-    }
-
     private static String contentsToString(Inventory inv) {
         List<JSONObject> jsons = Lists.newArrayList();
         for(int i = 0; i < inv.getSize(); i++) {

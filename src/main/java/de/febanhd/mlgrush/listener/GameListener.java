@@ -3,24 +3,29 @@ package de.febanhd.mlgrush.listener;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.GameSession;
+import de.febanhd.mlgrush.game.lobby.LobbyHandler;
+import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySorting;
 import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
+import de.febanhd.mlgrush.gui.InventorySortingGui;
 import de.febanhd.mlgrush.map.Map;
 import de.febanhd.mlgrush.map.elements.BedObject;
+import de.febanhd.mlgrush.util.Materials;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class GameListener implements Listener {
 
@@ -52,14 +57,20 @@ public class GameListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            if(!damager.getItemInHand().getType().equals(Material.DIAMOND_SWORD)) return;
             GameHandler gameHandler = MLGRush.getInstance().getGameHandler();
-            if(gameHandler.isInSession(damager)) return;
+            if(gameHandler.isInSession(damager)) {
+                if(!gameHandler.getSessionByPlayer(damager).isIngame()) { ;
+                    event.setCancelled(true);
+                }
+                return;
+            }
             if(gameHandler.isInSession(player)) {
                 damager.sendMessage(MLGRush.getMessage("messages.lobby.already_one_opponent"));
+                event.setCancelled(true);
                 return;
             }
             event.setCancelled(true);
+            if(!damager.getItemInHand().getType().equals(Material.DIAMOND_SWORD)) return;
             if(gameHandler.getTarget(damager) == player) {
                 damager.sendMessage(MLGRush.getMessage("messages.lobby.already_challanged").replaceAll("%player%", player.getDisplayName()));
                 return;
@@ -67,8 +78,13 @@ public class GameListener implements Listener {
             gameHandler.setTarget(damager, player);
             damager.sendMessage(MLGRush.getMessage("messages.lobby.challenged").replaceAll("%player%", player.getDisplayName()));
             player.sendMessage(MLGRush.getMessage("messages.lobby.challenged_by_player").replaceAll("%player%", damager.getDisplayName()));
-            damager.playSound(damager.getLocation(), Sound.LEVEL_UP, 2, 1);
-            player.playSound(player.getLocation(), Sound.CHICKEN_EGG_POP, 2, 1);
+        } else if (event.getDamager() instanceof Player) {
+            Entity entity = event.getEntity();
+            Player player = (Player)event.getDamager();
+            if(entity.getCustomName().equals(LobbyHandler.queueEntityName) && !gameHandler.isInSession(player)) {
+                event.setCancelled(true);
+                MLGRush.getInstance().getGameHandler().toggleQueue((Player)event.getDamager());
+            }
         }
     }
 
@@ -92,6 +108,10 @@ public class GameListener implements Listener {
                 event.setCancelled(true);
             }else {
                 session.getMap().getPlacedBlocks().add(event.getBlock());
+                if(session.isInfiniteBlocks()) {
+                    if(player.getItemInHand().getType().equals(Material.SANDSTONE))
+                        player.getInventory().getItemInHand().setAmount(64);
+                }
             }
         }else if(player.getGameMode() != GameMode.CREATIVE) {
             event.setCancelled(true);
@@ -110,7 +130,7 @@ public class GameListener implements Listener {
                 return;
             }
             Map map = session.getMap();
-            if(event.getBlock().getType() == Material.BED_BLOCK) {
+            if(event.getBlock().getType() == Materials.BED_BLOCK.getMaterial()) {
                 event.setCancelled(true);
                 BedObject bedObject = map.getBedOfPlayer2(player);
                 if(bedObject.isBlockOfBed(event.getBlock())) {
@@ -156,6 +176,20 @@ public class GameListener implements Listener {
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
         if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+            Player player = event.getPlayer();
+            if(player.getOpenInventory() != null) {
+                Inventory openInv = player.getOpenInventory().getTopInventory();
+                if(openInv != null && player.getOpenInventory().getTitle().equals(InventorySortingGui.GUI_NAME)) {
+                    event.setCancelled(true);
+                }
+            }
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onEntitySpawn(EntitySpawnEvent event) {
+        if(event.getEntityType().equals(EntityType.DROPPED_ITEM)) {
             event.setCancelled(true);
         }
     }

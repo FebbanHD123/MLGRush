@@ -1,5 +1,6 @@
 package de.febanhd.mlgrush.util;
 
+import de.febanhd.mlgrush.MLGRush;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -17,6 +18,11 @@ public class ItemBuilder {
         this.meta = this.itemStack.getItemMeta();
     }
 
+    public ItemBuilder(ItemStack stack) {
+        this.itemStack = stack;
+        this.meta = this.itemStack.getItemMeta();
+    }
+
     public ItemBuilder(Material material, int amount) {
         this.itemStack = new ItemStack(material, amount);
         this.meta = this.itemStack.getItemMeta();
@@ -24,16 +30,6 @@ public class ItemBuilder {
 
     public ItemBuilder(Material material, int amount, short subid) {
         this.itemStack = new ItemStack(material, amount, subid);
-        this.meta = this.itemStack.getItemMeta();
-    }
-
-    public ItemBuilder(int id, int amount) {
-        this.itemStack = new ItemStack(id, amount);
-        this.meta = this.itemStack.getItemMeta();
-    }
-
-    public ItemBuilder(int id, int amount, short subid) {
-        this.itemStack = new ItemStack(id, amount, subid);
         this.meta = this.itemStack.getItemMeta();
     }
 
@@ -58,7 +54,8 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setUnbreakable(boolean unbreakable) {
-        meta.spigot().setUnbreakable(unbreakable);
+        if(unbreakable)
+            MLGRush.getInstance().getNmsBase().setUnbreakable(this.itemStack, this.meta);
         return this;
     }
 

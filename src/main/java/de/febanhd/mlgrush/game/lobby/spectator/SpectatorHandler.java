@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.util.ItemBuilder;
+import de.febanhd.mlgrush.util.Materials;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -51,7 +52,7 @@ public class SpectatorHandler {
     }
 
     public ItemStack getSpectatorItem() {
-        return new ItemBuilder(Material.EYE_OF_ENDER).setDisplayName(MLGRush.getString("items.spectator")).build();
+        return new ItemBuilder(Materials.EYE_OF_ENDER.getMaterial()).setDisplayName(MLGRush.getString("items.spectator")).build();
     }
 
     public boolean isSpectating(Player player) {
