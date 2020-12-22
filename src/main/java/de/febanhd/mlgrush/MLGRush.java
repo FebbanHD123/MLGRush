@@ -156,7 +156,7 @@ public class MLGRush extends JavaPlugin {
     }
 
     private void loadConfig() {
-        this.getConfig().options().copyDefaults(true);
+        this.getConfig().options().copyDefaults();
         this.saveDefaultConfig();
 
         MapChoosingGui.GUI_NAME = MLGRush.getString("guiname.mapchoosing");

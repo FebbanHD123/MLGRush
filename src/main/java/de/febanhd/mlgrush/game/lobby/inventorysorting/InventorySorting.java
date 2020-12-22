@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.util.InventoryUtil;
+import de.febanhd.mlgrush.util.Sounds;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
 
 @Getter
@@ -30,9 +32,9 @@ public class InventorySorting {
         ArrayList<ItemStack> items = Lists.newArrayList();
         elements.forEach(element -> items.add(element.getStack()));
         this.elements = Lists.newArrayList(elements);
-        if(!this.isValid(items)) {
+        if(!this.isValidElementList(items)) {
             this.elements.clear();
-            this.elements.addAll(InventorySortingDataHandler.DEFAULT_ELEMENTS);
+            this.elements.addAll(InventorySortingDataHandler.getDefaultElements());
         }
     }
 
@@ -57,11 +59,12 @@ public class InventorySorting {
             elementArray.forEach(object -> {
                 elements.add(ItemElement.fromString(object.toString()));
             });
+
             return new InventorySorting(player, elements);
         }catch (Exception e) {
             e.printStackTrace();
             player.sendMessage(MLGRush.PREFIX + "§cBeim Laden deiner Inventarsortierung ist ein Fehler aufgetreten! Sie wurde auf Default gesetzt!");
-            InventorySorting sorting = new InventorySorting(player, InventorySortingDataHandler.DEFAULT_ELEMENTS);
+            InventorySorting sorting = new InventorySorting(player, InventorySortingDataHandler.getDefaultElements());
             MLGRush.getInstance().getInventorySortingDataHandler().updateSorting(sorting);
             return sorting;
         }
@@ -81,29 +84,33 @@ public class InventorySorting {
                 items.put(i, stack);
             }
         }
-        if(this.isValid(items.values())) {
+        if(this.isValidElementList(Lists.newArrayList(items.values()))) {
             this.elements.clear();
             items.forEach((slot, stack) -> elements.add(new ItemElement(stack, slot)));
             MLGRush.getInstance().getInventorySortingDataHandler().updateSorting(this);
             callback.accept(true);
+            player.playSound(player.getLocation(), Sounds.LEVEL_UP.getSound(), 2, 1);
         }else {
             callback.accept(false);
         }
     }
 
-    private boolean isValid(Collection<ItemStack> items) {
-        int rightAmount = InventorySortingDataHandler.DEFAULT_ELEMENTS.stream().mapToInt(itemElement -> itemElement.getStack().getAmount()).sum();
-        int invStackAmount = 0;
-        for(ItemStack stack : items) {
-            if(stack != null)
-                invStackAmount += stack.getAmount();
+    private boolean isValidElementList(List<ItemStack> stacks) {
+        ArrayList<ItemElement> rightElements = InventorySortingDataHandler.getDefaultElements();
+        if(stacks.size() != rightElements.size()) return false;
+        for (int i = 0; i < rightElements.size(); i++) {
+            ItemElement rightElement = rightElements.get(i);
+            boolean valid = false;
+            for (int j = 0; j < stacks.size(); j++) {
+                if (rightElement.getStack().equals(stacks.get(j))) {
+                    valid = true;
+                    rightElements.remove(rightElement);
+                    break;
+                }
+            }
+            if(!valid) return false;
         }
-        ArrayList<ItemStack> normalItems = Lists.newArrayList();
-        InventorySortingDataHandler.DEFAULT_ELEMENTS.forEach(element -> normalItems.add(element.getStack()));
-        for(int  i = 0; i < this.elements.size(); i++) {
-            if(!normalItems.contains(this.elements.get(i).getStack())) return false;
-        }
-        return this.elements.size() == items.size() && rightAmount == invStackAmount;
+        return true;
     }
 
 

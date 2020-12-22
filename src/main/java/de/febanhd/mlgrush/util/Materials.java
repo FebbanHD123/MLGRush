@@ -26,15 +26,17 @@ public enum  Materials {
         if(MLGRush.getInstance().isLegacy()) {
             materialName = this.material_legacy;
         }else {
-            materialName= this.material;
+            materialName = this.material;
         }
         ItemStack stack;
         boolean hasDamage = materialName.contains(":");
-        Material material = Material.valueOf(materialName);
+        Material material;
         if(hasDamage) {
             short damage = Short.parseShort(materialName.split(":")[1]);
+            material = Material.valueOf(materialName.split(":")[0]);
             stack = new ItemStack(material, 1, damage);
         }else {
+            material = Material.valueOf(materialName);
             stack = new ItemStack(material);
         }
         return new ItemBuilder(stack);

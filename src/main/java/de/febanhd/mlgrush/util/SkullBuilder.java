@@ -42,6 +42,7 @@ public class SkullBuilder {
     public static ItemStack getSkull(String skinURL) {
         return getSkull(skinURL, 1);
     }
+
     public static ItemStack getSkull(GameProfile gameProfile, int amount) {
         ItemStack skull = Materials.PLAYER_HEAD.getStack().build();
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
@@ -77,8 +78,7 @@ public class SkullBuilder {
     private static GameProfile getProfile(String skinURL) {
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
 
-        String base64encoded = Base64.getEncoder()
-                .encodeToString(new String("{textures:{SKIN:{url:\"" + skinURL + "\"}}}").getBytes());
+        String base64encoded = Base64.getEncoder().encodeToString(new String("{textures:{SKIN:{url:\"" + skinURL + "\"}}}").getBytes());
         Property property = new Property("textures", base64encoded);
         profile.getProperties().put("textures", property);
         return profile;

@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.lobby.LobbyHandler;
 import de.febanhd.mlgrush.game.lobby.LobbyQueue;
+import de.febanhd.mlgrush.util.Sounds;
 import lombok.Getter;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -32,6 +33,7 @@ public class GameHandler {
     }
 
     public void toggleQueue(Player player) {
+        player.playSound(player.getLocation(), Sounds.LEVEL_UP.getSound(), 2, 1);
         if(this.lastClicked.containsKey(player.getUniqueId())) {
             if(this.lastClicked.get(player.getUniqueId()) + 200 > System.currentTimeMillis()) {
                 this.lastClicked.put(player.getUniqueId(), System.currentTimeMillis());

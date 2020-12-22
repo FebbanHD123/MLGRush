@@ -81,7 +81,7 @@ public class GameListener implements Listener {
         } else if (event.getDamager() instanceof Player) {
             Entity entity = event.getEntity();
             Player player = (Player)event.getDamager();
-            if(entity.getCustomName().equals(LobbyHandler.queueEntityName) && !gameHandler.isInSession(player)) {
+            if(entity.getCustomName() != null && entity.getCustomName().equals(LobbyHandler.queueEntityName) && !gameHandler.isInSession(player)) {
                 event.setCancelled(true);
                 MLGRush.getInstance().getGameHandler().toggleQueue((Player)event.getDamager());
             }

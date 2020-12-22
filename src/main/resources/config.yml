@@ -23,6 +23,8 @@ paste.distance: 150
 
 #If this is true, players no longer lose blocks while building
 infinite.blocks: false
+#The amount of sandstone block for the player (If it is more than 64 then it is automatically divided into stacks)
+blockamount: 128
 
 bstats: true
 

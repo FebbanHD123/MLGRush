@@ -9,6 +9,7 @@ import de.febanhd.mlgrush.gui.MapChoosingGui;
 import de.febanhd.mlgrush.map.Map;
 import de.febanhd.mlgrush.map.MapTemplate;
 import de.febanhd.mlgrush.stats.StatsCach;
+import de.febanhd.mlgrush.util.Sounds;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.*;
@@ -65,6 +66,8 @@ public class GameSession {
         MapChoosingGui mapChoosingGui = new MapChoosingGui();
         mapChoosingGui.open(player1);
         mapChoosingGui.open(player2);
+        player1.playSound(player1.getLocation(), Sounds.LEVEL_UP.getSound(), 2, 1);
+        player2.playSound(player1.getLocation(), Sounds.LEVEL_UP.getSound(), 2, 1);
     }
 
     public void closeInv() {
@@ -91,6 +94,7 @@ public class GameSession {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int)Math.round(20D * MLGRush.getInstance().getConfig().getDouble("no_move_time")), 10));
             StatsCach.getStats(player.getUniqueId()).addDeaths();
             StatsCach.getStats(otherPlayer.getUniqueId()).addKill();
+            otherPlayer.playSound(otherPlayer.getLocation(), Sounds.LEVEL_UP.getSound(), 3, 2);
         }
         this.setItems(player);
     }

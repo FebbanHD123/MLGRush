@@ -110,14 +110,6 @@ public class LobbyHandler {
         }catch (Exception e) {
         }
         this.queueEntity = MLGRush.getInstance().getNmsBase().spawnQueueEntity(entityType, this.queueEntityLocation);
-//        Entity entity = this.queueEntityLocation.getWorld().spawnEntity(this.queueEntityLocation, entityType);
-//        entity.setCustomNameVisible(true);
-//        entity.setCustomName(LobbyHandler.queueEntityName);
-//        this.setNoAIAndSilent(entity);
-//
-//        Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
-//            entity.teleport(this.queueEntityLocation);
-//        }, 20);
     }
 
     public void setLobbyItems(Player player) {
