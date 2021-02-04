@@ -1,7 +1,9 @@
 package de.febanhd.mlgrush.stats;
 
-import de.febanhd.simpleutils.sql.SimpleSQL;
+import de.febanhd.mlgrush.util.UUIDFetcher;
 import lombok.SneakyThrows;
+import de.febanhd.sql.SimpleSQL;
+import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.util.UUID;
@@ -63,7 +65,8 @@ public class StatsDataHandler {
     }
 
     @SneakyThrows
-    public PlayerStats getPlayerStats(UUID uuid) {
+    public PlayerStats getPlayerStats(Player player) {
+        UUID uuid = UUIDFetcher.getUUID(player.getName());
         ResultSet rs = sqlHandler.createBuilder("SELECT * FROM `mlg_stats` WHERE UUID=?").addObjects(uuid.toString()).querySync();
         if(rs.next()) {
             int kills = rs.getInt("kills");
@@ -71,7 +74,7 @@ public class StatsDataHandler {
             int looses = rs.getInt("looses");
             int wins = rs.getInt("wins");
             int beds = rs.getInt("beds");
-            return new PlayerStats(uuid, kills, deaths, wins, looses, beds);
+            return new PlayerStats(player, uuid, kills, deaths, wins, looses, beds);
         }
 
         return null;

@@ -1,6 +1,5 @@
 package de.febanhd.mlgrush;
 
-import de.febanhd.mlgrush.api.AdvancedMLGRushAPI;
 import de.febanhd.mlgrush.commands.*;
 import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
@@ -13,32 +12,27 @@ import de.febanhd.mlgrush.listener.InteractListener;
 import de.febanhd.mlgrush.listener.InventoryListener;
 import de.febanhd.mlgrush.listener.PlayerConnectionListener;
 import de.febanhd.mlgrush.map.MapManager;
-import de.febanhd.mlgrush.map.MapTemplate;
 import de.febanhd.mlgrush.map.setup.MapTemplateWorld;
 import de.febanhd.mlgrush.nms.NMSBase;
-import de.febanhd.mlgrush.scoreboards.ScoreboardManager;
 import de.febanhd.mlgrush.stats.StatsCach;
 import de.febanhd.mlgrush.stats.StatsDataHandler;
 import de.febanhd.mlgrush.updatechecker.UpdateChecker;
 import de.febanhd.mlgrush.util.ApiversionChecker;
-import de.febanhd.simpleutils.sql.SimpleSQL;
-import de.febanhd.simpleutils.sql.database.config.mc.SpigotDatabaseConfig;
-import de.febanhd.simpleutils.sql.database.config.sqllite.SQLLiteDatabaseConfig;
-import de.febanhd.simpleutils.sql.database.connection.MySQLDatabaseConnector;
-import de.febanhd.simpleutils.sql.database.connection.SQLLiteDatabaseConnector;
+import de.febanhd.sql.SimpleSQL;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import de.febanhd.sql.database.config.mc.SpigotDatabaseConfig;
+import de.febanhd.sql.database.config.sqllite.SQLLiteDatabaseConfig;
+import de.febanhd.sql.database.connection.MySQLDatabaseConnector;
+import de.febanhd.sql.database.connection.SQLLiteDatabaseConnector;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -60,8 +54,6 @@ public class MLGRush extends JavaPlugin {
     private StatsDataHandler statsDataHandler;
     private InventorySortingDataHandler inventorySortingDataHandler;
 
-    private ScoreboardManager scoreboardManager;
-
     private UpdateChecker updateChecker;
 
     private boolean legacy;
@@ -80,6 +72,7 @@ public class MLGRush extends JavaPlugin {
         this.mapManager = new MapManager();
         this.gameHandler = new GameHandler();
 
+        this.getCommand("mlgrush").setExecutor(new MLGRushCommand());
         this.getCommand("setupmap").setExecutor(new SetupMapCommand());
         this.getCommand("setlobby").setExecutor(new SetLobbyCommand());
         this.getCommand("setqueue").setExecutor(new SetQueueCommand());
@@ -104,7 +97,7 @@ public class MLGRush extends JavaPlugin {
         this.inventorySortingDataHandler = new InventorySortingDataHandler(this.sqlHandler);
 
         Bukkit.getOnlinePlayers().forEach(player -> {
-            StatsCach.loadStats(player.getUniqueId());
+            StatsCach.loadStats(player);
             InventorySortingCach.loadSorting(player);
         });
 
@@ -120,8 +113,6 @@ public class MLGRush extends JavaPlugin {
             Metrics metrics = new Metrics(this, 9112);
             metrics.addCustomChart(new Metrics.SimplePie("pluginVersion", () -> getDescription().getVersion()));
         }
-
-//        this.scoreboardManager = new ScoreboardManager();
 
         this.updateChecker = new UpdateChecker(this, MLGRush.getExecutorService(), 84672);
         this.updateChecker.getVersion(version -> {
@@ -139,7 +130,7 @@ public class MLGRush extends JavaPlugin {
         if(this.gameHandler.getLobbyHandler().getQueueEntity() != null) {
             this.gameHandler.getLobbyHandler().getQueueEntity().remove();
         }
-
+        Bukkit.getOnlinePlayers().forEach(player -> player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType())));
         this.sqlHandler.closeConnections();
     }
 

@@ -114,8 +114,16 @@ public class LobbyHandler {
 
     public void setLobbyItems(Player player) {
         player.getInventory().clear();
-        player.getInventory().setItem(0, new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName(MLGRush.getString("items.challanger")).setUnbreakable(true).build());
-        player.getInventory().setItem(3, new ItemBuilder(Material.CHEST).setDisplayName(InventorySortingGui.GUI_NAME).build());
-        player.getInventory().setItem(5, this.spectatorHandler.getSpectatorItem());
+        player.getInventory().setItem(getSlot("lobby.slots.challanger", 0), new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName(MLGRush.getString("items.challanger")).setUnbreakable(true).build());
+        player.getInventory().setItem(getSlot("lobby.slots.inventory_sorting", 3), new ItemBuilder(Material.CHEST).setDisplayName(InventorySortingGui.GUI_NAME).build());
+        player.getInventory().setItem(getSlot("lobby.slots.spectate", 5), this.spectatorHandler.getSpectatorItem());
+    }
+
+    private int getSlot(String configPath, int defaultValue) {
+        if (MLGRush.getInstance().getConfig().contains(configPath)) {
+            return MLGRush.getInstance().getConfig().getInt(configPath) - 1;
+        }else {
+            return defaultValue;
+        }
     }
 }

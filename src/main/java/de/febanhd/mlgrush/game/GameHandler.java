@@ -71,6 +71,15 @@ public class GameHandler {
         return null;
     }
 
+    public GameSession getSessionByID(String id) {
+        for(GameSession gameSession : this.gameSessions) {
+            if(gameSession.getId().equals(id)) {
+                return gameSession;
+            }
+        }
+        return null;
+    }
+
     public boolean isInSession(Player player) {
         return this.getSessionByPlayer(player) != null;
     }

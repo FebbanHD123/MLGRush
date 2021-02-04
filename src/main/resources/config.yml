@@ -26,6 +26,14 @@ infinite.blocks: false
 #The amount of sandstone block for the player (If it is more than 64 then it is automatically divided into stacks)
 blockamount: 128
 
+#Pickaxetypes: WOOD, STONE, IRON, DIAMOND
+pickaxetype: IRON
+
+#Set the slot of the lobby items (1: first slot; 9: last slot)
+lobby.slots.challanger: 1
+lobby.slots.inventory_sorting: 4
+lobby.slots.spectate: 6
+
 bstats: true
 
 #messages

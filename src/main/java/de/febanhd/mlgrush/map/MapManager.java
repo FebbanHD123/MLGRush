@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 public class MapManager {
 
     public static int DISTANCE = 150;
-    public static final int START_X = 0;
+    public static final int START_X = 50;
 
     @Getter
     private ArrayList<MapTemplate> templates;
@@ -59,7 +59,7 @@ public class MapManager {
             callback.accept(map);
         });
         this.tasks.put(taskUUID, Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
-            String actionBarString = MLGRush.getMessage("actionbar.loadmap").replaceAll("%percent%", String.valueOf(paster.getProgressPercent()));
+            String actionBarString = MLGRush.getMessage("actionbar.loadmap").replaceAll("%percent%", String.valueOf(paster.getProgressPercent()) + "%");
             if(player1.isOnline())
                 MLGRush.getInstance().getNmsBase().sendActionbar(player1, actionBarString);
             if(player2.isOnline())

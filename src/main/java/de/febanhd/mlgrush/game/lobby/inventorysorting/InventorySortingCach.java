@@ -13,7 +13,7 @@ public class InventorySortingCach {
     public static void loadSorting(Player player) {
         MLGRush.getExecutorService().execute(() -> {
             InventorySortingDataHandler handler = MLGRush.getInstance().getInventorySortingDataHandler();
-            if(!handler.hasSorting(player.getUniqueId())) {
+            if(!handler.hasSorting(player)) {
                 playerSortings.add(handler.createSorting(player));
             }else {
                 playerSortings.add(handler.getSortingFromDB(player));

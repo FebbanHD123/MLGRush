@@ -27,7 +27,7 @@ public class StatsCommand implements CommandExecutor {
             }
             if(sender instanceof Player) {
                 Player player = (Player)sender;
-                PlayerStats stats = StatsCach.getStats(player.getUniqueId());
+                PlayerStats stats = StatsCach.getStats(player);
                 if(stats == null) {
                     player.sendMessage(MLGRush.PREFIX + "§cDeine Stats wurden noch nicht geladen!");
                     return false;
@@ -46,28 +46,17 @@ public class StatsCommand implements CommandExecutor {
             }
             sender.sendMessage(MLGRush.getMessage("messages.stats.loading"));
             if(Bukkit.getPlayer(targetName) != null) {
-                final UUID uuid = Bukkit.getPlayer(targetName).getUniqueId();
+                Player target = Bukkit.getPlayer(targetName);
                 MLGRush.getExecutorService().execute(() -> {
                     StatsDataHandler statsDataHandler = MLGRush.getInstance().getStatsDataHandler();
-                    if(!statsDataHandler.hasStats(uuid)) {
+                    if(!statsDataHandler.hasStats(UUIDFetcher.getUUID(target.getName()))) {
                         sender.sendMessage(MLGRush.getMessage("messages.stats.not_found"));
                         return;
                     }
-                    this.sendStats(sender, statsDataHandler.getPlayerStats(uuid), targetName);
+                    this.sendStats(sender, statsDataHandler.getPlayerStats(target), targetName);
                 });
             } else {
-                try {
-                    UUIDFetcher.getUUID(targetName, uuid -> {
-                        StatsDataHandler statsDataHandler = MLGRush.getInstance().getStatsDataHandler();
-                        if (uuid == null || !statsDataHandler.hasStats(uuid)) {
-                            sender.sendMessage(MLGRush.getMessage("messages.stats.not_found"));
-                        } else {
-                            this.sendStats(sender, statsDataHandler.getPlayerStats(uuid), targetName);
-                        }
-                    });
-                }catch (Exception e) {
-                    sender.sendMessage(MLGRush.getMessage("messages.stats.not_found"));
-                }
+
             }
         }
         return false;

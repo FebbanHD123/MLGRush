@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="AdvancedMLGRush:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/AdvancedMLGRush_jar</output-path>
+    <root id="archive" name="AdvancedMLGRush.jar">
+      <element id="module-output" name="AdvancedMLGRush" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-io/commons-io/2.8.0/commons-io-2.8.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="G:/development/libs/simpleutils/simplesql/SimpleSQL-1.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/bstats/bstats-bukkit/1.7/bstats-bukkit-1.7.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

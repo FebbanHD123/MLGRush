@@ -49,6 +49,13 @@ public enum  Materials {
         }else {
             materialName = this.material;
         }
-        return Material.valueOf(materialName);
+        boolean hasDamage = materialName.contains(":");
+        Material material;
+        if(hasDamage) {
+            material = Material.valueOf(materialName.split(":")[0]);
+        }else {
+            material = Material.valueOf(materialName);
+        }
+        return material;
     }
 }

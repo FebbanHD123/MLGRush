@@ -118,4 +118,20 @@ public class Map {
         return null;
     }
 
+    public boolean isInRegion(Location location) {
+        return this.region.containsLocation(location);
+    }
+
+    public boolean isSpawnBlock(Location location) {
+        Block block = location.getBlock();
+        int x = block.getX();
+        int z = block.getZ();
+        for (int i = 0; i < this.spawnLocation.length; i++) {
+            double maxY = this.spawnLocation[i].getBlockY() + 3;
+            double minY = this.spawnLocation[i].getBlockY() + 1.5;
+            if(this.spawnLocation[i].getBlockX() == x && this.spawnLocation[i].getBlockZ() == z && location.getY() < maxY && location.getY() > minY)
+                return true;
+        }
+        return false;
+    }
 }

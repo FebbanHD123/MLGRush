@@ -38,9 +38,10 @@ public class PlayerConnectionListener implements Listener {
             }else {
                 player.sendMessage(MLGRush.PREFIX + "§cBitte Setzte die Lobby-Position mit /setlobby!!!");
             }
+            player.getActivePotionEffects().forEach(potionEffect -> event.getPlayer().removePotionEffect(potionEffect.getType()));
         }, 3);
 
-        StatsCach.loadStats(player.getUniqueId());
+        StatsCach.loadStats(player);
         InventorySortingCach.loadSorting(player);
 
         if(player.hasPermission("mlgrush.notify") &&
@@ -48,6 +49,12 @@ public class PlayerConnectionListener implements Listener {
             player.sendMessage(MLGRush.PREFIX + "§7Es gibt eine neuere Version von AdvancedMLGRush (" + MLGRush.getInstance().getUpdateChecker().getCachedVersion() +
                     "). Downloade diese hier: §nhttps://www.spigotmc.org/resources/mlgrush-%E2%9C%85-the-most-advanced-mlgrush-system-unendlich-maps-mit-nur-einem-template.84672/");
         }
+
+        Bukkit.getOnlinePlayers().forEach(players -> {
+            if(MLGRush.getInstance().getGameHandler().isInSession(players) && MLGRush.getInstance().getGameHandler().getSessionByPlayer(players).isIngame()) {
+                players.hidePlayer(player);
+            }
+        });
     }
 
     @EventHandler
@@ -84,7 +91,7 @@ public class PlayerConnectionListener implements Listener {
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(MLGRush.getInstance(), () -> {
             if(!player.isOnline()) {
-                StatsCach.remove(player.getUniqueId());
+                StatsCach.remove(player);
                 InventorySortingCach.remove(player);
             }
         }, 10);

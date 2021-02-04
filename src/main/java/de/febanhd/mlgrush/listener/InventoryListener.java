@@ -8,6 +8,7 @@ import de.febanhd.mlgrush.gui.InventorySortingGui;
 import de.febanhd.mlgrush.gui.MapChoosingGui;
 import de.febanhd.mlgrush.gui.SpectatorGui;
 import de.febanhd.mlgrush.map.MapTemplate;
+import de.febanhd.mlgrush.util.Materials;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,6 +21,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 public class InventoryListener implements Listener {
 
@@ -53,16 +55,24 @@ public class InventoryListener implements Listener {
             }
         }else if (player.getOpenInventory().getTitle().equals(SpectatorGui.GUI_NAME)) {
             event.setCancelled(true);
-            if(!stack.hasItemMeta()) return;
-            String dpName = ChatColor.stripColor(stack.getItemMeta().getDisplayName());
-            Player target = this.getPlayerByDisplayName(dpName);
-            if(target == null || !MLGRush.getInstance().getGameHandler().isInSession(target)) {
-                player.closeInventory();
+            if(!stack.getType().equals(Materials.PLAYER_HEAD.getMaterial()) && !stack.hasItemMeta()) return;
+            String gameID = stack.getItemMeta().getLore().get(1).replaceAll("§7GameID: §e", "");
+            GameSession session;
+            if(gameID != null && (session = MLGRush.getInstance().getGameHandler().getSessionByID(gameID)) != null && session.isRunning()) {
+                SkullMeta skullMeta = (SkullMeta) stack.getItemMeta();
+                Player target = Bukkit.getPlayer(skullMeta.getOwner());
+                if (target != null) {
+                    MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler().spectate(player, target);
+                }else {
+                    player.sendMessage("§cERROR: Player not found. This is a bug! Please report this");
+                }
+            }else {
                 player.sendMessage(MLGRush.getMessage("messages.lobby.is_not_in_round"));
                 return;
             }
-            MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler().spectate(player, target);
             player.closeInventory();
+        }else if (!MLGRush.getInstance().getGameHandler().isInSession(player) || !MLGRush.getInstance().getGameHandler().getSessionByPlayer(player).isIngame()) {
+            event.setCancelled(true);
         }
     }
 

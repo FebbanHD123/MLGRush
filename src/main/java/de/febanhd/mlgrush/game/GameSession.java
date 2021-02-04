@@ -92,8 +92,8 @@ public class GameSession {
         player.teleport(location);
         if(death) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int)Math.round(20D * MLGRush.getInstance().getConfig().getDouble("no_move_time")), 10));
-            StatsCach.getStats(player.getUniqueId()).addDeaths();
-            StatsCach.getStats(otherPlayer.getUniqueId()).addKill();
+            StatsCach.getStats(player).addDeaths();
+            StatsCach.getStats(otherPlayer).addKill();
             otherPlayer.playSound(otherPlayer.getLocation(), Sounds.LEVEL_UP.getSound(), 3, 2);
         }
         this.setItems(player);
@@ -107,13 +107,16 @@ public class GameSession {
 
     public void startGame() {
         MLGRush.getInstance().getMapManager().joinGame(this.mapTemplate, player1, player2, map -> {
+            Bukkit.getOnlinePlayers().forEach(player -> {
+                if(!player.equals(player1) && !player.equals(player2)) {
+                    player1.hidePlayer(player);
+                    player2.hidePlayer(player);
+                }
+            });
             this.map = map;
             this.running = true;
             this.setItems(player1);
             this.setItems(player2);
-            PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 30, 100, false);
-            player1.addPotionEffect(effect);
-            player2.addPotionEffect(effect);
             player1.sendMessage(MLGRush.getMessage("messages.leave.usage"));
             player2.sendMessage(MLGRush.getMessage("messages.leave.usage"));
             Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
@@ -149,6 +152,11 @@ public class GameSession {
                 MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player2);
             }
 
+            Bukkit.getOnlinePlayers().forEach(player -> {
+                player1.showPlayer(player);
+                player2.showPlayer(player);
+            });
+
             if (this.map != null) {
                 this.map.delete();
             }
@@ -160,8 +168,8 @@ public class GameSession {
                 winner.sendMessage(MLGRush.getMessage("messages.round_win"));
                 looser.sendMessage(MLGRush.getMessage("messages.round_loose"));
 
-                StatsCach.getStats(winner.getUniqueId()).addWin();
-                StatsCach.getStats(looser.getUniqueId()).addLoose();
+                StatsCach.getStats(winner).addWin();
+                StatsCach.getStats(looser).addLoose();
             } else {
                 if (player1 != null && player1 != quiter) {
                     player1.sendMessage(MLGRush.getMessage("messages.round_cancel_playerquit"));
@@ -172,8 +180,8 @@ public class GameSession {
                     winner = player2;
                 }
 
-                StatsCach.getStats(quiter.getUniqueId()).addLoose();
-                StatsCach.getStats(winner.getUniqueId()).addWin();
+                StatsCach.getStats(quiter).addLoose();
+                StatsCach.getStats(winner).addWin();
             }
             SpectatorHandler spectatorHandler = MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler();
             spectatorHandler.getPlayersWithCertainTarget(player1).forEach(spectatorHandler::cancelSpectating);
@@ -195,7 +203,7 @@ public class GameSession {
 
         this.resetPlacedBlocks();
 
-        StatsCach.getStats(player.getUniqueId()).addBedDestroyed();
+        StatsCach.getStats(player).addBedDestroyed();
 
         if(points >= this.pointsForWin) {
             this.stopGame(player, player);

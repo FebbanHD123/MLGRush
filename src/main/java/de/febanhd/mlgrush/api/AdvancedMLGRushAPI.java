@@ -6,6 +6,7 @@ import de.febanhd.mlgrush.game.GameSession;
 import de.febanhd.mlgrush.map.MapTemplate;
 import de.febanhd.mlgrush.stats.PlayerStats;
 import de.febanhd.mlgrush.stats.StatsCach;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -17,11 +18,16 @@ import java.util.function.Consumer;
 
 public class AdvancedMLGRushAPI {
 
+    @Deprecated
     public PlayerStats getStats(final UUID uuid) {
-        if(StatsCach.contains(uuid)) {
-            return StatsCach.getStats(uuid);
+        return this.getStats(Bukkit.getPlayer(uuid));
+    }
+
+    public PlayerStats getStats(Player player) {
+        if(StatsCach.contains(player)) {
+            return StatsCach.getStats(player);
         }else {
-            return MLGRush.getInstance().getStatsDataHandler().getPlayerStats(uuid);
+            return MLGRush.getInstance().getStatsDataHandler().getPlayerStats(player);
         }
     }
 

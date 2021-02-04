@@ -22,15 +22,11 @@ public class SpectatorHandler {
     private HashMap<Player, Player> targetMap = Maps.newHashMap();
 
     public void spectate(Player player, Player target) {
-        player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, true, false), false);
         player.setAllowFlight(true);
         player.setFlying(true);
         spectators.add(player);
         this.targetMap.put(player, target);
         player.teleport(target.getLocation());
-        Bukkit.getOnlinePlayers().forEach(players -> {
-            players.hidePlayer(player);
-        });
         this.setItems(player);
     }
 
@@ -38,11 +34,9 @@ public class SpectatorHandler {
         this.spectators.remove(player);
         player.teleport(MLGRush.getInstance().getGameHandler().getLobbyHandler().getLobbyLocation());
         MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player);
-        player.removePotionEffect(PotionEffectType.INVISIBILITY);
-        Bukkit.getOnlinePlayers().forEach(players -> {
-            players.showPlayer(player);
-        });
         this.targetMap.remove(player);
+        player.setAllowFlight(false);
+        player.setFlying(false);
     }
 
     public void setItems(Player player) {

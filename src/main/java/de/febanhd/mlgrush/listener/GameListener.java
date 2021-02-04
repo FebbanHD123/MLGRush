@@ -11,6 +11,7 @@ import de.febanhd.mlgrush.map.Map;
 import de.febanhd.mlgrush.map.elements.BedObject;
 import de.febanhd.mlgrush.util.Materials;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -22,10 +23,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public class GameListener implements Listener {
 
@@ -93,7 +96,7 @@ public class GameListener implements Listener {
         event.setDeathMessage("");
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         if(gameHandler.isInSession(player)) {
@@ -104,7 +107,11 @@ public class GameListener implements Listener {
                 }
                 return;
             }
-            if(session.getMap().getMaxBuildHeight() <= event.getBlock().getY()) {
+            if(event.isCancelled())
+                event.setCancelled(false);
+            if(session.getMap().getMaxBuildHeight() <= event.getBlock().getY() ||
+                    !session.getMap().isInRegion(event.getBlock().getLocation()) ||
+                    session.getMap().isSpawnBlock(event.getBlock().getLocation())) {
                 event.setCancelled(true);
             }else {
                 session.getMap().getPlacedBlocks().add(event.getBlock());
@@ -157,7 +164,7 @@ public class GameListener implements Listener {
             if(!session.isIngame()) return;
             Map map = session.getMap();
             if(map != null) {
-                if (player.getLocation().getY() <= map.getDeathHeight() && session.isRunning()) {
+                if ((player.getLocation().getY() <= map.getDeathHeight() && session.isRunning()) || !map.isInRegion(player.getLocation())) {
                     session.respawn(player, true);
                 }
             }
@@ -167,6 +174,11 @@ public class GameListener implements Listener {
         /*
         * Here starts the Protection part :D
         */
+
+    @EventHandler
+    public void onAchievement(PlayerAchievementAwardedEvent event) {
+        event.setCancelled(true);
+    }
 
     @EventHandler
     public void onFoodLevelChange(FoodLevelChangeEvent event) {

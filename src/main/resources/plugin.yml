@@ -6,6 +6,8 @@ description: A mlgrush system
 api-version: 1.13
 
 commands:
+  mlgrush:
+    description: Main command of the plugin
   setupmap:
     description: STart the setup of a map
   setqueue:

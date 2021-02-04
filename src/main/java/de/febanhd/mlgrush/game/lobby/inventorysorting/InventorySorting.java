@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.util.InventoryUtil;
 import de.febanhd.mlgrush.util.Sounds;
+import de.febanhd.mlgrush.util.UUIDFetcher;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
@@ -25,16 +26,17 @@ public class InventorySorting {
 
     private final Player player;
     private final ArrayList<ItemElement> elements;
+    private InventorySortingDataHandler dataHandler;
 
     public InventorySorting(Player player, ArrayList<ItemElement> elements) {
         this.player = player;
-
+        this.dataHandler = MLGRush.getInstance().getInventorySortingDataHandler();
         ArrayList<ItemStack> items = Lists.newArrayList();
         elements.forEach(element -> items.add(element.getStack()));
         this.elements = Lists.newArrayList(elements);
         if(!this.isValidElementList(items)) {
             this.elements.clear();
-            this.elements.addAll(InventorySortingDataHandler.getDefaultElements());
+            this.elements.addAll(dataHandler.getDefaultElements());
         }
     }
 
@@ -45,26 +47,30 @@ public class InventorySorting {
         this.elements.forEach(element -> elementStrings.add(element.toString()));
 
         JSONObject json = new JSONObject();
-        json.put("uuid", player.getUniqueId());
+        json.put("uuid", UUIDFetcher.getUUID(player.getName()));
         json.put("elements", elementStrings);
 
         return json.toString();
     }
 
-    public static InventorySorting fromString(Player player, String str) {
+    public static InventorySorting fromString(InventorySortingDataHandler dataHandler, Player player, String str) {
         try {
             JSONObject jsonObject = new JSONObject(str);
             JSONArray elementArray = jsonObject.getJSONArray("elements");
             ArrayList<ItemElement> elements = Lists.newArrayList();
             elementArray.forEach(object -> {
-                elements.add(ItemElement.fromString(object.toString()));
+                ItemElement element = ItemElement.fromString(object.toString());
+                if(element.getStack().getType().toString().contains("PICKAXE")) {
+                    element.setStack(dataHandler.getPickAxeStack());
+                }
+                elements.add(element);
             });
 
             return new InventorySorting(player, elements);
         }catch (Exception e) {
             e.printStackTrace();
             player.sendMessage(MLGRush.PREFIX + "§cBeim Laden deiner Inventarsortierung ist ein Fehler aufgetreten! Sie wurde auf Default gesetzt!");
-            InventorySorting sorting = new InventorySorting(player, InventorySortingDataHandler.getDefaultElements());
+            InventorySorting sorting = new InventorySorting(player, dataHandler.getDefaultElements());
             MLGRush.getInstance().getInventorySortingDataHandler().updateSorting(sorting);
             return sorting;
         }
@@ -96,7 +102,7 @@ public class InventorySorting {
     }
 
     private boolean isValidElementList(List<ItemStack> stacks) {
-        ArrayList<ItemElement> rightElements = InventorySortingDataHandler.getDefaultElements();
+        ArrayList<ItemElement> rightElements = this.dataHandler.getDefaultElements();
         if(stacks.size() != rightElements.size()) return false;
         for (int i = 0; i < rightElements.size(); i++) {
             ItemElement rightElement = rightElements.get(i);
@@ -118,6 +124,7 @@ public class InventorySorting {
     public static class ItemElement  {
 
         @Getter
+        @Setter
         private ItemStack stack;
         @Getter
         @Setter

@@ -1,17 +1,21 @@
 package de.febanhd.mlgrush.stats;
 
 import de.febanhd.mlgrush.MLGRush;
+import de.febanhd.mlgrush.util.UUIDFetcher;
 import lombok.Getter;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
 @Getter
 public class PlayerStats {
 
+    private final Player player;
     private final UUID uuid;
     private int kills, deaths, wins, looses, bedDestroyed;
 
-    public PlayerStats(UUID uuid, int kills, int deaths, int wins, int looses, int bedDestroyed) {
+    public PlayerStats(Player player, UUID uuid, int kills, int deaths, int wins, int looses, int bedDestroyed) {
+        this.player = player;
         this.uuid = uuid;
         this.kills = kills;
         this.deaths = deaths;

@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import com.mojang.util.UUIDTypeAdapter;
+import org.bukkit.Bukkit;
 
 public class UUIDFetcher {
 
@@ -90,7 +91,9 @@ public class UUIDFetcher {
 
             return data.id;
         } catch (Exception e) {
-            e.printStackTrace();
+            if(Bukkit.getPlayer(name) != null) return Bukkit.getPlayer(name).getUniqueId();
+            else
+                e.printStackTrace();
         }
 
         return null;
