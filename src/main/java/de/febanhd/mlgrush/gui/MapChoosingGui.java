@@ -17,7 +17,7 @@ public class MapChoosingGui {
         for(MapTemplate mapTemplate : MLGRush.getInstance().getMapManager().getTemplates()) {
             inv.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§e" + mapTemplate.getName()).build());
         }
-        inv.setItem(53, new ItemBuilder(Material.BARRIER).setDisplayName("§cAbbrechen").build());
+        inv.setItem(53, new ItemBuilder(Material.BARRIER).setDisplayName(MLGRush.getMessage("guiname.cancel")).build());
         player.openInventory(inv);
     }
 }

@@ -164,8 +164,10 @@ public class GameListener implements Listener {
             if(!session.isIngame()) return;
             Map map = session.getMap();
             if(map != null) {
-                if ((player.getLocation().getY() <= map.getDeathHeight() && session.isRunning()) || !map.isInRegion(player.getLocation())) {
+                if ((player.getLocation().getY() <= map.getDeathHeight() && session.isRunning())) {
                     session.respawn(player, true);
+                }else if(!map.isInRegion(event.getTo())) {
+                    session.respawn(player, false);
                 }
             }
         }

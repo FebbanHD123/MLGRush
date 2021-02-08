@@ -3,6 +3,7 @@ package de.febanhd.mlgrush.listener;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.GameSession;
+import de.febanhd.mlgrush.game.lobby.LobbyQueue;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
 import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
 import de.febanhd.mlgrush.map.setup.MapSetupSession;
@@ -88,6 +89,10 @@ public class PlayerConnectionListener implements Listener {
         });
 
         MLGRush.getInstance().getGameHandler().removeChallangerFromMap(player);
+        LobbyQueue lobbyQueue = MLGRush.getInstance().getGameHandler().getQueue();
+        if(lobbyQueue.isInQueue(player)) {
+            lobbyQueue.remove(player);
+        }
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(MLGRush.getInstance(), () -> {
             if(!player.isOnline()) {

@@ -5,13 +5,16 @@ import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.map.elements.BedObject;
 import de.febanhd.mlgrush.util.Cuboid;
+import de.febanhd.mlgrush.util.Materials;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_8_R3.block.CraftBlock;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.material.Bed;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,12 +80,14 @@ public class MapPaster {
             Location bed1BackLocation = this.getNewLocation(bed1.getBackLocation(), minX, minY, minZ);
             bed1.setFrontLocation(bed1FrontLocation);
             bed1.setBackLocation(bed1BackLocation);
+            this.setBed(bed1BackLocation, bed1FrontLocation);
 
             BedObject bed2 = template.getBedObjects()[1].clone();
             Location bed2FrontLocation = this.getNewLocation(bed2.getFrontLocation(), minX, minY, minZ);
             Location bed2BackLocation = this.getNewLocation(bed2.getBackLocation(), minX, minY, minZ);
             bed2.setFrontLocation(bed2FrontLocation);
             bed2.setBackLocation(bed2BackLocation);
+            this.setBed(bed2BackLocation, bed2FrontLocation);
 
             Location[] spawnLocations = new Location[] {spawnLocation1, spawnLocation2};
             BedObject[] bedObjects = new BedObject[] {bed1, bed2};
@@ -94,6 +99,29 @@ public class MapPaster {
 
             callback.accept(map);
         });
+    }
+
+    private void setBed(Location bedHeadLocation, Location bedFootLocation) {
+        Block bedHeadBlock = bedHeadLocation.getBlock();
+        Block bedFootBlock = bedFootLocation.getBlock();
+        BlockFace face = bedFootBlock.getFace(bedHeadBlock);
+
+        BlockState bedFootState = bedFootBlock.getState();
+        bedFootState.setType(Materials.BED_BLOCK.getMaterial());
+        Bed bedFootData = new Bed(Materials.BED_BLOCK.getMaterial());
+        bedFootData.setHeadOfBed(false);
+        bedFootData.setFacingDirection(face);
+        bedFootState.setData(bedFootData);
+        bedFootState.update(true);
+
+        BlockState bedHeadState = bedHeadBlock.getState();
+        bedHeadState.setType(Materials.BED_BLOCK.getMaterial());
+        Bed bedHeadData = new Bed(Materials.BED_BLOCK.getMaterial());
+        bedHeadData.setHeadOfBed(true);
+        bedHeadData.setFacingDirection(face);
+        bedHeadState.setData(bedHeadData);
+        bedHeadState.update(true);
+
     }
 
     private void pasteBlocksAsync(final ArrayList<Block> blocks, final HashMap<Block, Block> blockMap, final Consumer<Boolean> callback) {

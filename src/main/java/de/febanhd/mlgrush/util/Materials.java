@@ -10,8 +10,7 @@ public enum  Materials {
     BED_BLOCK("BED_BLOCK", "RED_BED"),
     EYE_OF_ENDER("EYE_OF_ENDER", "ENDER_EYE"),
     WOOD_PICKAXE("WOOD_PICKAXE", "WOODEN_PICKAXE"),
-    PLAYER_HEAD("SKULL_ITEM:3", "PLAYER_HEAD")
-    ;
+    PLAYER_HEAD("SKULL_ITEM:3", "PLAYER_HEAD");
 
     private String material_legacy;
     private String material;

@@ -30,7 +30,9 @@ public class Map {
 
     public Map(int x, Cuboid region, BedObject[] beds, Location[] spawnLocation, MapTemplate template, int deathHeight, int maxBuildHeight) {
         this.x = x;
-        this.region = region;
+        this.region = region.clone();
+        this.region.getMaximumPoint().setY(255);
+        this.region.getMinimumPoint().setY(0);
         this.beds = beds;
         this.spawnLocation = spawnLocation;
         this.template = template;
@@ -119,7 +121,10 @@ public class Map {
     }
 
     public boolean isInRegion(Location location) {
-        return this.region.containsLocation(location);
+        double x = location.getX();
+        double z = location.getZ();
+        if(x > region.getUpperX() || x < region.getLowerX() || z > region.getUpperZ() || z < region.getLowerZ()) return false;
+        return true;
     }
 
     public boolean isSpawnBlock(Location location) {

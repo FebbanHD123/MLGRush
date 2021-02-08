@@ -6,6 +6,7 @@ import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.util.ItemBuilder;
 import de.febanhd.mlgrush.util.Materials;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,6 +23,7 @@ public class SpectatorHandler {
     private HashMap<Player, Player> targetMap = Maps.newHashMap();
 
     public void spectate(Player player, Player target) {
+        player.setGameMode(GameMode.ADVENTURE);
         player.setAllowFlight(true);
         player.setFlying(true);
         spectators.add(player);
@@ -35,6 +37,7 @@ public class SpectatorHandler {
         player.teleport(MLGRush.getInstance().getGameHandler().getLobbyHandler().getLobbyLocation());
         MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player);
         this.targetMap.remove(player);
+        player.setGameMode(GameMode.SURVIVAL);
         player.setAllowFlight(false);
         player.setFlying(false);
     }

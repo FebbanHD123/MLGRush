@@ -6,13 +6,11 @@ import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySorting;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
 import de.febanhd.mlgrush.gui.InventorySortingGui;
 import de.febanhd.mlgrush.gui.MapChoosingGui;
+import de.febanhd.mlgrush.gui.RoundChoosingGui;
 import de.febanhd.mlgrush.gui.SpectatorGui;
 import de.febanhd.mlgrush.map.MapTemplate;
 import de.febanhd.mlgrush.util.Materials;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -49,6 +47,33 @@ public class InventoryListener implements Listener {
                 }
 
             }
+        }else if(player.getOpenInventory().getTitle().equals(RoundChoosingGui.GUI_NAME)) {
+            event.setCancelled(true);
+            if(openInv.equals(clickedInv)) {
+                GameSession gameSession = MLGRush.getInstance().getGameHandler().getSessionByPlayer(player);
+                if(gameSession == null) {
+                    player.closeInventory();
+                }else if(stack.getType() == Materials.PLAYER_HEAD.getMaterial()) {
+                    int rounds;
+                    switch (event.getSlot()) {
+                        case 10:
+                            rounds = 5;
+                            break;
+                        case 16:
+                            rounds = 15;
+                            break;
+                        default:
+                            rounds = 10;
+                            break;
+
+                    }
+                    gameSession.setPointsForWin(rounds);
+                    player.closeInventory();
+                }else if(stack.getType() == Material.BARRIER) {
+                    gameSession.cancelMapChoosing();
+                }
+
+            }
         }else if (player.getOpenInventory().getTitle().equals(InventorySortingGui.GUI_NAME)) {
             if(!openInv.equals(clickedInv)) {
                 event.setCancelled(true);
@@ -71,7 +96,7 @@ public class InventoryListener implements Listener {
                 return;
             }
             player.closeInventory();
-        }else if (!MLGRush.getInstance().getGameHandler().isInSession(player) || !MLGRush.getInstance().getGameHandler().getSessionByPlayer(player).isIngame()) {
+        }else if ((!MLGRush.getInstance().getGameHandler().isInSession(player) || !MLGRush.getInstance().getGameHandler().getSessionByPlayer(player).isIngame()) && player.getGameMode() != GameMode.CREATIVE) {
             event.setCancelled(true);
         }
     }
@@ -80,9 +105,14 @@ public class InventoryListener implements Listener {
     public void onInventoryClose(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
         if(MLGRush.getInstance().getGameHandler().getSessionByPlayer(player) != null) {
-            if(MLGRush.getInstance().getGameHandler().getSessionByPlayer(player).isSelectingWorld()) {
+            GameSession session = MLGRush.getInstance().getGameHandler().getSessionByPlayer(player);
+            if(session.isSelectingWorld() && session.getPlayer1().equals(player)) {
                 Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
                     new MapChoosingGui().open(player);
+                }, 3);
+            }else if(session.isSelectingRounds() && session.getPlayer2().equals(player)) {
+                Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
+                    new RoundChoosingGui().open(player);
                 }, 3);
             }
         }else if(player.getOpenInventory().getTitle().equals(InventorySortingGui.GUI_NAME)) {

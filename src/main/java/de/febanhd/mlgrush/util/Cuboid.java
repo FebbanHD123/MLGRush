@@ -115,6 +115,14 @@ public class Cuboid implements Cloneable, ConfigurationSerializable, Iterable<Bl
         return this.maximumPoint.getZ();
     }
 
+    public Vector getMaximumPoint() {
+        return maximumPoint;
+    }
+
+    public Vector getMinimumPoint() {
+        return minimumPoint;
+    }
+
     public double getVolume() {
         return (this.getUpperX() - this.getLowerX() + 1) * (this.getUpperY() - this.getLowerY() + 1) * (this.getUpperZ() - this.getLowerZ() + 1);
     }
@@ -170,5 +178,4 @@ public class Cuboid implements Cloneable, ConfigurationSerializable, Iterable<Bl
             return null;
         }
     }
-
 }

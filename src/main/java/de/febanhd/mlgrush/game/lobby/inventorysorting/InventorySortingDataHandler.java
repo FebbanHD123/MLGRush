@@ -77,7 +77,7 @@ public class InventorySortingDataHandler {
 
     @SneakyThrows
     public InventorySorting getSortingFromDB(Player player) {
-        ResultSet rs = this.databaseHandler.createBuilder("SELECT value FROM mlg_inv WHERE UUID=?").addObjects(UUIDFetcher.getUUID(player.getName())).querySync();
+        ResultSet rs = this.databaseHandler.createBuilder("SELECT value FROM mlg_inv WHERE UUID=?").addObjects(UUIDFetcher.getUUID(player.getName()).toString()).querySync();
         if (rs.next()) {
             String value = rs.getString("value");
             return InventorySorting.fromString(this, player, value);
@@ -87,7 +87,7 @@ public class InventorySortingDataHandler {
 
     public InventorySorting createSorting(Player player) {
         InventorySorting sorting = new InventorySorting(player, this.getDefaultElements());
-        this.databaseHandler.createBuilder("INSERT INTO mlg_inv (UUID, value) VALUES (?,?)").addObjects(UUIDFetcher.getUUID(player.getName()), sorting.toString()).updateSync();
+        this.databaseHandler.createBuilder("INSERT INTO mlg_inv (UUID, value) VALUES (?,?)").addObjects(UUIDFetcher.getUUID(player.getName()).toString(), sorting.toString()).updateSync();
         return sorting;
     }
 
@@ -97,7 +97,7 @@ public class InventorySortingDataHandler {
 
     @SneakyThrows
     public boolean hasSorting(Player player) {
-        ResultSet rs = this.databaseHandler.createBuilder("SELECT * FROM mlg_inv WHERE UUID=?").addObjects(UUIDFetcher.getUUID(player.getName())).querySync();
+        ResultSet rs = this.databaseHandler.createBuilder("SELECT * FROM mlg_inv WHERE UUID=?").addObjects(UUIDFetcher.getUUID(player.getName()).toString()).querySync();
         return rs.next();
     }
 }

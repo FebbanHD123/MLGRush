@@ -1,11 +1,13 @@
 package de.febanhd.mlgrush;
 
+import de.febanhd.mlgrush.api.AdvancedMLGRushAPI;
 import de.febanhd.mlgrush.commands.*;
 import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingDataHandler;
 import de.febanhd.mlgrush.gui.InventorySortingGui;
 import de.febanhd.mlgrush.gui.MapChoosingGui;
+import de.febanhd.mlgrush.gui.RoundChoosingGui;
 import de.febanhd.mlgrush.gui.SpectatorGui;
 import de.febanhd.mlgrush.listener.GameListener;
 import de.febanhd.mlgrush.listener.InteractListener;
@@ -14,6 +16,7 @@ import de.febanhd.mlgrush.listener.PlayerConnectionListener;
 import de.febanhd.mlgrush.map.MapManager;
 import de.febanhd.mlgrush.map.setup.MapTemplateWorld;
 import de.febanhd.mlgrush.nms.NMSBase;
+import de.febanhd.mlgrush.stats.PlayerStats;
 import de.febanhd.mlgrush.stats.StatsCach;
 import de.febanhd.mlgrush.stats.StatsDataHandler;
 import de.febanhd.mlgrush.updatechecker.UpdateChecker;
@@ -25,6 +28,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import de.febanhd.sql.database.config.mc.SpigotDatabaseConfig;
@@ -64,10 +68,10 @@ public class MLGRush extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+        this.detectVersion();
+
         this.loadConfig();
         MLGRush.PREFIX = ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("prefix"));
-
-        this.detectVersion();
 
         this.mapManager = new MapManager();
         this.gameHandler = new GameHandler();
@@ -153,6 +157,7 @@ public class MLGRush extends JavaPlugin {
         MapChoosingGui.GUI_NAME = MLGRush.getString("guiname.mapchoosing");
         InventorySortingGui.GUI_NAME = MLGRush.getString("guiname.inventorysorting");
         SpectatorGui.GUI_NAME = MLGRush.getString("guiname.spectator");
+        RoundChoosingGui.GUI_NAME = MLGRush.getString("guiname.roundchoosing");
         if(this.getConfig().contains("paste.distance")) {
             MapManager.DISTANCE = this.getConfig().getInt("paste.distance");
         }

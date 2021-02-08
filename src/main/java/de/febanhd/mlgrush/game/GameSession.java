@@ -6,6 +6,7 @@ import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySorting;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
 import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
 import de.febanhd.mlgrush.gui.MapChoosingGui;
+import de.febanhd.mlgrush.gui.RoundChoosingGui;
 import de.febanhd.mlgrush.map.Map;
 import de.febanhd.mlgrush.map.MapTemplate;
 import de.febanhd.mlgrush.stats.StatsCach;
@@ -18,7 +19,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 
 @Getter
@@ -29,10 +32,11 @@ public class GameSession {
     private MapTemplate mapTemplate;
     private Map map;
     @Setter
-    private boolean selectingWorld, running;
+    private boolean selectingWorld, selectingRounds, running;
     private int pointsForWin, resseterTaskID, taskID;
     private HashMap<Player, Integer> points;
     private final boolean infiniteBlocks;
+    private final long startedAt = System.currentTimeMillis();
 
     private final String id = UUID.randomUUID().toString().split("-")[0];
 
@@ -48,6 +52,7 @@ public class GameSession {
             }
             return;
         }
+        this.selectingRounds = true;
         this.selectingWorld = true;
         this.pointsForWin = MLGRush.getInstance().getConfig().getInt("points.for_win");
         this.points = Maps.newHashMap();
@@ -63,11 +68,22 @@ public class GameSession {
     }
 
     private void openInv() {
-        MapChoosingGui mapChoosingGui = new MapChoosingGui();
-        mapChoosingGui.open(player1);
-        mapChoosingGui.open(player2);
+        this.startWaitingTask();
+        new MapChoosingGui().open(player1);
+        new RoundChoosingGui().open(player2);
         player1.playSound(player1.getLocation(), Sounds.LEVEL_UP.getSound(), 2, 1);
         player2.playSound(player1.getLocation(), Sounds.LEVEL_UP.getSound(), 2, 1);
+        Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
+            if(this.selectingWorld) {
+                ArrayList<MapTemplate> templates = MLGRush.getInstance().getMapManager().getTemplates();
+                this.setMapTemplate(templates.get(new Random().nextInt(templates.size())));
+                player1.closeInventory();
+            }
+            if(this.selectingRounds) {
+                this.setPointsForWin(10);
+                player1.closeInventory();
+            }
+        }, 20 * 19);
     }
 
     public void closeInv() {
@@ -78,7 +94,15 @@ public class GameSession {
     public void setMapTemplate(MapTemplate mapTemplate) {
         this.mapTemplate = mapTemplate;
         this.selectingWorld = false;
-        this.startGame();
+        if(!selectingRounds)
+            this.startGame();
+    }
+
+    public void setPointsForWin(int pointsForWin) {
+        this.pointsForWin = pointsForWin;
+        this.selectingRounds = false;
+        if(!selectingWorld)
+            this.startGame();
     }
 
     public void respawn(Player player, boolean death) {
@@ -102,10 +126,13 @@ public class GameSession {
     private void setItems(Player player) {
         player.getInventory().clear();
         InventorySorting sorting = InventorySortingCach.getSorting(player);
+        if(sorting == null)
+            MLGRush.getInstance().getInventorySortingDataHandler().createSorting(player);
         sorting.setToInventory(player.getInventory());
     }
 
     public void startGame() {
+        this.stopCurrentTask();
         MLGRush.getInstance().getMapManager().joinGame(this.mapTemplate, player1, player2, map -> {
             Bukkit.getOnlinePlayers().forEach(player -> {
                 if(!player.equals(player1) && !player.equals(player2)) {
@@ -117,6 +144,8 @@ public class GameSession {
             this.running = true;
             this.setItems(player1);
             this.setItems(player2);
+            player1.sendMessage(MLGRush.getMessage("messages.points.info").replaceAll("%points%", this.pointsForWin + ""));
+            player2.sendMessage(MLGRush.getMessage("messages.points.info").replaceAll("%points%", this.pointsForWin + ""));
             player1.sendMessage(MLGRush.getMessage("messages.leave.usage"));
             player2.sendMessage(MLGRush.getMessage("messages.leave.usage"));
             Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
@@ -139,7 +168,7 @@ public class GameSession {
     public void stopGame(Player winner, Player quiter) {
         try {
             this.running = false;
-            this.stopIngameTask();
+            this.stopCurrentTask();
 
             Location location = MLGRush.getInstance().getGameHandler().getLobbyHandler().getLobbyLocation();
 
@@ -232,7 +261,17 @@ public class GameSession {
         }, 0, 5);
     }
 
-    public void stopIngameTask() {
+    private void startWaitingTask() {
+        this.taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
+            long seconds = (startedAt + 20000 - System.currentTimeMillis()) / 1000;
+            String actionbarStringPlayer1 = MLGRush.getString("messages.lobby.waiting_finish_settings").replaceAll("%player%", player2.getDisplayName()).replaceAll("%seconds%", "" + seconds);
+            String actionbarStringPlayer2 = MLGRush.getString("messages.lobby.waiting_finish_settings").replaceAll("%player%", player1.getDisplayName()).replaceAll("%seconds%", "" + seconds);
+            MLGRush.getInstance().getNmsBase().sendActionbar(player1, actionbarStringPlayer1);
+            MLGRush.getInstance().getNmsBase().sendActionbar(player2, actionbarStringPlayer2);
+        }, 0, 5);
+    }
+
+    public void stopCurrentTask() {
         Bukkit.getScheduler().cancelTask(this.taskID);
     }
 
