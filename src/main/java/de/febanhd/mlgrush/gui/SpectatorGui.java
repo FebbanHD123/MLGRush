@@ -4,12 +4,15 @@ import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameSession;
+import de.febanhd.mlgrush.nms.NMSUtil;
+import de.febanhd.mlgrush.util.Materials;
 import de.febanhd.mlgrush.util.SkullBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,12 +33,12 @@ public class SpectatorGui {
         Inventory inventory = Bukkit.createInventory(null, 9 * 6, GUI_NAME);
         for(int i = 0; i < players.size() && i < inventory.getSize(); i++) {
             Player target = players.get(i);
-            GameProfile profile = MLGRush.getInstance().getNmsBase().getGameProfile(target);
             GameSession session = MLGRush.getInstance().getGameHandler().getSessionByPlayer(target);
 
-            ItemStack stack = SkullBuilder.getSkull(profile);
+            ItemStack stack = Materials.PLAYER_HEAD.getStack().build();
 
-            ItemMeta meta = stack.getItemMeta();
+            SkullMeta meta = (SkullMeta) stack.getItemMeta();
+            meta.setOwner(target.getName());
             meta.setDisplayName("§e" + target.getDisplayName());
             meta.setLore(Arrays.asList("§7Map: §e" + session.getMapTemplate().getName(), "§7GameID: §e" + session.getId()));
             stack.setItemMeta(meta);

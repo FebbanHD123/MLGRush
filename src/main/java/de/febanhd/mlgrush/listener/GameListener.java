@@ -178,11 +178,6 @@ public class GameListener implements Listener {
         */
 
     @EventHandler
-    public void onAchievement(PlayerAchievementAwardedEvent event) {
-        event.setCancelled(true);
-    }
-
-    @EventHandler
     public void onFoodLevelChange(FoodLevelChangeEvent event) {
         event.setCancelled(true);
     }

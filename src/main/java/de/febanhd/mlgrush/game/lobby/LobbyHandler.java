@@ -4,6 +4,7 @@ import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
 import de.febanhd.mlgrush.gui.InventorySortingGui;
+import de.febanhd.mlgrush.nms.NMSUtil;
 import de.febanhd.mlgrush.util.ItemBuilder;
 import de.febanhd.mlgrush.util.LocationUtil;
 import lombok.Getter;
@@ -37,7 +38,7 @@ public class LobbyHandler {
         this.loadLocations();
         Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
             try {
-                this.spawnQueue(EntityType.valueOf(MLGRush.getInstance().getConfig().getString("queue_entity_type")));
+                this.spawnQueue();
             }catch (Exception e) {
                 e.printStackTrace();
             }
@@ -93,13 +94,14 @@ public class LobbyHandler {
             writer.write(LocationUtil.locationToString(location));
             writer.flush();
             writer.close();
-            this.spawnQueue(EntityType.ENDER_CRYSTAL);
+            this.spawnQueue();
         }catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void spawnQueue(EntityType entityType) {
+    private void spawnQueue() {
+        EntityType entityType = EntityType.valueOf(MLGRush.getInstance().getConfig().getString("queue_entity_type"));
         if(this.queueEntityLocation == null) return;
         try {
             for(Entity e : this.queueEntityLocation.getWorld().getNearbyEntities(this.queueEntityLocation, 5, 5, 5)) {
@@ -107,14 +109,15 @@ public class LobbyHandler {
                     e.remove();
                 }
             }
+            this.queueEntity = NMSUtil.spawnQueueEntity(entityType, this.queueEntityLocation);
         }catch (Exception e) {
+            e.printStackTrace();
         }
-        this.queueEntity = MLGRush.getInstance().getNmsBase().spawnQueueEntity(entityType, this.queueEntityLocation);
     }
 
     public void setLobbyItems(Player player) {
         player.getInventory().clear();
-        player.getInventory().setItem(getSlot("lobby.slots.challanger", 0), new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName(MLGRush.getString("items.challanger")).setUnbreakable(true).build());
+        player.getInventory().setItem(getSlot("lobby.slots.challanger", 0), new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName(MLGRush.getString("items.challanger")).build());
         player.getInventory().setItem(getSlot("lobby.slots.inventory_sorting", 3), new ItemBuilder(Material.CHEST).setDisplayName(InventorySortingGui.GUI_NAME).build());
         player.getInventory().setItem(getSlot("lobby.slots.spectate", 5), this.spectatorHandler.getSpectatorItem());
     }

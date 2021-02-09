@@ -45,7 +45,7 @@ public class InventorySortingDataHandler {
                     break;
             }
         }
-        return new ItemBuilder(pickAxeMaterial).setUnbreakable(true).build();
+        return new ItemBuilder(pickAxeMaterial).build();
     }
 
     public ArrayList<InventorySorting.ItemElement> getDefaultElements() {

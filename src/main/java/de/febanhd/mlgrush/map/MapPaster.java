@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.map.elements.BedObject;
+import de.febanhd.mlgrush.nms.NMSUtil;
 import de.febanhd.mlgrush.util.Cuboid;
 import de.febanhd.mlgrush.util.Materials;
 import lombok.Getter;
@@ -80,14 +81,18 @@ public class MapPaster {
             Location bed1BackLocation = this.getNewLocation(bed1.getBackLocation(), minX, minY, minZ);
             bed1.setFrontLocation(bed1FrontLocation);
             bed1.setBackLocation(bed1BackLocation);
-            this.setBed(bed1BackLocation, bed1FrontLocation);
+            if(MLGRush.getInstance().isLegacy() && !bed1.getFrontLocation().getBlock().getType().equals(Materials.BED_BLOCK.getMaterial()) ||
+                    !bed1.getBackLocation().getBlock().getType().equals(Materials.BED_BLOCK.getMaterial()))
+                this.setBed(bed1BackLocation, bed1FrontLocation);
 
             BedObject bed2 = template.getBedObjects()[1].clone();
             Location bed2FrontLocation = this.getNewLocation(bed2.getFrontLocation(), minX, minY, minZ);
             Location bed2BackLocation = this.getNewLocation(bed2.getBackLocation(), minX, minY, minZ);
             bed2.setFrontLocation(bed2FrontLocation);
             bed2.setBackLocation(bed2BackLocation);
-            this.setBed(bed2BackLocation, bed2FrontLocation);
+            if(MLGRush.getInstance().isLegacy() && !bed2.getFrontLocation().getBlock().getType().equals(Materials.BED_BLOCK.getMaterial()) ||
+                    !bed2.getBackLocation().getBlock().getType().equals(Materials.BED_BLOCK.getMaterial()))
+                this.setBed(bed2BackLocation, bed2FrontLocation);
 
             Location[] spawnLocations = new Location[] {spawnLocation1, spawnLocation2};
             BedObject[] bedObjects = new BedObject[] {bed1, bed2};
@@ -141,7 +146,8 @@ public class MapPaster {
                 Location location = block.getLocation();
 
                 location.getBlock().setType(blockToPlace.getType());
-                MLGRush.getInstance().getNmsBase().setBlockData(location.getBlock(), blockToPlace.getData());
+                if(MLGRush.getInstance().isLegacy())
+                    NMSUtil.setBlockData(location.getBlock(), blockToPlace.getData());
 
                 blocks.remove(block);
             }

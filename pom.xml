@@ -6,7 +6,7 @@
 
     <groupId>de.febanhd</groupId>
     <artifactId>AdvancedMLGRush</artifactId>
-    <version>2.2.8</version>
+    <version>2.2.9</version>
 
     <repositories>
         <repository>
@@ -41,15 +41,8 @@
         <dependency>
             <groupId>org.spigot</groupId>
             <artifactId>spigot-1_16</artifactId>
-            <version>1.16</version>
+            <version>1.16.1</version>
             <systemPath>G:/development/api/spigot/spigot_1.16.1.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.spigot</groupId>
-            <artifactId>spigot-1_15</artifactId>
-            <version>1.15</version>
-            <systemPath>G:/development/api/spigot/spigot_1.15.2.jar</systemPath>
             <scope>system</scope>
         </dependency>
         <dependency>
@@ -57,13 +50,6 @@
             <artifactId>spigot-1_8</artifactId>
             <version>1.8</version>
             <systemPath>G:/development/api/spigot/spigot_1.8_R3.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.spigot</groupId>
-            <artifactId>spigot-1_12</artifactId>
-            <version>1.12</version>
-            <systemPath>G:/development/api/spigot/spigot_1.12.jar</systemPath>
             <scope>system</scope>
         </dependency>
         <dependency>

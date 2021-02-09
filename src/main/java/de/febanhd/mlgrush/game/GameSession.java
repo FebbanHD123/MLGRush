@@ -9,6 +9,7 @@ import de.febanhd.mlgrush.gui.MapChoosingGui;
 import de.febanhd.mlgrush.gui.RoundChoosingGui;
 import de.febanhd.mlgrush.map.Map;
 import de.febanhd.mlgrush.map.MapTemplate;
+import de.febanhd.mlgrush.nms.NMSUtil;
 import de.febanhd.mlgrush.stats.StatsCach;
 import de.febanhd.mlgrush.util.Sounds;
 import lombok.Getter;
@@ -256,8 +257,8 @@ public class GameSession {
     private void startIngameTask() {
         this.taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
             String actionbarString = ChatColor.RED + player1.getDisplayName() + " §7" + this.getPoints(player1) + " §8| §7" + this.getPoints(player2) + " " + ChatColor.BLUE + player2.getDisplayName();
-            MLGRush.getInstance().getNmsBase().sendActionbar(player1, actionbarString);
-            MLGRush.getInstance().getNmsBase().sendActionbar(player2, actionbarString);
+            NMSUtil.sendActionbar(player1, actionbarString);
+            NMSUtil.sendActionbar(player2, actionbarString);
         }, 0, 5);
     }
 
@@ -266,8 +267,8 @@ public class GameSession {
             long seconds = (startedAt + 20000 - System.currentTimeMillis()) / 1000;
             String actionbarStringPlayer1 = MLGRush.getString("messages.lobby.waiting_finish_settings").replaceAll("%player%", player2.getDisplayName()).replaceAll("%seconds%", "" + seconds);
             String actionbarStringPlayer2 = MLGRush.getString("messages.lobby.waiting_finish_settings").replaceAll("%player%", player1.getDisplayName()).replaceAll("%seconds%", "" + seconds);
-            MLGRush.getInstance().getNmsBase().sendActionbar(player1, actionbarStringPlayer1);
-            MLGRush.getInstance().getNmsBase().sendActionbar(player2, actionbarStringPlayer2);
+            NMSUtil.sendActionbar(player1, actionbarStringPlayer1);
+            NMSUtil.sendActionbar(player2, actionbarStringPlayer2);
         }, 0, 5);
     }
 

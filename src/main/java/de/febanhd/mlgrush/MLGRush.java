@@ -1,6 +1,5 @@
 package de.febanhd.mlgrush;
 
-import de.febanhd.mlgrush.api.AdvancedMLGRushAPI;
 import de.febanhd.mlgrush.commands.*;
 import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
@@ -15,12 +14,10 @@ import de.febanhd.mlgrush.listener.InventoryListener;
 import de.febanhd.mlgrush.listener.PlayerConnectionListener;
 import de.febanhd.mlgrush.map.MapManager;
 import de.febanhd.mlgrush.map.setup.MapTemplateWorld;
-import de.febanhd.mlgrush.nms.NMSBase;
-import de.febanhd.mlgrush.stats.PlayerStats;
+import de.febanhd.mlgrush.nms.NMSUtil;
 import de.febanhd.mlgrush.stats.StatsCach;
 import de.febanhd.mlgrush.stats.StatsDataHandler;
 import de.febanhd.mlgrush.updatechecker.UpdateChecker;
-import de.febanhd.mlgrush.util.ApiversionChecker;
 import de.febanhd.sql.SimpleSQL;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
@@ -28,7 +25,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import de.febanhd.sql.database.config.mc.SpigotDatabaseConfig;
@@ -61,8 +57,6 @@ public class MLGRush extends JavaPlugin {
     private UpdateChecker updateChecker;
 
     private boolean legacy;
-
-    private NMSBase nmsBase;
 
     @Override
     public void onEnable() {
@@ -139,10 +133,9 @@ public class MLGRush extends JavaPlugin {
     }
 
     private void detectVersion() {
-        String version = ApiversionChecker.getVersion();
+        String version = Bukkit.getServer().getBukkitVersion();
         this.legacy = version.contains("1.8") || version.contains("1.9") || version.contains("1.10") || version.contains("1.11") || version.contains("1.12");
-        this.nmsBase = ApiversionChecker.getNMSBase();
-        if(this.nmsBase == null) {
+        if(legacy && !version.contains("1.8") && !version.contains("1.12")) {
             Bukkit.getConsoleSender().sendMessage(MLGRush.PREFIX + "§4Your server version is not supported! Are you sure you have the latest server file of your version? And that your version is supported at all?");
             Bukkit.getPluginManager().disablePlugin(this);
         }else {

@@ -1,6 +1,7 @@
 package de.febanhd.mlgrush.util;
 
 import de.febanhd.mlgrush.MLGRush;
+import de.febanhd.mlgrush.nms.NMSUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -50,12 +51,6 @@ public class ItemBuilder {
 
     public ItemBuilder addItemFlags(ItemFlag... flag) {
         meta.addItemFlags(flag);
-        return this;
-    }
-
-    public ItemBuilder setUnbreakable(boolean unbreakable) {
-        if(unbreakable)
-            MLGRush.getInstance().getNmsBase().setUnbreakable(this.itemStack, this.meta);
         return this;
     }
 

@@ -1,7 +1,9 @@
 package de.febanhd.mlgrush.util;
 
 import de.febanhd.mlgrush.MLGRush;
+import de.febanhd.mlgrush.nms.NMSUtil;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +22,7 @@ public enum Sounds {
 
     public Sound getSound() {
         String soundName;
-        if(MLGRush.getInstance().isLegacy()) {
+        if(Bukkit.getBukkitVersion().contains("1.8")) {
             soundName = this.sound_legacy;
         }else {
             soundName = this.sound;

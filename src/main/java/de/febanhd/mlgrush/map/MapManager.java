@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.map.generator.VoidGenerator;
+import de.febanhd.mlgrush.nms.NMSUtil;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
@@ -61,9 +62,9 @@ public class MapManager {
         this.tasks.put(taskUUID, Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
             String actionBarString = MLGRush.getMessage("actionbar.loadmap").replaceAll("%percent%", String.valueOf(paster.getProgressPercent()) + "%");
             if(player1.isOnline())
-                MLGRush.getInstance().getNmsBase().sendActionbar(player1, actionBarString);
+                NMSUtil.sendActionbar(player1, actionBarString);
             if(player2.isOnline())
-                MLGRush.getInstance().getNmsBase().sendActionbar(player2, actionBarString);
+                NMSUtil.sendActionbar(player2, actionBarString);
 
             if(!player1.isOnline() || !player2.isOnline()) {
                 this.cancelPasting(player1, player2, taskUUID);
@@ -105,7 +106,7 @@ public class MapManager {
     }
 
     public String getWorldName(MapTemplate template) {
-        return "mlg_map_" + this.getMapIDByName(template.getName());
+        return "mlgrush_world_" + template.getName().toLowerCase();
     }
 
     public void resetMapWorlds() {
