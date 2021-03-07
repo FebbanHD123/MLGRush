@@ -1,13 +1,11 @@
 package de.febanhd.mlgrush.map;
 
 import com.google.common.collect.Lists;
-import com.sun.javafx.collections.MapListenerHelper;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.map.elements.BedObject;
 import de.febanhd.mlgrush.util.Cuboid;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

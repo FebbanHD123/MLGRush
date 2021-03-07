@@ -19,9 +19,11 @@ import java.util.Arrays;
 public class InventorySortingDataHandler {
 
     private final SimpleSQL databaseHandler;
+    private final int enchantmentPower;
 
-    public InventorySortingDataHandler(SimpleSQL databaseHandler) {
+    public InventorySortingDataHandler(SimpleSQL databaseHandler, int enchantmentPower) {
         this.databaseHandler = databaseHandler;
+        this.enchantmentPower = enchantmentPower;
     }
 
     public ItemStack getPickAxeStack() {
@@ -50,7 +52,7 @@ public class InventorySortingDataHandler {
 
     public ArrayList<InventorySorting.ItemElement> getDefaultElements() {
         ArrayList<InventorySorting.ItemElement> list = Lists.newArrayList(Arrays.asList(
-                new InventorySorting.ItemElement(new ItemBuilder(Material.STICK).setDisplayName(MLGRush.getString("items.stick")).addEnchant(Enchantment.KNOCKBACK, 1).build(), 0),
+                new InventorySorting.ItemElement(new ItemBuilder(Material.STICK).setDisplayName(MLGRush.getString("items.stick")).addEnchant(Enchantment.KNOCKBACK, enchantmentPower).build(), 0),
                 new InventorySorting.ItemElement(this.getPickAxeStack(), 1)));
         int blockAmount = MLGRush.getInstance().getConfig().getInt("blockamount");
         if(blockAmount <= 0) {

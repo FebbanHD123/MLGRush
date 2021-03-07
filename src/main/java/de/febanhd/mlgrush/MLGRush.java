@@ -14,7 +14,6 @@ import de.febanhd.mlgrush.listener.InventoryListener;
 import de.febanhd.mlgrush.listener.PlayerConnectionListener;
 import de.febanhd.mlgrush.map.MapManager;
 import de.febanhd.mlgrush.map.setup.MapTemplateWorld;
-import de.febanhd.mlgrush.nms.NMSUtil;
 import de.febanhd.mlgrush.stats.StatsCach;
 import de.febanhd.mlgrush.stats.StatsDataHandler;
 import de.febanhd.mlgrush.updatechecker.UpdateChecker;
@@ -83,16 +82,12 @@ public class MLGRush extends JavaPlugin {
         pm.registerEvents(new InventoryListener(), this);
         pm.registerEvents(new PlayerConnectionListener(), this);
         pm.registerEvents(new InteractListener(), this);
-        pm.registerEvents(new GameListener(this.gameHandler), this);
+        Bukkit.getPluginManager().registerEvents(new GameListener(this.gameHandler, this.getConfig().getBoolean("no-damage")), this);
 
         this.startProtectionTask();
 
         this.mapTemplateWorld = new MapTemplateWorld();
         this.mapTemplateWorld.create();
-
-        this.loadSql();
-        this.statsDataHandler = new StatsDataHandler(this.sqlHandler);
-        this.inventorySortingDataHandler = new InventorySortingDataHandler(this.sqlHandler);
 
         Bukkit.getOnlinePlayers().forEach(player -> {
             StatsCach.loadStats(player);
@@ -154,6 +149,11 @@ public class MLGRush extends JavaPlugin {
         if(this.getConfig().contains("paste.distance")) {
             MapManager.DISTANCE = this.getConfig().getInt("paste.distance");
         }
+
+        this.loadSql();
+        this.statsDataHandler = new StatsDataHandler(this.sqlHandler);
+        this.inventorySortingDataHandler = new InventorySortingDataHandler(this.sqlHandler, this.getConfig().getInt("knockback-amplifier"));
+
     }
 
     private void loadSql() {
@@ -211,4 +211,5 @@ public class MLGRush extends JavaPlugin {
             message = ChatColor.translateAlternateColorCodes('&', MLGRush.getInstance().getConfig().getString(key));
         return message;
     }
+
 }

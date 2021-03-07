@@ -1,17 +1,13 @@
 package de.febanhd.mlgrush.gui;
 
 import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameSession;
-import de.febanhd.mlgrush.nms.NMSUtil;
 import de.febanhd.mlgrush.util.Materials;
-import de.febanhd.mlgrush.util.SkullBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;

@@ -13,9 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class SpectatorHandler {
 
@@ -58,6 +56,18 @@ public class SpectatorHandler {
 
     public Player getTarget(Player player) {
         return this.targetMap.get(player);
+    }
+
+    public Set<Player> getSpectatorsOf(Player target) {
+        Set<Player> output = new HashSet<>();
+        for (Map.Entry<Player, Player> entry : targetMap.entrySet()) {
+            Player spectator = entry.getKey();
+            Player specTarget = entry.getValue();
+            if (specTarget.getName().equalsIgnoreCase(target.getName())) {
+                output.add(spectator);
+            }
+        }
+        return output;
     }
 
     public List<Player> getPlayersWithCertainTarget(Player t) {
