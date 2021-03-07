@@ -13,6 +13,9 @@ queue_entity_type: ENDER_CRYSTAL
 #The time in seconds when you cannot move
 no_move_time: 1.5
 
+# The power of the knockback enchantment on the stick
+knockback-amplifier: 1
+
 #Blocks per Tick which will place
 map_generation.spawningrate: 13
 
