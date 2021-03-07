@@ -82,7 +82,7 @@ public class MLGRush extends JavaPlugin {
         pm.registerEvents(new InventoryListener(), this);
         pm.registerEvents(new PlayerConnectionListener(), this);
         pm.registerEvents(new InteractListener(), this);
-        pm.registerEvents(new GameListener(this.gameHandler), this);
+        Bukkit.getPluginManager().registerEvents(new GameListener(this.gameHandler, this.getConfig().getBoolean("no-damage")), this);
 
         this.startProtectionTask();
 
