@@ -1,6 +1,7 @@
 package de.febanhd.mlgrush.game;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySorting;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
@@ -20,10 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 public class GameSession {
@@ -256,10 +254,20 @@ public class GameSession {
 
     private void startIngameTask() {
         this.taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
+            SpectatorHandler spectatorHandler = MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler();
+
+            Set<Player> spectators = Sets.newHashSet();
+            spectators.addAll(spectatorHandler.getSpectatorsOf(player1));
+            spectators.addAll(spectatorHandler.getSpectatorsOf(player2));
+
             String actionbarString = ChatColor.RED + player1.getDisplayName() + " §7" + this.getPoints(player1) + " §8| §7" + this.getPoints(player2) + " " + ChatColor.BLUE + player2.getDisplayName();
             NMSUtil.sendActionbar(player1, actionbarString);
             NMSUtil.sendActionbar(player2, actionbarString);
-        }, 0, 5);
+
+            spectators.forEach(spectator -> {
+                NMSUtil.sendActionbar(spectator, actionbarString);
+            });
+        }, 0, 20L);
     }
 
     private void startWaitingTask() {
