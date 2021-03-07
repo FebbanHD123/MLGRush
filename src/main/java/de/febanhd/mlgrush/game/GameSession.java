@@ -27,6 +27,8 @@ import java.util.*;
 public class GameSession {
 
     private final Player player1, player2;
+    private boolean player1Respawning;
+    private boolean player2Respawning;
 
     private MapTemplate mapTemplate;
     private Map map;
@@ -106,13 +108,16 @@ public class GameSession {
 
     public void respawn(Player player, boolean death) {
         Player otherPlayer = this.isPlayer1(player) ? player2 : player1;
+        player.setFallDistance(0.0F);
         Location location;
         if(otherPlayer.equals(player1)) {
             location = this.map.getSpawnLocation()[1];
         }else {
             location = this.map.getSpawnLocation()[0];
         }
+
         player.teleport(location);
+
         if(death) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int)Math.round(20D * MLGRush.getInstance().getConfig().getDouble("no_move_time")), 10));
             StatsCach.getStats(player).addDeaths();
@@ -120,7 +125,8 @@ public class GameSession {
             otherPlayer.playSound(otherPlayer.getLocation(), Sounds.LEVEL_UP.getSound(), 3, 2);
         }
         this.setItems(player);
-    }
+        player.setHealth(20.0D);
+     }
 
     private void setItems(Player player) {
         player.getInventory().clear();
