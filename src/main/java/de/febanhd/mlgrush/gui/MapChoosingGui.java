@@ -10,14 +10,14 @@ import org.bukkit.inventory.Inventory;
 
 public class MapChoosingGui {
 
-    public static String GUI_NAME = "§eWähle deine Map";
+    public static String GUI_NAME = "§eChoose you map";
 
     public void open(Player player) {
         Inventory inv = Bukkit.createInventory(null, 9 * 6, GUI_NAME);
         for(MapTemplate mapTemplate : MLGRush.getInstance().getMapManager().getTemplates()) {
             inv.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§e" + mapTemplate.getName()).build());
         }
-        inv.setItem(53, new ItemBuilder(Material.BARRIER).setDisplayName(MLGRush.getMessage("guiname.cancel")).build());
+        inv.setItem(53, new ItemBuilder(Material.BARRIER).setDisplayName(MLGRush.getString("guiname.cancel")).build());
         player.openInventory(inv);
     }
 }

@@ -38,7 +38,7 @@ public class MapManager {
         this.mapTemplateStorage = new MapTemplateStorage();
         Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
             this.templates = this.mapTemplateStorage.loadAllTemplates();
-            System.out.println("[A-MLGRush] Loaded " + this.templates.size() + " Map-Template");
+            MLGRush.getInstance().getLogger().info("Loaded " + this.templates.size() + " Map-Template");
         }, 20);
     }
 
@@ -60,7 +60,7 @@ public class MapManager {
             callback.accept(map);
         });
         this.tasks.put(taskUUID, Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
-            String actionBarString = MLGRush.getMessage("actionbar.loadmap").replaceAll("%percent%", String.valueOf(paster.getProgressPercent()) + "%");
+            String actionBarString = MLGRush.getString("actionbar.loadmap").replaceAll("%percent%", String.valueOf(paster.getProgressPercent()) + "%");
             if(player1.isOnline())
                 NMSUtil.sendActionbar(player1, actionBarString);
             if(player2.isOnline())

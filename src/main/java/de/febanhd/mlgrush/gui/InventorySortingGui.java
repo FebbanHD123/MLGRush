@@ -7,7 +7,7 @@ import org.bukkit.inventory.Inventory;
 
 public class InventorySortingGui {
 
-    public static String GUI_NAME = "§eInventarsortierung";
+    public static String GUI_NAME = "§eInventory Sorting";
 
     public void open(Player player, InventorySorting sorting) {
         Inventory inventory = Bukkit.createInventory(null, 9, GUI_NAME);

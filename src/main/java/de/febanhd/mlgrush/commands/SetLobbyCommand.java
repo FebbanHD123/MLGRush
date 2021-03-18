@@ -16,7 +16,7 @@ public class SetLobbyCommand implements CommandExecutor {
                 return false;
             }
             MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyLocation(player.getLocation());
-            player.sendMessage(MLGRush.PREFIX + "§2Lobby-Spawn gesetzt.");
+            player.sendMessage(MLGRush.PREFIX + "§7Set lobby.");
         }
         return false;
     }

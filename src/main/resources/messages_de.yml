@@ -1,0 +1,51 @@
+#messages
+
+prefix: '&8[&cAdvancedMLGRush&8] &r'
+
+nopermissions: '&cDazu hast du keine Rechte!'
+
+messages.map_deleted: '&7Du hast die &eMap %map% &7gelöscht.'
+
+queue_entity_name: '&5&lWarteschlange &8(&7Rechtsklick&8)'
+
+messages.queue.enter: '&7Du hast die &5Warteschlange &7betreten.'
+messages.queue.quit: '&7Du hast die &5Warteschlange &7verlassen.'
+messages.map_selection_cancel: '&cDie Mapauswahl wurde abgebrochen!'
+messages.round_win: '&7Du hast die Runde &agewonnen!'
+messages.round_loose: '&7Du hast die Runde &cverloren!'
+messages.round_cancel_playerquit: '&cDie Runde wurde abgebrochen, da dein Gegner die Runde verlassen hat.'
+messages.map_creation.cancel: '&cDer Vorgang wurde abgebrochen, da dein Gegner den Server verlassen hat.'
+messages.not_in_round: '&cDu bist in keine Runde!'
+messages.leave_round: '&7Du hast die Runde verlassen.'
+messages.leave.usage: '&7Benutze &e/leave &7um die Runde zu verlassen.'
+messages.points.info: '&7Benötigte Punkte für den Sieg: &e%points%&7.'
+
+#%n% steht für eine neue linie in der Nachricht
+messages.stats.command: '&7Stats von &e%player% %n%&7Kills: &e%kills% %n%&7Tode: &e%deaths%%n%&7K/D: &e%kd% %n%&7Spiele gwonnen: &e%wins% %n%&7Spiele verloren: &e%looses% %n%&7Betten abgebaut: &e%beds%'
+messages.stats.loading: '&7Lade Stats...'
+messages.stats.not_found: '&cDieser Spieler hat keine Stats.'
+
+messages.inventorysorting.error: '&cEs ist ein Fehler beim Speichern deiner Sortierung aufgetreten. Achte darauf das alle Items im Inventar vorhanden sind!'
+messages.inventorysorting.error_in_round: '&cDu darfst diesen Command aktuell nicht ausfueren.'
+messages.inventorysorting.succesfully: '&7Deine Inventarsortierung wurde &agespeichert&7.'
+
+messages.lobby.already_one_opponent: '&cDieser Spieler hat bereits einen Gegner!'
+messages.lobby.challenged: '&7Du hast &a%player% &7herrausgefordert&7.'
+messages.lobby.challenged_by_player: '&7Du wurdest von &a%player% &7herrausgefordert.'
+messages.lobby.already_challanged: '&7Du hast &a%player% &7bereits herrausgefordert.'
+messages.lobby.waiting_finish_settings: '&7Warte bis %player% die Einstellungen getroffen hat. (&e%seconds%&7)'
+
+messages.lobby.is_not_in_round: '&7Dieser Spieler ist in keiner Runde.'
+
+actionbar.loadmap: '&eMap wird Geladen: §6%percent%'
+
+items.stick: '&cStick'
+items.challanger: '&5Herrausforderer &8(&7Spieler Schlagen&8)'
+items.spectator: '&5Spieler zuschauen'
+items.cancel: '§cAbrechen'
+
+guiname.inventorysorting: '&eInventarsortierung'
+guiname.mapchoosing: '&eMap'
+guiname.roundchoosing: '&eAnzahl der Runden'
+guiname.spectator: '&5Spieler zuschauen'
+guiname.cancel: '&cAbbrechen'

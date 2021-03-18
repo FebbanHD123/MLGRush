@@ -99,10 +99,10 @@ public class MLGRushCommand implements CommandExecutor {
     }
 
     private void sendUsage(Player player) {
-        player.sendMessage(MLGRush.PREFIX + "§e/mlgrush setlobby §7- Setzt die lobby");
-        player.sendMessage(MLGRush.PREFIX + "§e/mlgrush setqueue §7- Setzt die queue/warteschlange");
-        player.sendMessage(MLGRush.PREFIX + "§e/mlgrush setupmap <DE/EN> §7- Starte ein Map-Setup");
-        player.sendMessage(MLGRush.PREFIX + "§e/mlgrush deletemap <Mapname> §7- Lösche eine Map");
+        player.sendMessage(MLGRush.PREFIX + "§e/mlgrush setlobby §7- Set the lobby");
+        player.sendMessage(MLGRush.PREFIX + "§e/mlgrush setqueue §7- Set the queue");
+        player.sendMessage(MLGRush.PREFIX + "§e/mlgrush setupmap <DE/EN> §7- Start a setup");
+        player.sendMessage(MLGRush.PREFIX + "§e/mlgrush deletemap <Mapname> §7- Delete a map");
     }
     ///mlgrush setlobby
     // /mlgrush setupmap set

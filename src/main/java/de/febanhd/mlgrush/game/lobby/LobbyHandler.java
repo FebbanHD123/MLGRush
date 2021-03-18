@@ -32,7 +32,7 @@ public class LobbyHandler {
     public static String queueEntityName = "";
 
     public LobbyHandler(GameHandler gameHandler) {
-        LobbyHandler.queueEntityName = ChatColor.translateAlternateColorCodes('&', MLGRush.getInstance().getConfig().getString("queue_entity_name"));
+        LobbyHandler.queueEntityName = ChatColor.translateAlternateColorCodes('&', MLGRush.getString("queue_entity_name"));
         this.gameHandler = gameHandler;
         this.spectatorHandler = new SpectatorHandler();
         this.loadLocations();

@@ -33,7 +33,7 @@ public class GameSession {
     private MapTemplate mapTemplate;
     private Map map;
     @Setter
-    private boolean selectingWorld, selectingRounds, running;
+    private boolean selectingWorld, selectingRounds, canceled, running;
     private int pointsForWin, resseterTaskID, taskID;
     private HashMap<Player, Integer> points;
     private final boolean infiniteBlocks;
@@ -53,6 +53,7 @@ public class GameSession {
             }
             return;
         }
+        this.canceled = false;
         this.selectingRounds = true;
         this.selectingWorld = true;
         this.pointsForWin = MLGRush.getInstance().getConfig().getInt("points.for_win");
@@ -75,6 +76,7 @@ public class GameSession {
         player1.playSound(player1.getLocation(), Sounds.LEVEL_UP.getSound(), 2, 1);
         player2.playSound(player1.getLocation(), Sounds.LEVEL_UP.getSound(), 2, 1);
         Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
+            if(canceled) return;
             if(this.selectingWorld) {
                 ArrayList<MapTemplate> templates = MLGRush.getInstance().getMapManager().getTemplates();
                 this.setMapTemplate(templates.get(new Random().nextInt(templates.size())));
@@ -158,12 +160,16 @@ public class GameSession {
     }
 
     public void cancelMapChoosing() {
+        this.canceled = true;
         this.selectingWorld = false;
+        this.selectingRounds = false;
+        this.stopCurrentTask();
         player1.sendMessage(MLGRush.getMessage("messages.map_selection_cancel"));
         player2.sendMessage(MLGRush.getMessage("messages.map_selection_cancel"));
         player1.closeInventory();
         player2.closeInventory();
         MLGRush.getInstance().getGameHandler().getGameSessions().remove(this);
+        this.sendEmptyActionBar();
     }
 
     public void stopGame(Player winner, Player quiter) {
@@ -216,6 +222,7 @@ public class GameSession {
             SpectatorHandler spectatorHandler = MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler();
             spectatorHandler.getPlayersWithCertainTarget(player1).forEach(spectatorHandler::cancelSpectating);
             spectatorHandler.getPlayersWithCertainTarget(player2).forEach(spectatorHandler::cancelSpectating);
+            this.sendEmptyActionBar();
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -252,6 +259,13 @@ public class GameSession {
                 this.map.getPlacedBlocks().remove(block);
             }
         }, 0, 1);
+    }
+
+    private void sendEmptyActionBar() {
+        if(player1 != null && player1.isOnline())
+            NMSUtil.sendActionbar(player1, " ");
+        if(player2 != null && player2.isOnline())
+            NMSUtil.sendActionbar(player1, " ");
     }
 
     private void startIngameTask() {
