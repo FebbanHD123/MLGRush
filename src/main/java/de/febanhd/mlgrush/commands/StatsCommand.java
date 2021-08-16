@@ -32,7 +32,7 @@ public class StatsCommand implements CommandExecutor {
                     player.sendMessage(MLGRush.PREFIX + "§cDeine Stats wurden noch nicht geladen!");
                     return false;
                 }
-                this.sendStats(player, stats, player.getName());
+                this.sendStats(player, stats, sender.getName());
             }
         }else if (args.length == 1) {
             String targetName = args[0];

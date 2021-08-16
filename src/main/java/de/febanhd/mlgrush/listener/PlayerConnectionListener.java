@@ -37,7 +37,7 @@ public class PlayerConnectionListener implements Listener {
             if(lobbyLocation != null) {
                 player.teleport(lobbyLocation);
             }else {
-                player.sendMessage(MLGRush.PREFIX + "§cBitte Setzte die Lobby-Position mit /setlobby!!!");
+                player.sendMessage(MLGRush.PREFIX + "§cSet the lobby with /mlgrush setlobby!");
             }
             player.getActivePotionEffects().forEach(potionEffect -> event.getPlayer().removePotionEffect(potionEffect.getType()));
         }, 3);
@@ -47,8 +47,8 @@ public class PlayerConnectionListener implements Listener {
 
         if(player.hasPermission("mlgrush.notify") &&
                 !MLGRush.getInstance().getUpdateChecker().getCachedVersion().equals(MLGRush.getInstance().getDescription().getVersion())) {
-            player.sendMessage(MLGRush.PREFIX + "§7Es gibt eine neuere Version von AdvancedMLGRush (" + MLGRush.getInstance().getUpdateChecker().getCachedVersion() +
-                    "). Downloade diese hier: §nhttps://www.spigotmc.org/resources/mlgrush-%E2%9C%85-the-most-advanced-mlgrush-system-unendlich-maps-mit-nur-einem-template.84672/");
+            player.sendMessage(MLGRush.PREFIX + "§7Newer version of AdvancedMLGRush is available (" + MLGRush.getInstance().getUpdateChecker().getCachedVersion() +
+                    "). &7https://www.spigotmc.org/resources/mlgrush-%E2%9C%85-the-most-advanced-mlgrush-system-unendlich-maps-mit-nur-einem-template.84672/");
         }
 
         Bukkit.getOnlinePlayers().forEach(players -> {

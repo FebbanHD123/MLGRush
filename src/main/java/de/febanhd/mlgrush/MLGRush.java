@@ -23,6 +23,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Monster;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,6 +33,7 @@ import de.febanhd.sql.database.connection.MySQLDatabaseConnector;
 import de.febanhd.sql.database.connection.SQLLiteDatabaseConnector;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -55,6 +57,8 @@ public class MLGRush extends JavaPlugin {
 
     private UpdateChecker updateChecker;
 
+    private YamlConfiguration messageConfig;
+
     private boolean legacy;
 
     @Override
@@ -62,9 +66,9 @@ public class MLGRush extends JavaPlugin {
         instance = this;
 
         this.detectVersion();
-
         this.loadConfig();
-        MLGRush.PREFIX = ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("prefix"));
+
+        MLGRush.PREFIX = ChatColor.translateAlternateColorCodes('&', getString("prefix"));
 
         this.mapManager = new MapManager();
         this.gameHandler = new GameHandler();
@@ -118,7 +122,7 @@ public class MLGRush extends JavaPlugin {
     @Override
     public void onDisable() {
         this.mapManager.resetMapWorlds();
-        System.out.println("[A-MLGRush] Saving map-templates");
+        this.getLogger().info("Saving map-templates");
         this.mapManager.getMapTemplateStorage().saveAllTemplates();
         if(this.gameHandler.getLobbyHandler().getQueueEntity() != null) {
             this.gameHandler.getLobbyHandler().getQueueEntity().remove();
@@ -139,8 +143,21 @@ public class MLGRush extends JavaPlugin {
     }
 
     private void loadConfig() {
-        this.getConfig().options().copyDefaults();
-        this.saveDefaultConfig();
+        if(!new File(this.getDataFolder(), "messages_de.yml").exists())
+            this.saveResource("messages_de.yml", false);
+        if(!new File(this.getDataFolder(), "messages_en.yml").exists())
+            this.saveResource("messages_en.yml", false);
+
+        this.getConfig().options().copyDefaults(true);
+        this.saveConfig();
+
+        if (getConfig().contains("language") && getConfig().getString("language").equalsIgnoreCase("de")) {
+            this.messageConfig = YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "messages_de.yml"));
+            this.getLogger().info("Sprache geladen: Deutsch");
+        }else {
+            this.messageConfig = YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "messages_en.yml"));
+            this.getLogger().info("Loaded Language: English");
+        }
 
         MapChoosingGui.GUI_NAME = MLGRush.getString("guiname.mapchoosing");
         InventorySortingGui.GUI_NAME = MLGRush.getString("guiname.inventorysorting");
@@ -153,6 +170,7 @@ public class MLGRush extends JavaPlugin {
         this.loadSql();
         this.statsDataHandler = new StatsDataHandler(this.sqlHandler);
         this.inventorySortingDataHandler = new InventorySortingDataHandler(this.sqlHandler, this.getConfig().getInt("knockback-amplifier"));
+
 
     }
 
@@ -195,20 +213,20 @@ public class MLGRush extends JavaPlugin {
 
     public static String getMessage(String key) {
         String message;
-        if(!MLGRush.getInstance().getConfig().contains(key))
-            message = PREFIX + "§4" + key + " §cwas not found! Füge '§7" + key + "§c' in deiner config.yml hinzu. Alternativ kannst du auch deine Config löschen und sie neu erstellen lassen.";
+        if(!MLGRush.getInstance().getMessageConfig().contains(key))
+            message = PREFIX + "§4" + key + " §cwas not found in messages!";
         else
-            message = PREFIX + ChatColor.translateAlternateColorCodes('&', MLGRush.getInstance().getConfig().getString(key));
+            message = PREFIX + ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(MLGRush.getInstance().getMessageConfig().getString(key)));
 
         return message;
     }
 
     public static String getString(String key) {
         String message;
-        if(!MLGRush.getInstance().getConfig().contains(key))
+        if(!MLGRush.getInstance().getMessageConfig().contains(key))
             message = "§cNot Found";
         else
-            message = ChatColor.translateAlternateColorCodes('&', MLGRush.getInstance().getConfig().getString(key));
+            message = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(MLGRush.getInstance().getMessageConfig().getString(key)));
         return message;
     }
 

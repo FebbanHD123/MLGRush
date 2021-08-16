@@ -16,7 +16,7 @@ public class SetQueueCommand implements CommandExecutor {
                 return false;
             }
             MLGRush.getInstance().getGameHandler().getLobbyHandler().setQueueEntityLocation(player.getLocation());
-            player.sendMessage(MLGRush.PREFIX + "§2Queue gesetzt.");
+            player.sendMessage(MLGRush.PREFIX + "§7Set queue.");
         }
         return false;
     }

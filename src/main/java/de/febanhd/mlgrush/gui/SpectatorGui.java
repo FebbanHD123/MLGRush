@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 public class SpectatorGui {
 
-    public static String GUI_NAME = "§5Spieler Zuschauen";
+    public static String GUI_NAME = "§5Spectate Players";
 
     public void open(Player player) {
         ArrayList<Player> players = Lists.newArrayList();
