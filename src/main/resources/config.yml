@@ -15,6 +15,15 @@ queue_entity_type: ENDER_CRYSTAL
 #The time in seconds when you cannot move
 no_move_time: 1.5
 
+# The power of the knockback enchantment on the stick
+knockback-amplifier: 1
+
+# Whether players get damage in a round when fighting with a pickaxe, getting fall damage, etc.
+# If set to 'true', players will only see the damage animation, but will keep their 20HP
+# so they cannot die from hit damage
+# If set to 'false', players might die from fall damage
+no-damage: true
+
 #Blocks per Tick which will place
 map_generation.spawningrate: 13
 

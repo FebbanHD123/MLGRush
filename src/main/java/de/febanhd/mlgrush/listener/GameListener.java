@@ -33,17 +33,28 @@ import org.bukkit.util.Vector;
 public class GameListener implements Listener {
 
     private GameHandler gameHandler;
+    private boolean noDamage;
 
-    public GameListener(GameHandler gameHandler) {
+    public GameListener(GameHandler gameHandler, boolean noDamage) {
         this.gameHandler = gameHandler;
+        this.noDamage = noDamage;
     }
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if(event.getEntity() instanceof Player) {
             Player player = (Player)event.getEntity();
+            GameSession session = gameHandler.getSessionByPlayer(player);
             if(gameHandler.isInSession(player) && gameHandler.getSessionByPlayer(player).isIngame()) {
-                event.setDamage(0);
+                if (noDamage) {
+                    event.setDamage(0);
+                } else if (session.isPlayer1Respawning() && session.isPlayer1(player)) {
+                    event.setDamage(0);
+                    event.setCancelled(true);
+                } else if (session.isPlayer2Respawning() && !session.isPlayer1(player)) {
+                    event.setDamage(0);
+                    event.setCancelled(true);
+                }
             }else {
                 event.setCancelled(true);
             }

@@ -1,6 +1,7 @@
 package de.febanhd.mlgrush.game;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySorting;
 import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
@@ -20,15 +21,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 public class GameSession {
 
     private final Player player1, player2;
+    private boolean player1Respawning;
+    private boolean player2Respawning;
 
     private MapTemplate mapTemplate;
     private Map map;
@@ -110,13 +110,16 @@ public class GameSession {
 
     public void respawn(Player player, boolean death) {
         Player otherPlayer = this.isPlayer1(player) ? player2 : player1;
+        player.setFallDistance(0.0F);
         Location location;
         if(otherPlayer.equals(player1)) {
             location = this.map.getSpawnLocation()[1];
         }else {
             location = this.map.getSpawnLocation()[0];
         }
+
         player.teleport(location);
+
         if(death) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int)Math.round(20D * MLGRush.getInstance().getConfig().getDouble("no_move_time")), 10));
             StatsCach.getStats(player).addDeaths();
@@ -124,7 +127,8 @@ public class GameSession {
             otherPlayer.playSound(otherPlayer.getLocation(), Sounds.LEVEL_UP.getSound(), 3, 2);
         }
         this.setItems(player);
-    }
+        player.setHealth(20.0D);
+     }
 
     private void setItems(Player player) {
         player.getInventory().clear();
@@ -270,10 +274,20 @@ public class GameSession {
 
     private void startIngameTask() {
         this.taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
+            SpectatorHandler spectatorHandler = MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler();
+
+            Set<Player> spectators = Sets.newHashSet();
+            spectators.addAll(spectatorHandler.getSpectatorsOf(player1));
+            spectators.addAll(spectatorHandler.getSpectatorsOf(player2));
+
             String actionbarString = ChatColor.RED + player1.getDisplayName() + " §7" + this.getPoints(player1) + " §8| §7" + this.getPoints(player2) + " " + ChatColor.BLUE + player2.getDisplayName();
             NMSUtil.sendActionbar(player1, actionbarString);
             NMSUtil.sendActionbar(player2, actionbarString);
-        }, 0, 5);
+
+            spectators.forEach(spectator -> {
+                NMSUtil.sendActionbar(spectator, actionbarString);
+            });
+        }, 0, 20L);
     }
 
     private void startWaitingTask() {

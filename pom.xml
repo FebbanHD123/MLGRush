@@ -6,12 +6,19 @@
 
     <groupId>de.febanhd</groupId>
     <artifactId>AdvancedMLGRush</artifactId>
-    <version>2.3.1</version>
+    <version>2.3.2</version>
 
     <repositories>
+
         <repository>
             <id>CodeMC</id>
             <url>https://repo.codemc.org/repository/maven-public/</url>
+        </repository>
+
+        <!-- Spigot repository -->
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
 
@@ -39,29 +46,31 @@
         </dependency>
 
         <dependency>
-            <groupId>org.spigot</groupId>
-            <artifactId>spigot-1_16</artifactId>
-            <version>1.16.1</version>
-            <systemPath>G:/development/api/spigot/spigot_1.16.1.jar</systemPath>
-            <scope>system</scope>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
+
         <dependency>
-            <groupId>org.spigot</groupId>
-            <artifactId>spigot-1_8</artifactId>
-            <version>1.8</version>
-            <systemPath>G:/development/api/spigot/spigot_1.8_R3.jar</systemPath>
-            <scope>system</scope>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
             <version>1.5.4</version>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.30</version>
         </dependency>
+
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
