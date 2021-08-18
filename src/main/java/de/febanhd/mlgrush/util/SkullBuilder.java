@@ -66,15 +66,6 @@ public class SkullBuilder {
         return getSkull(gameProfile, 1);
     }
 
-    public static ItemStack getSkull(UUID uuid) {
-        try {
-            return getSkull(GameProfileBuilder.fetch(uuid, true));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     private static GameProfile getProfile(String skinURL) {
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
 

@@ -4,11 +4,9 @@ import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.lobby.LobbyHandler;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -55,7 +53,7 @@ public class NMSUtil {
         return channel;
     }
 
-    public static void setBlockData(Block block, byte data) {
+    public static void setBlockDataLegacy(Block block, byte data) {
         try {
             block.getClass().getMethod("setData", byte.class)
                     .invoke(block, data);
@@ -121,9 +119,9 @@ public class NMSUtil {
         String serverVersion = Bukkit.getBukkitVersion();
         if(MLGRush.getInstance().isLegacy()) {
             if (serverVersion.contains("1.8")) {
-                net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity)bukkitEntity).getHandle();
-                NBTTagCompound nbtTagCompound = nmsEntity.getNBTTag();
-                if(nbtTagCompound == null) nbtTagCompound = new NBTTagCompound();
+                net.minecraft.server.v1_8_R3.Entity nmsEntity = ((org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity)bukkitEntity).getHandle();
+                net.minecraft.server.v1_8_R3.NBTTagCompound nbtTagCompound = nmsEntity.getNBTTag();
+                if(nbtTagCompound == null) nbtTagCompound = new net.minecraft.server.v1_8_R3.NBTTagCompound();
                 nmsEntity.c(nbtTagCompound);
                 nbtTagCompound.setInt("Invulnerable", 1);
                 nbtTagCompound.setInt("Silent", 1);
@@ -140,9 +138,5 @@ public class NMSUtil {
             entity.getClass().getMethod("setSilent", boolean.class).invoke(entity, true);
         }
         return bukkitEntity;
-    }
-
-    private static void setBooleanToNBT(Object nbtTagCompound, String key, boolean value) throws Exception {
-        nbtTagCompound.getClass().getMethod("setBoolean").invoke(nbtTagCompound, key, value);
     }
 }

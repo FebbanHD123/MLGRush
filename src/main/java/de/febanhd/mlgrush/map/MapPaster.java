@@ -8,18 +8,14 @@ import de.febanhd.mlgrush.nms.NMSUtil;
 import de.febanhd.mlgrush.util.Cuboid;
 import de.febanhd.mlgrush.util.Materials;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.material.Bed;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class MapPaster {
@@ -81,18 +77,14 @@ public class MapPaster {
             Location bed1BackLocation = this.getNewLocation(bed1.getBackLocation(), minX, minY, minZ);
             bed1.setFrontLocation(bed1FrontLocation);
             bed1.setBackLocation(bed1BackLocation);
-            if(MLGRush.getInstance().isLegacy() && !bed1.getFrontLocation().getBlock().getType().equals(Materials.BED_BLOCK.getMaterial()) ||
-                    !bed1.getBackLocation().getBlock().getType().equals(Materials.BED_BLOCK.getMaterial()))
-                this.setBed(bed1BackLocation, bed1FrontLocation);
+            this.setBed(bed1BackLocation, bed1FrontLocation);
 
             BedObject bed2 = template.getBedObjects()[1].clone();
             Location bed2FrontLocation = this.getNewLocation(bed2.getFrontLocation(), minX, minY, minZ);
             Location bed2BackLocation = this.getNewLocation(bed2.getBackLocation(), minX, minY, minZ);
             bed2.setFrontLocation(bed2FrontLocation);
             bed2.setBackLocation(bed2BackLocation);
-            if(MLGRush.getInstance().isLegacy() && !bed2.getFrontLocation().getBlock().getType().equals(Materials.BED_BLOCK.getMaterial()) ||
-                    !bed2.getBackLocation().getBlock().getType().equals(Materials.BED_BLOCK.getMaterial()))
-                this.setBed(bed2BackLocation, bed2FrontLocation);
+            this.setBed(bed2BackLocation, bed2FrontLocation);
 
             Location[] spawnLocations = new Location[] {spawnLocation1, spawnLocation2};
             BedObject[] bedObjects = new BedObject[] {bed1, bed2};
@@ -107,25 +99,48 @@ public class MapPaster {
     }
 
     private void setBed(Location bedHeadLocation, Location bedFootLocation) {
-        Block bedHeadBlock = bedHeadLocation.getBlock();
-        Block bedFootBlock = bedFootLocation.getBlock();
-        BlockFace face = bedFootBlock.getFace(bedHeadBlock);
+        try {
+            Block bedHeadBlock = bedHeadLocation.getBlock();
+            Block bedFootBlock = bedFootLocation.getBlock();
+            BlockFace face = bedFootBlock.getFace(bedHeadBlock);
 
-        BlockState bedFootState = bedFootBlock.getState();
-        bedFootState.setType(Materials.BED_BLOCK.getMaterial());
-        Bed bedFootData = new Bed(Materials.BED_BLOCK.getMaterial());
-        bedFootData.setHeadOfBed(false);
-        bedFootData.setFacingDirection(face);
-        bedFootState.setData(bedFootData);
-        bedFootState.update(true);
+            BlockState bedFootState = bedFootBlock.getState();
+            BlockState bedHeadState = bedHeadBlock.getState();
 
-        BlockState bedHeadState = bedHeadBlock.getState();
-        bedHeadState.setType(Materials.BED_BLOCK.getMaterial());
-        Bed bedHeadData = new Bed(Materials.BED_BLOCK.getMaterial());
-        bedHeadData.setHeadOfBed(true);
-        bedHeadData.setFacingDirection(face);
-        bedHeadState.setData(bedHeadData);
-        bedHeadState.update(true);
+            if(MLGRush.getInstance().isLegacy()) {
+                bedFootState.setType(Materials.BED_BLOCK.getMaterial());
+                bedHeadState.setType(Materials.BED_BLOCK.getMaterial());
+
+                Bed bedFootData = new Bed(Materials.BED_BLOCK.getMaterial());
+                bedFootData.setHeadOfBed(false);
+                bedFootData.setFacingDirection(face);
+                bedFootState.setData(bedFootData);
+
+                Bed bedHeadData = new Bed(Materials.BED_BLOCK.getMaterial());
+                bedHeadData.setHeadOfBed(true);
+                bedHeadData.setFacingDirection(face);
+                bedHeadState.setData(bedHeadData);
+            }else {
+                bedHeadBlock.setType(Material.AIR);
+                bedFootBlock.setType(Material.AIR);
+                Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
+                    bedHeadBlock.setType(Materials.BED_BLOCK.getMaterial());
+                    bedFootBlock.setType(Materials.BED_BLOCK.getMaterial());
+                    bedHeadBlock.setBlockData(Bukkit.createBlockData(Materials.BED_BLOCK.getMaterial(), (data) -> {
+                        ((org.bukkit.block.data.type.Bed) data).setPart(org.bukkit.block.data.type.Bed.Part.HEAD);
+                        ((org.bukkit.block.data.type.Bed) data).setFacing(face);
+                    }));
+                    bedFootBlock.setBlockData(Bukkit.createBlockData(Materials.BED_BLOCK.getMaterial(), (data) -> {
+                        ((org.bukkit.block.data.type.Bed) data).setPart(org.bukkit.block.data.type.Bed.Part.FOOT);
+                        ((org.bukkit.block.data.type.Bed) data).setFacing(face);
+                    }));
+                }, 20);
+            }
+            bedFootState.update(true);
+            bedHeadState.update(true);
+        }catch (NullPointerException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -143,12 +158,13 @@ public class MapPaster {
                 Block block = blocks.get(i);
                 Block blockToPlace = blockMap.get(block);
 
-                Location location = block.getLocation();
-
-                location.getBlock().setType(blockToPlace.getType());
+                block.setType(blockToPlace.getType());
                 if(MLGRush.getInstance().isLegacy())
-                    NMSUtil.setBlockData(location.getBlock(), blockToPlace.getData());
-
+                    NMSUtil.setBlockDataLegacy(block, blockToPlace.getData());
+                else
+                    block.setBlockData(blockToPlace.getBlockData());
+                block.setBiome(blockToPlace.getBiome());
+                block.getState().update();
                 blocks.remove(block);
             }
             try {

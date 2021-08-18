@@ -79,7 +79,7 @@ public class MLGRushCommand implements CommandExecutor {
                     if(template != null) {
                         File file = MLGRush.getInstance().getMapManager().getMapTemplateStorage().getFileFromTemplate(template);
                         file.delete();
-                        player.sendMessage(MLGRush.PREFIX + "§aMap gelöscht.");
+                        player.sendMessage(MLGRush.PREFIX + "§aMap gelöscht. Restart the server...");
                     }else {
                         player.sendMessage(MLGRush.PREFIX + "§cDieses Template existiert nicht!");
                     }

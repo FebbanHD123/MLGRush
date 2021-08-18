@@ -63,7 +63,7 @@ public class StatsCommand implements CommandExecutor {
     }
 
     private String getStatsMessage(PlayerStats stats, String playerName) {
-        String message = MLGRush.getInstance().getConfig().getString("messages.stats.command");
+        String message = MLGRush.getString("messages.stats.command");
         message = message.replaceAll("%player%", playerName);
         message = message.replaceAll("%kills%", String.valueOf(stats.getKills()));
         message = message.replaceAll("%deaths%", String.valueOf(stats.getDeaths()));
