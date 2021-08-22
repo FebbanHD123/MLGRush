@@ -1,0 +1,49 @@
+#messages
+
+prefix: '&8[&cAdvancedMLGRush&8] &r'
+
+nopermissions: '&cYou do not have permissions to do that!'
+
+queue_entity_name: '&5&lQueue &8(&7Right click&8)'
+
+messages.queue.enter: '&7You have entered the &5queue&7.'
+messages.queue.quit: '&7You have left the &5queue&7.'
+messages.map_selection_cancel: '&cThe map selection was canceled!'
+messages.round_win: '&7You have &awon &7the round!'
+messages.round_loose: '&7You have &clost &7the round!'
+messages.round_cancel_playerquit: '&cThe round was canceled because your opponent left the round.'
+messages.map_creation.cancel: '&cThe process was canceled because your opponent left the server.'
+messages.not_in_round: '&cYou are already in a round!'
+messages.leave_round: '&7You have left the round.'
+messages.leave.usage: '&7Use &e/leave &7to leave the round.'
+messages.points.info: '&7Points needed to win: &e%points%&7.'
+
+#%n% stands for a new line in the message
+messages.stats.command: '&7Stats by &e%player% %n%&7Kills: &e%kills% %n%&7Deaths: &e%deaths%%n%&7K/D: &e%kd% %n%&7Games won: &e%wins% %n%&7Games lost: &e%looses% %n%&7Beds destroyed: &e%beds%'
+messages.stats.loading: '&7Loading Stats...'
+messages.stats.not_found: '&cThis player has not stats.'
+
+messages.inventorysorting.error: '&cAn error occurred while saving your sort order. Make sure that all items are present in the inventory!!'
+messages.inventorysorting.error_in_round: '&cYou are not currently allowed to execute this command.'
+messages.inventorysorting.succesfully: '&7Your inventory sort was &asaved&7.'
+
+messages.lobby.already_one_opponent: '&cThis player already has an opponent!'
+messages.lobby.challenged: '&7You have &a%player% &7challenged&7.'
+messages.lobby.challenged_by_player: '&7You have been challenged by &a%player% &7.'
+messages.lobby.already_challanged: '&7You have &a%player% &7already challenged.'
+messages.lobby.waiting_finish_settings: '&7Wait until %player% has made the settings. (&e%seconds%&7)'
+
+messages.lobby.is_not_in_round: '&7This player is not in any round.'
+
+actionbar.loadmap: '&eMap is loaded: §6%percent%'
+
+items.stick: '&cStick'
+items.challanger: '&5Challenger &8(&7Player hitting&8)'
+items.spectator: '&5Spectate players'
+items.cancel: '§cCancel'
+
+guiname.inventorysorting: '&eInventory sorting'
+guiname.mapchoosing: '&eMap'
+guiname.roundchoosing: '&eNumber of rounds'
+guiname.spectator: '&5Watch players'
+guiname.cancel: '&cCancel'
