@@ -1,0 +1,49 @@
+#messages
+
+prefix: '&8[&cAdvancedMLGRush&8] &r'
+
+nopermissions: '&c你沒有許可權去執行它！'
+
+queue_entity_name: '&5&l開始匹配&8（&7右鍵&8）'
+
+messages.queue.enter: '&7你開始了&5匹配&7.'
+messages.queue.quit: '&7你離開了&5匹配&7.'
+messages.map_selection_cancel: '&c地圖選擇已取消！'
+messages.round_win: '&7你&a贏&7了這局遊戲！'
+messages.round_loose: '&7你&c輸了&7這局遊戲！'
+messages.round_cancel_playerquit: '&c因為你的對手離開了這局遊戲，所以比賽被取消了！'
+messages.map_creation.cancel: '&c因為你的對手離開了服務器，所以比賽被取消了！'
+messages.not_in_round: '&c你已經在一局遊戲中了！'
+messages.leave_round: '&7你離開了遊戲.'
+messages.leave.usage: '&7使用&e/leave &7來離開遊戲.'
+messages.points.info: '&7贏得這局所需的積分：&e%points%&7.'
+
+#%n% stands for a new line in the message
+messages.stats.command: '&e%player% &7的統計資料：%n%&7殺敵數：&e%kills% %n%&7死亡數：&e%deaths%%n%&7擊殺/死亡比：&e%kd% %n%&7獲勝場數：&e%wins% %n%&7敗北場數：&e%looses% %n%&7破壞床數：&e%beds%'
+messages.stats.loading: '&7統計加載中…'
+messages.stats.not_found: '&c這個玩家沒有統計資料.'
+
+messages.inventorysorting.error: '&c保存背包順序數據時出現了錯誤，請確保所有物品都在背包中！！'
+messages.inventorysorting.error_in_round: '&c你現在不能執行此指令.'
+messages.inventorysorting.succesfully: '&7你的背包順序數據&a保存成功&7.'
+
+messages.lobby.already_one_opponent: '&c他正在進行一場比賽.'
+messages.lobby.challenged: '&7你向&a%player%&7發起了挑戰.'
+messages.lobby.challenged_by_player: '&7你收到了來自&a%player%&7的挑戰.'
+messages.lobby.already_challanged: '&7你已經向&a%player%&7發起了挑戰.'
+messages.lobby.waiting_finish_settings: '&7正在等待&a%player%&7完成設定.（&e%seconds%&7）'
+
+messages.lobby.is_not_in_round: '&7這個玩家當前不在任何遊戲中'
+
+actionbar.loadmap: '&e地圖已經加載了§6%percent%'
+
+items.stick: '&c擊退棒'
+items.challanger: '&5發起挑戰&8（&7點擊你要挑戰的玩家&8）'
+items.spectator: '&5旁觀比賽'
+items.cancel: '§c取消'
+
+guiname.inventorysorting: '&e背包順序'
+guiname.mapchoosing: '&e選擇地圖'
+guiname.roundchoosing: '&e輪數'
+guiname.spectator: '&5觀看玩家'
+guiname.cancel: '&c取消'
