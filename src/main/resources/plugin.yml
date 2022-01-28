@@ -3,7 +3,9 @@ version: ${project.version}
 main: de.febanhd.mlgrush.MLGRush
 author: FebanHD
 description: A mlgrush system
-api-version: 1.13
+api-version: 1.16
+softdepend:
+  - PlaceholderAPI
 
 commands:
   mlgrush:

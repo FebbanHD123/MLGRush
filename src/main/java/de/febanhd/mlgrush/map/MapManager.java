@@ -3,7 +3,7 @@ package de.febanhd.mlgrush.map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
-import de.febanhd.mlgrush.map.generator.VoidGenerator;
+import de.febanhd.mlgrush.map.generator.VoidGenerator_v1_8;
 import de.febanhd.mlgrush.nms.NMSUtil;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
@@ -100,9 +100,11 @@ public class MapManager {
     }
 
     public World generateVoidWorld(MapTemplate mapTemplate) {
-        WorldCreator worldCreator = new WorldCreator(this.getWorldName(mapTemplate)).type(WorldType.FLAT).generator(new VoidGenerator());
-        World world = Bukkit.createWorld(worldCreator);
-        return world;
+        WorldCreator worldCreator = new WorldCreator(
+                this.getWorldName(mapTemplate)
+        ).type(WorldType.FLAT)
+                .generator(MLGRush.getInstance().getVoidGeneratorProvider().getGenerator());
+        return Bukkit.createWorld(worldCreator);
     }
 
     public String getWorldName(MapTemplate template) {

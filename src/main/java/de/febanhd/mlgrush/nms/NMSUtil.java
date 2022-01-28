@@ -117,7 +117,11 @@ public class NMSUtil {
         bukkitEntity.setCustomName(LobbyHandler.queueEntityName);
         Object entity = getNMSEntity(bukkitEntity);
         String serverVersion = Bukkit.getBukkitVersion();
-        if(MLGRush.getInstance().isLegacy()) {
+        if(serverVersion.contains("1.18") || serverVersion.contains("1.17")) {
+            bukkitEntity.setGravity(false);
+            bukkitEntity.setInvulnerable(true);
+            bukkitEntity.setSilent(true);
+        }else if(MLGRush.getInstance().isLegacy()) {
             if (serverVersion.contains("1.8")) {
                 net.minecraft.server.v1_8_R3.Entity nmsEntity = ((org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity)bukkitEntity).getHandle();
                 net.minecraft.server.v1_8_R3.NBTTagCompound nbtTagCompound = nmsEntity.getNBTTag();

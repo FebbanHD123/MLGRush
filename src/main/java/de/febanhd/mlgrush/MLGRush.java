@@ -13,12 +13,15 @@ import de.febanhd.mlgrush.listener.InteractListener;
 import de.febanhd.mlgrush.listener.InventoryListener;
 import de.febanhd.mlgrush.listener.PlayerConnectionListener;
 import de.febanhd.mlgrush.map.MapManager;
+import de.febanhd.mlgrush.map.generator.VoidGeneratorProvider;
 import de.febanhd.mlgrush.map.setup.MapTemplateWorld;
+import de.febanhd.mlgrush.placeholder.MLGRushPlaceholderExpansion;
 import de.febanhd.mlgrush.stats.StatsCach;
 import de.febanhd.mlgrush.stats.StatsDataHandler;
 import de.febanhd.mlgrush.updatechecker.UpdateChecker;
 import de.febanhd.sql.SimpleSQL;
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -59,6 +62,8 @@ public class MLGRush extends JavaPlugin {
 
     private YamlConfiguration messageConfig;
 
+    private VoidGeneratorProvider voidGeneratorProvider;
+
     private boolean legacy;
 
     @Override
@@ -66,7 +71,9 @@ public class MLGRush extends JavaPlugin {
         instance = this;
 
         this.detectVersion();
+        this.voidGeneratorProvider = new VoidGeneratorProvider();
         this.loadConfig();
+        this.initPlaceHolderAPI();
 
         MLGRush.PREFIX = ChatColor.translateAlternateColorCodes('&', getString("prefix"));
 
@@ -142,22 +149,43 @@ public class MLGRush extends JavaPlugin {
         }
     }
 
+    private void initPlaceHolderAPI() {
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            //register placeholders
+            Bukkit.getConsoleSender().sendMessage(MLGRush.PREFIX + "§aPlaceholderAPI is running on this server. Register a new extension...");
+            new MLGRushPlaceholderExpansion().register();
+        }
+    }
+
     private void loadConfig() {
         if(!new File(this.getDataFolder(), "messages_de.yml").exists())
             this.saveResource("messages_de.yml", false);
         if(!new File(this.getDataFolder(), "messages_en.yml").exists())
             this.saveResource("messages_en.yml", false);
+        if(!new File(this.getDataFolder(), "messages_zh-cn.yml").exists())
+            this.saveResource("messages_zh-cn.yml", false);
+        if(!new File(this.getDataFolder(), "messages_zh-TW.yml").exists())
+            this.saveResource("messages_zh-TW.yml", false);
+
 
         this.getConfig().options().copyDefaults(true);
         this.saveConfig();
 
-        if (getConfig().contains("language") && getConfig().getString("language").equalsIgnoreCase("de")) {
+        String language = getConfig().getString("language", "en");
+        if (language.equalsIgnoreCase("de")) {
             this.messageConfig = YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "messages_de.yml"));
-            this.getLogger().info("Sprache geladen: Deutsch");
+            this.getLogger().info("Sprache geladen!");
+        }else if(language.equalsIgnoreCase("zh-cn")) {
+            this.messageConfig = YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "messages_zh-cn.yml"));
+            this.getLogger().info("加载语言!");
+        }else if(language.equalsIgnoreCase("zh-TW")) {
+            this.messageConfig = YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "messages_zh-TW.yml"));
+            this.getLogger().info("加载语言!");
         }else {
             this.messageConfig = YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "messages_en.yml"));
-            this.getLogger().info("Loaded Language: English");
+            this.getLogger().info("Language loaded!");
         }
+
 
         MapChoosingGui.GUI_NAME = MLGRush.getString("guiname.mapchoosing");
         InventorySortingGui.GUI_NAME = MLGRush.getString("guiname.inventorysorting");
@@ -170,8 +198,6 @@ public class MLGRush extends JavaPlugin {
         this.loadSql();
         this.statsDataHandler = new StatsDataHandler(this.sqlHandler);
         this.inventorySortingDataHandler = new InventorySortingDataHandler(this.sqlHandler, this.getConfig().getInt("knockback-amplifier"));
-
-
     }
 
     private void loadSql() {

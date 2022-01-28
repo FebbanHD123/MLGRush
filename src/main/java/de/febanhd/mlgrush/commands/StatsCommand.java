@@ -28,10 +28,6 @@ public class StatsCommand implements CommandExecutor {
             if(sender instanceof Player) {
                 Player player = (Player)sender;
                 PlayerStats stats = StatsCach.getStats(player);
-                if(stats == null) {
-                    player.sendMessage(MLGRush.PREFIX + "§cDeine Stats wurden noch nicht geladen!");
-                    return false;
-                }
                 this.sendStats(player, stats, sender.getName());
             }
         }else if (args.length == 1) {
@@ -67,7 +63,7 @@ public class StatsCommand implements CommandExecutor {
         message = message.replaceAll("%player%", playerName);
         message = message.replaceAll("%kills%", String.valueOf(stats.getKills()));
         message = message.replaceAll("%deaths%", String.valueOf(stats.getDeaths()));
-        message = message.replaceAll("%kd%", this.getKD(stats.getKills(), stats.getDeaths()));
+        message = message.replaceAll("%kd%", stats.getKD());
         message = message.replaceAll("%wins%", String.valueOf(stats.getWins()));
         message = message.replaceAll("%looses%", String.valueOf(stats.getLooses()));
         message = message.replaceAll("%beds%", String.valueOf(stats.getBedDestroyed()));
@@ -80,11 +76,5 @@ public class StatsCommand implements CommandExecutor {
         for(int i = 0; i < args.length; i++) {
             sender.sendMessage(MLGRush.PREFIX + ChatColor.translateAlternateColorCodes('&', args[i]));
         }
-    }
-
-    private String getKD(int kills, int deaths) {
-        double kd = (double)kills / (double)deaths;
-        double roundedKD = Math.round(kd * 100.0) / 100.0;
-        return String.valueOf(roundedKD);
     }
 }

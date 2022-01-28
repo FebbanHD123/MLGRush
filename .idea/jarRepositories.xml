@@ -12,9 +12,14 @@
       <option name="url" value="https://repo.aikar.co/nexus/content/repositories/aikar-release/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="spigot-repo" />
-      <option name="name" value="spigot-repo" />
-      <option name="url" value="https://hub.spigotmc.org/nexus/content/repositories/snapshots/" />
+      <option name="id" value="papermc" />
+      <option name="name" value="papermc" />
+      <option name="url" value="https://papermc.io/repo/repository/maven-public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="placeholderapi-repo" />
+      <option name="name" value="placeholderapi-repo" />
+      <option name="url" value="https://repo.extendedclip.com/content/repositories/placeholderapi/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
@@ -22,19 +27,14 @@
       <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="jboss.community" />
-      <option name="name" value="JBoss Community repository" />
-      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+      <option name="id" value="placeholderapi" />
+      <option name="name" value="placeholderapi" />
+      <option name="url" value="https://repo.extendedclip.com/content/repositories/placeholderapi/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="febanhd-repo" />
       <option name="name" value="febanhd-repo" />
       <option name="url" value="http://91.218.66.7:8081/service/rest/repository/browse/febanhd-releases/" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="febanhd-releases" />
-      <option name="name" value="febanhd-releases" />
-      <option name="url" value="http://91.218.66.7:8081/repository/febanhd-releases/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="CodeMC" />
@@ -50,6 +50,21 @@
       <option name="id" value="febanhd-releases" />
       <option name="name" value="febanhd-releases" />
       <option name="url" value="http://91.218.66.7:8081/service/rest/repositoryfebanhd-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="spigot-repo" />
+      <option name="name" value="spigot-repo" />
+      <option name="url" value="https://hub.spigotmc.org/nexus/content/repositories/snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="febanhd-releases" />
+      <option name="name" value="febanhd-releases" />
+      <option name="url" value="http://91.218.66.7:8081/repository/febanhd-releases/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="CodeMC" />

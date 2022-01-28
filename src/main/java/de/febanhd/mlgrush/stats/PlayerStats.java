@@ -48,4 +48,10 @@ public class PlayerStats {
         this.bedDestroyed++;
         MLGRush.getInstance().getStatsDataHandler().setValueAsync("beds", uuid, this.bedDestroyed);
     }
+
+    public String getKD() {
+        double kd = (double)kills / (double)deaths;
+        double roundedKD = Math.round(kd * 100.0) / 100.0;
+        return String.valueOf(roundedKD);
+    }
 }
