@@ -1,4 +1,4 @@
 # MLGRush
-This is a nice minigame for evenry Server
+This is a nice minigame for every Server
 
 ## Coming soon
