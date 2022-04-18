@@ -2,8 +2,8 @@ package de.febanhd.mlgrush;
 
 import de.febanhd.mlgrush.commands.*;
 import de.febanhd.mlgrush.game.GameHandler;
-import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
-import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingDataHandler;
+import de.febanhd.mlgrush.game.inventorysorting.InventorySortingCach;
+import de.febanhd.mlgrush.game.inventorysorting.InventorySortingDataHandler;
 import de.febanhd.mlgrush.gui.InventorySortingGui;
 import de.febanhd.mlgrush.gui.MapChoosingGui;
 import de.febanhd.mlgrush.gui.RoundChoosingGui;
@@ -15,13 +15,13 @@ import de.febanhd.mlgrush.listener.PlayerConnectionListener;
 import de.febanhd.mlgrush.map.MapManager;
 import de.febanhd.mlgrush.map.generator.VoidGeneratorProvider;
 import de.febanhd.mlgrush.map.setup.MapTemplateWorld;
+import de.febanhd.mlgrush.map.template.MapCreator;
 import de.febanhd.mlgrush.placeholder.MLGRushPlaceholderExpansion;
 import de.febanhd.mlgrush.stats.StatsCach;
 import de.febanhd.mlgrush.stats.StatsDataHandler;
 import de.febanhd.mlgrush.updatechecker.UpdateChecker;
 import de.febanhd.sql.SimpleSQL;
 import lombok.Getter;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -88,6 +88,7 @@ public class MLGRush extends JavaPlugin {
         this.getCommand("leave").setExecutor(new LeaveCommand());
         this.getCommand("stats").setExecutor(new StatsCommand());
         this.getCommand("sortinv").setExecutor(new SortInvCommand());
+        this.getCommand("togglequeue").setExecutor(new ToggleQueueCommand());
 
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new InventoryListener(), this);
@@ -192,7 +193,7 @@ public class MLGRush extends JavaPlugin {
         SpectatorGui.GUI_NAME = MLGRush.getString("guiname.spectator");
         RoundChoosingGui.GUI_NAME = MLGRush.getString("guiname.roundchoosing");
         if(this.getConfig().contains("paste.distance")) {
-            MapManager.DISTANCE = this.getConfig().getInt("paste.distance");
+            MapCreator.DISTANCE = this.getConfig().getInt("paste.distance");
         }
 
         this.loadSql();

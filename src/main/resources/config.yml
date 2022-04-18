@@ -27,6 +27,11 @@ no-damage: true
 #Blocks per Tick which will place
 map_generation.spawningrate: 13
 
+#How many maps should be available without a player to be used directly?
+#The more players the plugin should manage the higher this value should be
+map_generation.cached_maps.max: 6
+map_generation.cached_maps.min: 3
+
 #The distance between the maps (in blocks) it should be more than your largest map width
 paste.distance: 150
 

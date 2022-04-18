@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class LobbyQueue {
 
     @Getter
-    private ArrayList<Player> players = Lists.newArrayList();
+    private final ArrayList<Player> players = Lists.newArrayList();
 
     public Player getPlayer(int i) {
         return this.players.get(i);

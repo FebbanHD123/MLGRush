@@ -3,7 +3,7 @@ package de.febanhd.mlgrush.api;
 import com.google.common.collect.Lists;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameSession;
-import de.febanhd.mlgrush.map.MapTemplate;
+import de.febanhd.mlgrush.map.template.MapTemplate;
 import de.febanhd.mlgrush.stats.PlayerStats;
 import de.febanhd.mlgrush.stats.StatsCach;
 import org.bukkit.Bukkit;

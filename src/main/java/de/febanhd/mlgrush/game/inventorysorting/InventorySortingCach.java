@@ -1,4 +1,4 @@
-package de.febanhd.mlgrush.game.lobby.inventorysorting;
+package de.febanhd.mlgrush.game.inventorysorting;
 
 import com.google.common.collect.Lists;
 import de.febanhd.mlgrush.MLGRush;

@@ -1,9 +1,8 @@
 package de.febanhd.mlgrush.map.setup;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
-import de.febanhd.mlgrush.map.MapTemplate;
+import de.febanhd.mlgrush.map.template.MapTemplate;
 import de.febanhd.mlgrush.map.elements.BedObject;
 import de.febanhd.mlgrush.util.Cuboid;
 import org.bukkit.Bukkit;
@@ -13,13 +12,10 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.util.BlockIterator;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MapSetupSession  {

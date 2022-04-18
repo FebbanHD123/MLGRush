@@ -2,7 +2,7 @@ package de.febanhd.mlgrush.listener;
 
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.lobby.LobbyHandler;
-import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
+import de.febanhd.mlgrush.game.spectator.SpectatorHandler;
 import de.febanhd.mlgrush.gui.InventorySortingGui;
 import de.febanhd.mlgrush.gui.SpectatorGui;
 import org.bukkit.Material;

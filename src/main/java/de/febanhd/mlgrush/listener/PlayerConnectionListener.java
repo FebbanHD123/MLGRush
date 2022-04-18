@@ -1,11 +1,10 @@
 package de.febanhd.mlgrush.listener;
 
 import de.febanhd.mlgrush.MLGRush;
-import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.GameSession;
 import de.febanhd.mlgrush.game.lobby.LobbyQueue;
-import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
-import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
+import de.febanhd.mlgrush.game.inventorysorting.InventorySortingCach;
+import de.febanhd.mlgrush.game.spectator.SpectatorHandler;
 import de.febanhd.mlgrush.map.setup.MapSetupSession;
 import de.febanhd.mlgrush.stats.StatsCach;
 import org.bukkit.Bukkit;
@@ -48,7 +47,7 @@ public class PlayerConnectionListener implements Listener {
         if(player.hasPermission("mlgrush.notify") &&
                 !MLGRush.getInstance().getUpdateChecker().getCachedVersion().equals(MLGRush.getInstance().getDescription().getVersion())) {
             player.sendMessage(MLGRush.PREFIX + "§7Newer version of AdvancedMLGRush is available (" + MLGRush.getInstance().getUpdateChecker().getCachedVersion() +
-                    "). &7https://www.spigotmc.org/resources/mlgrush-%E2%9C%85-the-most-advanced-mlgrush-system-unendlich-maps-mit-nur-einem-template.84672/");
+                    "). §7https://www.spigotmc.org/resources/mlgrush-%E2%9C%85-the-most-advanced-mlgrush-system-unendlich-maps-mit-nur-einem-template.84672/");
         }
 
         Bukkit.getOnlinePlayers().forEach(players -> {

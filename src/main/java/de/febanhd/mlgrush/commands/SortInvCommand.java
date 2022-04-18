@@ -1,21 +1,13 @@
 package de.febanhd.mlgrush.commands;
 
 import de.febanhd.mlgrush.MLGRush;
-import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySorting;
-import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
+import de.febanhd.mlgrush.game.inventorysorting.InventorySorting;
+import de.febanhd.mlgrush.game.inventorysorting.InventorySortingCach;
 import de.febanhd.mlgrush.gui.InventorySortingGui;
-import de.febanhd.mlgrush.stats.PlayerStats;
-import de.febanhd.mlgrush.stats.StatsCach;
-import de.febanhd.mlgrush.stats.StatsDataHandler;
-import de.febanhd.mlgrush.util.UUIDFetcher;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.UUID;
 
 public class SortInvCommand implements CommandExecutor {
 

@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.map.elements.BedObject;
+import de.febanhd.mlgrush.map.template.MapCreator;
+import de.febanhd.mlgrush.map.template.MapTemplate;
 import de.febanhd.mlgrush.nms.NMSUtil;
 import de.febanhd.mlgrush.util.Cuboid;
 import de.febanhd.mlgrush.util.Materials;
@@ -12,7 +14,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.material.Bed;
 
 import java.util.*;
@@ -20,11 +21,12 @@ import java.util.function.Consumer;
 
 public class MapPaster {
 
-    private MapTemplate template;
-    private int x, y, taskID;
+    private final MapTemplate template;
+    private final World world;
+    private final int x, y;
+    private int taskID;
     @Getter
     private int progressPercent;
-    private World world;
 
     public MapPaster(MapTemplate template, World world, int x) {
         this.template = template;
@@ -188,11 +190,12 @@ public class MapPaster {
         int minZ = this.getMinOfList(zList), minX = this.getMinOfList(xList), minY = this.getMinOfList(yList);
         int maxZ = this.getMaxOfList(zList), maxX = this.getMaxOfList(xList), maxY = this.getMaxOfList(yList);
 
-        int x1 = minX - (MapManager.DISTANCE / 3);
-        int z1 = minZ - (MapManager.DISTANCE / 3);
+        int distance = MapCreator.DISTANCE;
+        int x1 = minX - (distance / 3);
+        int z1 = minZ - (distance / 3);
 
-        int x2 = maxX + (MapManager.DISTANCE / 3);
-        int z2 = maxZ + (MapManager.DISTANCE / 3);
+        int x2 = maxX + (distance / 3);
+        int z2 = maxZ + (distance / 3);
 
         Location loc1 = new Location(this.world, x1, minY - 5, z1);
         Location loc2 = new Location(this.world, x2, maxY + 5, z2);

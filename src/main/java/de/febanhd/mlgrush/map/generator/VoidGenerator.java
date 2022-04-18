@@ -19,6 +19,8 @@ public abstract class VoidGenerator extends ChunkGenerator {
     public Location getFixedSpawnLocation(World world, Random random) {
         return new Location(world, 0, 100, 0);
     }
+
+
     public void generateBedrock(WorldInfo worldInfo, Random random, int chunkX, int chunkZ, ChunkData chunkData) {
         // Bedrock block position
         final int x = 0, y = 64, z = 0;

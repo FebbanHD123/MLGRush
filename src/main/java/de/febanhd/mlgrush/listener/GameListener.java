@@ -4,16 +4,13 @@ import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameHandler;
 import de.febanhd.mlgrush.game.GameSession;
 import de.febanhd.mlgrush.game.lobby.LobbyHandler;
-import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySorting;
-import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
+import de.febanhd.mlgrush.game.spectator.SpectatorHandler;
 import de.febanhd.mlgrush.gui.InventorySortingGui;
 import de.febanhd.mlgrush.map.Map;
 import de.febanhd.mlgrush.map.elements.BedObject;
 import de.febanhd.mlgrush.util.Materials;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -64,7 +61,9 @@ public class GameListener implements Listener {
             Player player = (Player) event.getEntity();
             Player damager = (Player) event.getDamager();
             SpectatorHandler spectatorHandler = MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler();
+            System.out.println(damager.getName() + " is spec?: " + spectatorHandler.isSpectating(damager));
             if(spectatorHandler.isSpectating(damager) || spectatorHandler.isSpectating(player)) {
+                System.out.println("Spectator");
                 event.setCancelled(true);
                 return;
             }
@@ -118,7 +117,7 @@ public class GameListener implements Listener {
             if(event.isCancelled())
                 event.setCancelled(false);
             if(session.getMap().getMaxBuildHeight() <= event.getBlock().getY() ||
-                    !session.getMap().isInRegion(event.getBlock().getLocation()) ||
+                    session.getMap().isInRegion(event.getBlock().getLocation()) ||
                     session.getMap().isSpawnBlock(event.getBlock().getLocation())) {
                 event.setCancelled(true);
             }else {
@@ -174,7 +173,7 @@ public class GameListener implements Listener {
             if(map != null) {
                 if ((player.getLocation().getY() <= map.getDeathHeight() && session.isRunning())) {
                     session.respawn(player, true);
-                }else if(!map.isInRegion(event.getTo())) {
+                }else if(map.isInRegion(event.getTo())) {
                     session.respawn(player, false);
                 }
             }

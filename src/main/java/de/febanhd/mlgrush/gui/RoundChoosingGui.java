@@ -1,7 +1,6 @@
 package de.febanhd.mlgrush.gui;
 
 import de.febanhd.mlgrush.MLGRush;
-import de.febanhd.mlgrush.map.MapTemplate;
 import de.febanhd.mlgrush.util.ItemBuilder;
 import de.febanhd.mlgrush.util.SkullBuilder;
 import org.bukkit.Bukkit;

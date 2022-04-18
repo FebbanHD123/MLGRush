@@ -2,7 +2,7 @@ package de.febanhd.mlgrush.game.lobby;
 
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.game.GameHandler;
-import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
+import de.febanhd.mlgrush.game.spectator.SpectatorHandler;
 import de.febanhd.mlgrush.gui.InventorySortingGui;
 import de.febanhd.mlgrush.nms.NMSUtil;
 import de.febanhd.mlgrush.util.ItemBuilder;

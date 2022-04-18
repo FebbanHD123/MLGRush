@@ -1,6 +1,6 @@
 package de.febanhd.mlgrush.gui;
 
-import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySorting;
+import de.febanhd.mlgrush.game.inventorysorting.InventorySorting;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

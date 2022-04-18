@@ -1,4 +1,4 @@
-package de.febanhd.mlgrush.game.lobby.inventorysorting;
+package de.febanhd.mlgrush.game.inventorysorting;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -16,7 +16,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;

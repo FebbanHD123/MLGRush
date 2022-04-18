@@ -23,7 +23,7 @@ public class GameHandler {
     @Getter
     private final LobbyQueue queue;
     @Getter
-    private LobbyHandler lobbyHandler;
+    private final LobbyHandler lobbyHandler;
 
     private HashMap<Player, Player> challangerMap = Maps.newHashMap();
 

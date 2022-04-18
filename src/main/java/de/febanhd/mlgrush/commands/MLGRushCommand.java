@@ -1,7 +1,7 @@
 package de.febanhd.mlgrush.commands;
 
 import de.febanhd.mlgrush.MLGRush;
-import de.febanhd.mlgrush.map.MapTemplate;
+import de.febanhd.mlgrush.map.template.MapTemplate;
 import de.febanhd.mlgrush.map.setup.MapSetupSession;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,14 +27,14 @@ public class MLGRushCommand implements CommandExecutor {
                         return false;
                     }
                     MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyLocation(player.getLocation());
-                    player.sendMessage(MLGRush.PREFIX + "§2Lobby-Spawn gesetzt.");
+                    player.sendMessage(MLGRush.PREFIX + "§7Lobbyspawn was set to your location.");
                 } else if (args[0].equalsIgnoreCase("setqueue")) {
                     if (!player.hasPermission("mlgrush.setqueue")) {
                         player.sendMessage(MLGRush.getMessage("nopermissions"));
                         return false;
                     }
                     MLGRush.getInstance().getGameHandler().getLobbyHandler().setQueueEntityLocation(player.getLocation());
-                    player.sendMessage(MLGRush.PREFIX + "§2Queue gesetzt.");
+                    player.sendMessage(MLGRush.PREFIX + "§2Queue was set to your location.");
                 }else
                     sendUsage(player);
             } else if (args.length == 2) {

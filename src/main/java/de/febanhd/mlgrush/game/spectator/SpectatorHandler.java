@@ -1,24 +1,21 @@
-package de.febanhd.mlgrush.game.lobby.spectator;
+package de.febanhd.mlgrush.game.spectator;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.util.ItemBuilder;
 import de.febanhd.mlgrush.util.Materials;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
 public class SpectatorHandler {
 
-    private ArrayList<Player> spectators = Lists.newArrayList();
-    private HashMap<Player, Player> targetMap = Maps.newHashMap();
+    private final ArrayList<Player> spectators = Lists.newArrayList();
+    private final HashMap<Player, Player> targetMap = Maps.newHashMap();
 
     public void spectate(Player player, Player target) {
         player.setGameMode(GameMode.ADVENTURE);
@@ -73,7 +70,7 @@ public class SpectatorHandler {
     public List<Player> getPlayersWithCertainTarget(Player t) {
         List<Player> players = Lists.newArrayList();
         this.targetMap.forEach((player, target) -> {
-            if(t.equals(target)) {
+            if(t.getUniqueId().equals(target.getUniqueId())) {
                 players.add(player);
             }
         });

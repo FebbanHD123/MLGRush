@@ -3,20 +3,19 @@ package de.febanhd.mlgrush.game;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import de.febanhd.mlgrush.MLGRush;
-import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySorting;
-import de.febanhd.mlgrush.game.lobby.inventorysorting.InventorySortingCach;
-import de.febanhd.mlgrush.game.lobby.spectator.SpectatorHandler;
+import de.febanhd.mlgrush.game.inventorysorting.InventorySorting;
+import de.febanhd.mlgrush.game.inventorysorting.InventorySortingCach;
+import de.febanhd.mlgrush.game.spectator.SpectatorHandler;
 import de.febanhd.mlgrush.gui.MapChoosingGui;
 import de.febanhd.mlgrush.gui.RoundChoosingGui;
 import de.febanhd.mlgrush.map.Map;
-import de.febanhd.mlgrush.map.MapTemplate;
+import de.febanhd.mlgrush.map.template.MapTemplate;
 import de.febanhd.mlgrush.nms.NMSUtil;
 import de.febanhd.mlgrush.stats.StatsCach;
 import de.febanhd.mlgrush.util.Sounds;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -140,7 +139,14 @@ public class GameSession {
 
     public void startGame() {
         this.stopCurrentTask();
-        MLGRush.getInstance().getMapManager().joinGame(this.mapTemplate, player1, player2, map -> {
+        this.mapTemplate.requestMap(player1, player2, map -> {
+
+            player1.teleport(map.getSpawnLocation()[0]);
+            player2.teleport(map.getSpawnLocation()[1]);
+            player1.setGameMode(GameMode.SURVIVAL);
+            player2.setGameMode(GameMode.SURVIVAL);
+
+
             Bukkit.getOnlinePlayers().forEach(player -> {
                 if(!player.equals(player1) && !player.equals(player2)) {
                     player1.hidePlayer(player);
@@ -198,7 +204,8 @@ public class GameSession {
             });
 
             if (this.map != null) {
-                this.map.delete();
+                this.map.setFree();
+                this.map.resetPlacedBlocks();
             }
             if (winner != null) {
                 Player looser;
@@ -223,9 +230,13 @@ public class GameSession {
                 StatsCach.getStats(quiter).addLoose();
                 StatsCach.getStats(winner).addWin();
             }
+
+
+            //Cancel spec mode for all spectators
             SpectatorHandler spectatorHandler = MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler();
             spectatorHandler.getPlayersWithCertainTarget(player1).forEach(spectatorHandler::cancelSpectating);
             spectatorHandler.getPlayersWithCertainTarget(player2).forEach(spectatorHandler::cancelSpectating);
+
             this.sendEmptyActionBar();
         }catch (Exception e) {
             e.printStackTrace();
@@ -242,27 +253,13 @@ public class GameSession {
         this.setItems(player1);
         this.setItems(player2);
 
-        this.resetPlacedBlocks();
+        this.map.resetPlacedBlocks();
 
         StatsCach.getStats(player).addBedDestroyed();
 
         if(points >= this.pointsForWin) {
             this.stopGame(player, player);
         }
-    }
-
-    private void resetPlacedBlocks() {
-        this.resseterTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
-            if(this.map.getPlacedBlocks().size() <= 0) {
-                Bukkit.getScheduler().cancelTask(this.resseterTaskID);
-                return;
-            }
-            for(int i = 0; i < this.map.getPlacedBlocks().size() && i < 15; i++) {
-                Block block = this.map.getPlacedBlocks().get(i);
-                block.setType(Material.AIR);
-                this.map.getPlacedBlocks().remove(block);
-            }
-        }, 0, 1);
     }
 
     private void sendEmptyActionBar() {

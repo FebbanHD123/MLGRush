@@ -3,6 +3,7 @@ package de.febanhd.mlgrush.map;
 import com.google.common.collect.Lists;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.map.elements.BedObject;
+import de.febanhd.mlgrush.map.template.MapTemplate;
 import de.febanhd.mlgrush.util.Cuboid;
 import de.febanhd.mlgrush.util.LocationUtil;
 import org.bukkit.Location;

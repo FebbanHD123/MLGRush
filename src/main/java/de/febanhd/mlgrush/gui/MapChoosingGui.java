@@ -1,7 +1,7 @@
 package de.febanhd.mlgrush.gui;
 
 import de.febanhd.mlgrush.MLGRush;
-import de.febanhd.mlgrush.map.MapTemplate;
+import de.febanhd.mlgrush.map.template.MapTemplate;
 import de.febanhd.mlgrush.util.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
