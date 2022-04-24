@@ -3,6 +3,7 @@ package de.febanhd.mlgrush.map.template;
 import com.google.common.collect.Lists;
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.map.Map;
+import de.febanhd.mlgrush.map.MapManager;
 import de.febanhd.mlgrush.map.MapPaster;
 import de.febanhd.mlgrush.nms.NMSUtil;
 import org.bukkit.Bukkit;
@@ -16,16 +17,12 @@ import java.util.function.Consumer;
 
 public class MapCreator {
 
-    public static int DISTANCE = 150;
-    public static final int START_X = 50;
-
     private final String actionbarGenerateInfo = MLGRush.getString("actionbar.loadmap");
     private final int maxCachedMapsAmount = MLGRush.getInstance().getConfig().getInt("map_generation.cached_maps.max", 6);
     private final int minCachedMapsAmount = MLGRush.getInstance().getConfig().getInt("map_generation.cached_maps.min", 3);
 
     private final CopyOnWriteArrayList<Map> loadedMaps = Lists.newCopyOnWriteArrayList();
     private final List<MapRequest> requests = Lists.newArrayList();
-    private final List<MapWorldSlot> worldSlots = Lists.newArrayList();
     private final MapTemplate mapTemplate;
     private final AtomicInteger mapCreates = new AtomicInteger();
 
@@ -51,32 +48,33 @@ public class MapCreator {
 
             //generate new map
             AtomicInteger taskID = new AtomicInteger();
-            final MapPaster paster = this.generateMap(map -> {
+
+
+            MLGRush.getInstance().getMapManager().getWorldManager().createMap(mapTemplate, paster -> {
+                //displays action bar and cancel joining if a player leaves during the paste process
+                taskID.set(Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
+                    String actionBarString = actionbarGenerateInfo.replaceAll("%percent%", paster.getProgressPercent() + "%");
+                    if(player1.isOnline())
+                        NMSUtil.sendActionbar(player1, actionBarString);
+                    if(player2.isOnline())
+                        NMSUtil.sendActionbar(player2, actionBarString);
+
+                    if(!player1.isOnline() || !player2.isOnline()) {
+                        Bukkit.getScheduler().cancelTask(taskID.get());
+                        if(player1.isOnline()) {
+                            player1.sendMessage(MLGRush.getMessage("messages.map_creation.cancel"));
+                        }else {
+                            player2.sendMessage(MLGRush.getMessage("messages.map_creation.cancel"));
+                        }
+                    }
+                }, 1, 20));
+            }, map -> {
                 this.loadedMaps.add(map);
                 Bukkit.getScheduler().cancelTask(taskID.get());
                 if(!player1.isOnline() || !player2.isOnline()) return;
                 map.setIngame(player1, player2);
                 mapRequest.getConsumer().accept(map);
             });
-
-
-            //displays action bar and cancel joining if a player leaves during the paste process
-            taskID.set(Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {
-                String actionBarString = actionbarGenerateInfo.replaceAll("%percent%", paster.getProgressPercent() + "%");
-                if(player1.isOnline())
-                    NMSUtil.sendActionbar(player1, actionBarString);
-                if(player2.isOnline())
-                    NMSUtil.sendActionbar(player2, actionBarString);
-
-                if(!player1.isOnline() || !player2.isOnline()) {
-                    Bukkit.getScheduler().cancelTask(taskID.get());
-                    if(player1.isOnline()) {
-                        player1.sendMessage(MLGRush.getMessage("messages.map_creation.cancel"));
-                    }else {
-                        player2.sendMessage(MLGRush.getMessage("messages.map_creation.cancel"));
-                    }
-                }
-            }, 1, 20));
         });
         this.requests.clear();
 
@@ -88,15 +86,14 @@ public class MapCreator {
                 .forEach(map -> {
                     if(freeMapCount.get() >= this.maxCachedMapsAmount) {
                         this.loadedMaps.remove(map);
-                        map.deleteAsync(null);
-                        this.worldSlots.removeIf(mapWorldSlot -> mapWorldSlot.getX() == map.getX());
+                        MLGRush.getInstance().getMapManager().getWorldManager().deleteMap(map);
                         return;
                     }
                     freeMapCount.incrementAndGet();
                 });
-        if((freeMapCount.get() - this.mapCreates.get()) < this.minCachedMapsAmount) {
+        if((freeMapCount.get() + this.mapCreates.get()) < this.minCachedMapsAmount) {
             this.mapCreates.incrementAndGet();
-            this.generateMap(map -> {
+            MLGRush.getInstance().getMapManager().getWorldManager().createMap(mapTemplate, mapPaster -> {}, map -> {
                 this.loadedMaps.add(map);
                 this.mapCreates.decrementAndGet();
             });
@@ -105,34 +102,6 @@ public class MapCreator {
 
     private Map getFreeMap() {
         return this.loadedMaps.stream().filter(map -> map.getState() == Map.State.FREE).findFirst().orElse(null);
-    }
-
-    private MapPaster generateMap(Consumer<Map> map) {
-        MapWorldSlot slot = this.getFreeWorldSlot();
-        slot.setOccupied();
-        return paste(this.mapTemplate.getWorld(), slot.getX(), map);
-    }
-
-    private MapPaster paste(World world, int x, Consumer<Map> map) {
-        MapPaster paster = new MapPaster(this.mapTemplate, world, x);
-        paster.paste(map);
-        return paster;
-    }
-
-    public MapWorldSlot getFreeWorldSlot() {
-        return this.worldSlots.stream()
-                .filter(MapWorldSlot::isFree)
-                .findFirst()
-                .orElseGet(() -> {
-                    int x;
-                    if(this.worldSlots.isEmpty())
-                        x = START_X;
-                    else
-                        x = START_X + this.worldSlots.size() * DISTANCE;
-                   MapWorldSlot slot = new MapWorldSlot(x);
-                   this.worldSlots.add(slot);
-                   return slot;
-                });
     }
 
 }

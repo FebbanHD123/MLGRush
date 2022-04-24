@@ -24,5 +24,7 @@ commands:
     description: Show your stats
   sortinv:
     description: Sort yourr inv
-  togglequeue:
+  joinqueue:
+    aliases:
+      - togglequeue
     description: Toggle the queue

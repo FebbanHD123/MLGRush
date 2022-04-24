@@ -190,7 +190,7 @@ public class MapPaster {
         int minZ = this.getMinOfList(zList), minX = this.getMinOfList(xList), minY = this.getMinOfList(yList);
         int maxZ = this.getMaxOfList(zList), maxX = this.getMaxOfList(xList), maxY = this.getMaxOfList(yList);
 
-        int distance = MapCreator.DISTANCE;
+        int distance = WorldManager.DISTANCE;
         int x1 = minX - (distance / 3);
         int z1 = minZ - (distance / 3);
 

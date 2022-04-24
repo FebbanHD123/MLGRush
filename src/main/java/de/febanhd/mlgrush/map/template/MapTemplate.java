@@ -17,7 +17,6 @@ public class MapTemplate {
 
     private final Cuboid region;
     private final String name;
-    private final World world;
     private final Location[] spawnLocation = new Location[2];
     private final BedObject[] bedObjects = new BedObject[2];
     private final Location deathLocation;
@@ -41,7 +40,6 @@ public class MapTemplate {
         if(this.worldExists(worldName)) {
             MLGRush.getInstance().getMapManager().deleteWorld(Bukkit.getWorld(worldName));
         }
-        this.world = MLGRush.getInstance().getMapManager().generateVoidWorld(this);
     }
 
     public void requestMap(Player player1, Player player2, Consumer<Map> consumer) {

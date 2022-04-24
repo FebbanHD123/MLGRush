@@ -13,6 +13,7 @@ import de.febanhd.mlgrush.listener.InteractListener;
 import de.febanhd.mlgrush.listener.InventoryListener;
 import de.febanhd.mlgrush.listener.PlayerConnectionListener;
 import de.febanhd.mlgrush.map.MapManager;
+import de.febanhd.mlgrush.map.WorldManager;
 import de.febanhd.mlgrush.map.generator.VoidGeneratorProvider;
 import de.febanhd.mlgrush.map.setup.MapTemplateWorld;
 import de.febanhd.mlgrush.map.template.MapCreator;
@@ -193,7 +194,7 @@ public class MLGRush extends JavaPlugin {
         SpectatorGui.GUI_NAME = MLGRush.getString("guiname.spectator");
         RoundChoosingGui.GUI_NAME = MLGRush.getString("guiname.roundchoosing");
         if(this.getConfig().contains("paste.distance")) {
-            MapCreator.DISTANCE = this.getConfig().getInt("paste.distance");
+            WorldManager.DISTANCE = this.getConfig().getInt("paste.distance", 250);
         }
 
         this.loadSql();
@@ -229,13 +230,13 @@ public class MLGRush extends JavaPlugin {
                 world.setThundering(false);
                 world.setStorm(false);
                 world.setTime(10000);
-                world.getEntities().forEach(entity -> {
-                    if(entity instanceof Monster && entity != this.getGameHandler().getLobbyHandler().getQueueEntity()) {
-                        entity.remove();
-                    }
-                });
+//                world.getEntities().forEach(entity -> {
+//                    if (entity instanceof Monster && entity.getEntityId() != this.getGameHandler().getLobbyHandler().getQueueEntity().getEntityId()) {
+//                        entity.remove();
+//                    }
+//                });
             }
-        }, 0, 5);
+        }, 0, 20);
     }
 
     public static String getMessage(String key) {

@@ -10,16 +10,18 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 
+@Getter
 public class MapManager {
 
-    @Getter
     private ArrayList<MapTemplate> templates;
-    @Getter
     private final MapTemplateStorage mapTemplateStorage;
+    private final WorldManager worldManager;
 
     public MapManager() {
         this.mapTemplateStorage = new MapTemplateStorage();
+        this.worldManager = new WorldManager(this.generateVoidWorld());
         Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
             this.templates = this.mapTemplateStorage.loadAllTemplates();
             MLGRush.getInstance().getLogger().info("Loaded " + this.templates.size() + " Map-Template");
@@ -40,8 +42,8 @@ public class MapManager {
         return null;
     }
 
-    public World generateVoidWorld(MapTemplate mapTemplate) {
-        String worldName = this.getWorldName(mapTemplate);
+    public World generateVoidWorld() {
+        String worldName = "mlgrush_live_" + UUID.randomUUID().toString().substring(0, 3);
 
         File file = new File(worldName);
         if(file.exists())
@@ -58,9 +60,7 @@ public class MapManager {
     }
 
     public void resetMapWorlds() {
-        for(MapTemplate mapTemplate : this.templates) {
-            this.deleteWorld(mapTemplate.getWorld());
-        }
+        deleteWorld(this.worldManager.getWorld());
     }
 
     public void deleteWorld(World world) {

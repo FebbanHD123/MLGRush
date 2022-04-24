@@ -31,6 +31,8 @@ map_generation.spawningrate: 13
 #The more players the plugin should manage the higher this value should be
 map_generation.cached_maps.max: 6
 map_generation.cached_maps.min: 3
+#How many maps can be created at the same time
+map_generation.max_pastes: 3
 
 #The distance between the maps (in blocks) it should be more than your largest map width
 paste.distance: 150
