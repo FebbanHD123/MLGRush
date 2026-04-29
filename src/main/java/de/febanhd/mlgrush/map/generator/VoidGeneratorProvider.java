@@ -16,10 +16,8 @@ public class VoidGeneratorProvider {
             this.generator = new VoidGenerator_v1_8();
         }else if (version.contains("1.15") || version.contains("1.16")) {
             this.generator = new VoidGenerator_v_1_15();
-        }else if(version.equals("1.17")) {
-            this.generator = new VoidGenerator_v_1_17();
         }else {
-            this.generator = new VoidGenerator_v_1_17_1();
+            this.generator = new VoidGenerator_v_1_17();
         }
         Bukkit.getConsoleSender().sendMessage(MLGRush.PREFIX + "§cVoidGenerator: §a" + this.generator.getClass().getSimpleName());
     }

@@ -69,7 +69,7 @@
             <artifactId>spigot</artifactId>
             <version>1.8</version>
             <scope>system</scope>
-            <systemPath>D:/development/api/spigot/spigot_1.8_R3.jar</systemPath>
+            <systemPath>${project.basedir}/libs/Spigot-1.8.8.jar</systemPath>
         </dependency>
 
         <dependency>

@@ -116,10 +116,15 @@ public class LobbyHandler {
     }
 
     public void setLobbyItems(Player player) {
-        player.getInventory().clear();
-        player.getInventory().setItem(getSlot("lobby.slots.challanger", 0), new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName(MLGRush.getString("items.challanger")).build());
-        player.getInventory().setItem(getSlot("lobby.slots.inventory_sorting", 3), new ItemBuilder(Material.CHEST).setDisplayName(InventorySortingGui.GUI_NAME).build());
-        player.getInventory().setItem(getSlot("lobby.slots.spectate", 5), this.spectatorHandler.getSpectatorItem());
+        if (getSlot("lobby.slots.challanger", 0) >= 0) {
+            player.getInventory().setItem(getSlot("lobby.slots.challanger", 0), new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName(MLGRush.getString("items.challanger")).build());
+        }
+        if (getSlot("lobby.slots.inventory_sorting", 3) >= 0) {
+            player.getInventory().setItem(getSlot("lobby.slots.inventory_sorting", 3), new ItemBuilder(Material.CHEST).setDisplayName(InventorySortingGui.GUI_NAME).build());
+        }
+        if (getSlot("lobby.slots.spectate", 5) >= 0) {
+            player.getInventory().setItem(getSlot("lobby.slots.spectate", 5), this.spectatorHandler.getSpectatorItem());
+        }
     }
 
     private int getSlot(String configPath, int defaultValue) {

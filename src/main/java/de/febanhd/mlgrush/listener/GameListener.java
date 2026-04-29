@@ -61,9 +61,7 @@ public class GameListener implements Listener {
             Player player = (Player) event.getEntity();
             Player damager = (Player) event.getDamager();
             SpectatorHandler spectatorHandler = MLGRush.getInstance().getGameHandler().getLobbyHandler().getSpectatorHandler();
-            System.out.println(damager.getName() + " is spec?: " + spectatorHandler.isSpectating(damager));
             if(spectatorHandler.isSpectating(damager) || spectatorHandler.isSpectating(player)) {
-                System.out.println("Spectator");
                 event.setCancelled(true);
                 return;
             }
@@ -118,7 +116,8 @@ public class GameListener implements Listener {
                 event.setCancelled(false);
             if(session.getMap().getMaxBuildHeight() <= event.getBlock().getY() ||
                     session.getMap().isInRegion(event.getBlock().getLocation()) ||
-                    session.getMap().isSpawnBlock(event.getBlock().getLocation())) {
+                    session.getMap().isSpawnBlock(event.getBlock().getLocation()) ||
+                    session.getMap().isBedDefence(event.getBlock().getLocation())) {
                 event.setCancelled(true);
             }else {
                 session.getMap().getPlacedBlocks().add(event.getBlock());
