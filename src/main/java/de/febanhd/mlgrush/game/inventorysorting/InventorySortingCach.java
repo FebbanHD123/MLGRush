@@ -8,7 +8,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class InventorySortingCach {
 
-    private static CopyOnWriteArrayList<InventorySorting> playerSortings = Lists.newCopyOnWriteArrayList();
+    private static final CopyOnWriteArrayList<InventorySorting> playerSortings = Lists.newCopyOnWriteArrayList();
 
     public static void loadSorting(Player player) {
         MLGRush.getExecutorService().execute(() -> {
@@ -23,7 +23,7 @@ public class InventorySortingCach {
 
     public static InventorySorting getSorting(Player player) {
         for(InventorySorting sorting : InventorySortingCach.playerSortings) {
-            if(sorting.getPlayer().equals(player)) {
+            if(sorting.getPlayer().getUniqueId().equals(player.getUniqueId())) {
                 return sorting;
             }
         }

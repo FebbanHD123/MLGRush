@@ -2,9 +2,12 @@ package de.febanhd.mlgrush.util;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.Base64;
 import java.util.UUID;
 
 /**
@@ -47,22 +51,49 @@ public class SkullBuilder {
     }
 
     public static ItemStack getSkullByTexture(String url) {
-        ItemStack head = getAllVersionStack("SKULL_ITEM", "PLAYER_HEAD", 3);
-        if (url.isEmpty() || url.equals("none")) return head;
+        String version = Bukkit.getServer().getBukkitVersion();
+        if (version.contains("1.8") || version.contains("1.9") || version.contains("1.10") || version.contains("1.11") || version.contains("1.12")
+                || version.contains("1.13") || version.contains("1.14") || version.contains("1.15") || version.contains("1.16") || version.contains("1.17") || version.contains("1.18") || version.contains("1.19")) {
+            try {
+                ItemStack head = getAllVersionStack("SKULL_ITEM", "PLAYER_HEAD", 3);
+                if (url.isEmpty() || url.equals("none")) return head;
 
-        SkullMeta meta = (SkullMeta) head.getItemMeta();
-        GameProfile profile = new GameProfile(UUID.randomUUID(), "");
-        profile.getProperties().put("textures", new Property("textures", url));
-        Field profileField = null;
-        try {
-            profileField = meta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            profileField.set(meta, profile);
-        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-            e.printStackTrace();
+                SkullMeta meta = (SkullMeta) head.getItemMeta();
+                GameProfile profile = new GameProfile(UUID.randomUUID(), "");
+                profile.getProperties().put("textures", new Property("textures", url));
+                Field profileField = null;
+                try {
+                    profileField = meta.getClass().getDeclaredField("profile");
+                    profileField.setAccessible(true);
+                    profileField.set(meta, profile);
+                } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+                    e.printStackTrace();
+                }
+                head.setItemMeta(meta);
+                return head;
+            }catch (Exception e) {
+                e.printStackTrace();
+                return new ItemStack(Material.PLAYER_HEAD);
+            }
+        }else {
+            ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta meta = (SkullMeta) head.getItemMeta();
+            try {
+
+                PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID());
+                PlayerTextures textures = profile.getTextures();
+
+                textures.setSkin(new URL("http://textures.minecraft.net/texture/" + url));
+                profile.setTextures(textures);
+
+                meta.setOwnerProfile(profile);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+            head.setItemMeta(meta);
+
+            return head;
         }
-        head.setItemMeta(meta);
-        return head;
     }
 
     private static String getPlayerHeadTexture(String username) {

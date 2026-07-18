@@ -131,6 +131,19 @@ public class Map {
         return centerLoc.distance(this.spawnLocation[0]) < distance ||  centerLoc.distance(this.spawnLocation[1]) < distance;
     }
 
+    public boolean isBedDefence(Location location) {
+        Block block = location.getBlock();
+        Location centerLoc = location.clone();
+        centerLoc.setX(block.getX() + 0.5D);
+        centerLoc.setY(block.getY() + 0.5D);
+        centerLoc.setZ(block.getZ() + 0.5D);
+        double distance = 1.8;
+        return centerLoc.distance(this.getBedOfPlayer(player1).getBackLocation()) < distance ||
+                centerLoc.distance(this.getBedOfPlayer(player1).getFrontLocation()) < distance ||
+                centerLoc.distance(this.getBedOfPlayer(player2).getBackLocation()) < distance ||
+                centerLoc.distance(this.getBedOfPlayer(player2).getFrontLocation()) < distance;
+    }
+
     public void resetPlacedBlocks() {
         AtomicInteger taskID = new AtomicInteger();
         taskID.set(Bukkit.getScheduler().scheduleSyncRepeatingTask(MLGRush.getInstance(), () -> {

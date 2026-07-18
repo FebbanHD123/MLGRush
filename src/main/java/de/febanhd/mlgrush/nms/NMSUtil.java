@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -121,6 +122,7 @@ public class NMSUtil {
             bukkitEntity.setGravity(false);
             bukkitEntity.setInvulnerable(true);
             bukkitEntity.setSilent(true);
+            bukkitEntity.setFireTicks(0);
         }else if(MLGRush.getInstance().isLegacy()) {
             if (serverVersion.contains("1.8")) {
                 net.minecraft.server.v1_8_R3.Entity nmsEntity = ((org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity)bukkitEntity).getHandle();
@@ -136,10 +138,16 @@ public class NMSUtil {
                 entity.getClass().getMethod("setInvulnerable", boolean.class).invoke(entity, true);
                 entity.getClass().getMethod("setSilent", boolean.class).invoke(entity, true);
             }
-        }else {
-            entity.getClass().getMethod("setNoGravity", boolean.class).invoke(entity, true);
-            entity.getClass().getMethod("setInvulnerable", boolean.class).invoke(entity, true);
-            entity.getClass().getMethod("setSilent", boolean.class).invoke(entity, true);
+        }else { // 1.19 or above
+            bukkitEntity.setGravity(false);
+            bukkitEntity.setInvulnerable(true);
+            bukkitEntity.setSilent(true);
+            bukkitEntity.setFireTicks(0);
+            bukkitEntity.setVisualFire(false);
+            if(bukkitEntity instanceof LivingEntity livingEntity) {
+                livingEntity.setCollidable(false);
+                livingEntity.setAI(false);
+            }
         }
         return bukkitEntity;
     }

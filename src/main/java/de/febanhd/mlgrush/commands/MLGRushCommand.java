@@ -35,7 +35,7 @@ public class MLGRushCommand implements CommandExecutor {
                     }
                     MLGRush.getInstance().getGameHandler().getLobbyHandler().setQueueEntityLocation(player.getLocation());
                     player.sendMessage(MLGRush.PREFIX + "§2Queue was set to your location.");
-                }else
+                } else
                     sendUsage(player);
             } else if (args.length == 2) {
                 if(args[0].equalsIgnoreCase("setupmap")) {
@@ -79,11 +79,13 @@ public class MLGRushCommand implements CommandExecutor {
                     if(template != null) {
                         File file = MLGRush.getInstance().getMapManager().getMapTemplateStorage().getFileFromTemplate(template);
                         file.delete();
-                        player.sendMessage(MLGRush.PREFIX + "§aMap gelöscht. Restart the server...");
+                        player.sendMessage(MLGRush.PREFIX + "§aDeleted. Restart the server...");
                     }else {
-                        player.sendMessage(MLGRush.PREFIX + "§cDieses Template existiert nicht!");
+                        player.sendMessage(MLGRush.PREFIX + "§cThis Map does not exist");
                     }
 
+                }else {
+                    sendUsage(player);
                 }
             }else if (args.length == 3 && args[0].equalsIgnoreCase("setupmap") && args[1].equalsIgnoreCase("setname")) {
                 if(MapSetupSession.isInSetup(player)) {
@@ -103,6 +105,7 @@ public class MLGRushCommand implements CommandExecutor {
         player.sendMessage(MLGRush.PREFIX + "§e/mlgrush setqueue §7- Set the queue");
         player.sendMessage(MLGRush.PREFIX + "§e/mlgrush setupmap <DE/EN> §7- Start a setup");
         player.sendMessage(MLGRush.PREFIX + "§e/mlgrush deletemap <Mapname> §7- Delete a map");
+        player.sendMessage(MLGRush.PREFIX + "§e/mlgrush seticon <Mapname> §7- Set the map icon");
     }
     ///mlgrush setlobby
     // /mlgrush setupmap set

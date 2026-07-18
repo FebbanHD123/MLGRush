@@ -19,11 +19,11 @@ public class SpectatorHandler {
 
     public void spectate(Player player, Player target) {
         player.setGameMode(GameMode.ADVENTURE);
+        player.teleport(target.getLocation().clone().add(0, 3, 0));
         player.setAllowFlight(true);
         player.setFlying(true);
         spectators.add(player);
         this.targetMap.put(player, target);
-        player.teleport(target.getLocation());
         this.setItems(player);
     }
 

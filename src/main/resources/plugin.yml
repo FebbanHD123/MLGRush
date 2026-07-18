@@ -28,3 +28,20 @@ commands:
     aliases:
       - togglequeue
     description: Toggle the queue
+    permission: mlgrush.join
+permissions:
+  mlgrush.join:
+    description: Allows you to ignite yourself
+    default: true
+  mlgrush.setlobby:
+    default: op
+  mlgrush.setqueue:
+    default: op
+  mlgrush.setupmap:
+    default: op
+  mlgrush.notify:
+    default: op
+  mlgrush.stats:
+    default: true
+  mlgrush.stats.others:
+    default: true

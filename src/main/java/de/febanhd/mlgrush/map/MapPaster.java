@@ -14,7 +14,11 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.material.Bed;
+import org.bukkit.block.data.type.Bed;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -31,7 +35,7 @@ public class MapPaster {
     public MapPaster(MapTemplate template, World world, int x) {
         this.template = template;
         this.x = x;
-        this.y = 200;
+        this.y = 50;
         this.progressPercent = 0;
         this.world  = world;
     }
@@ -40,6 +44,7 @@ public class MapPaster {
 
         ArrayList<Block> blocks = Lists.newArrayList();
         ArrayList<Block> finalBlocks = Lists.newArrayList();
+//        List<Entity> entities = template.getRegion().getEntities();
 
         template.getRegion().getBlocks().forEach(block -> {
             if(block.getType() != Material.AIR) {
@@ -69,6 +74,47 @@ public class MapPaster {
         Cuboid region = this.calculateRegion(finalBlocks);
 
         this.pasteBlocksAsync(finalBlocks, blockMap, callback2 -> {
+
+            //spawn entites
+//            if(MLGRush.getInstance().isVersionHigherThan1_19()) {
+//                entities.forEach(templateEntity -> {
+//                    if(templateEntity instanceof Player)
+//                        return;
+//                    Location newLocation = this.getNewLocation(templateEntity.getLocation(), minX, minY, minZ);
+//                    Chunk chunk = newLocation.getWorld().getChunkAt(newLocation);
+//                    if (!chunk.isLoaded()) {
+//                        newLocation.getWorld().loadChunk(chunk);
+//                    }
+//                    Entity entity = this.world.spawnEntity(newLocation, templateEntity.getType());
+//                    entity.setGravity(false);
+//                    entity.setInvulnerable(true);
+//                    entity.setSilent(true);
+//                    entity.setCustomNameVisible(templateEntity.isCustomNameVisible());
+//                    entity.setCustomName(templateEntity.getCustomName());
+//                    entity.setGlowing(templateEntity.isGlowing());
+//                    entity.setVisualFire(templateEntity.isVisualFire());
+//                    if(entity instanceof LivingEntity livingEntity) {
+//                        LivingEntity livingTemplateEntity = (LivingEntity) templateEntity;
+//                        if(livingEntity.getEquipment() != null)
+//                            livingEntity.getEquipment().setArmorContents(livingTemplateEntity.getEquipment().getArmorContents());
+//                        livingTemplateEntity.getActivePotionEffects().forEach(effect -> {livingEntity.getActivePotionEffects().remove(effect);});
+//                    }
+//                    if(entity instanceof ArmorStand armorStand) {
+//                        ArmorStand armorStandTemplate = (ArmorStand) templateEntity;
+//                        armorStand.setArms(armorStandTemplate.hasArms());
+//                        armorStand.setBasePlate(armorStandTemplate.hasBasePlate());
+//                        armorStand.setBodyPose(armorStandTemplate.getBodyPose());
+//                        armorStand.setLeftArmPose(armorStandTemplate.getLeftArmPose());
+//                        armorStand.setRightArmPose(armorStandTemplate.getRightArmPose());
+//                        armorStand.setLeftLegPose(armorStandTemplate.getLeftLegPose());
+//                        armorStand.setRightLegPose(armorStandTemplate.getRightLegPose());
+//                        armorStand.setHeadPose(armorStandTemplate.getHeadPose());
+//                        if(armorStand.getEquipment() != null)
+//                            armorStand.getEquipment().setArmorContents(armorStandTemplate.getEquipment().getArmorContents());
+//                    }
+//                });
+//            }
+
             Location spawnLocation1 = this.getNewLocation(template.getSpawnLocation()[0], minX, minY, minZ);
             Location spawnLocation2 = this.getNewLocation(template.getSpawnLocation()[1], minX, minY, minZ);
             spawnLocation1.setWorld(this.world);
@@ -79,14 +125,14 @@ public class MapPaster {
             Location bed1BackLocation = this.getNewLocation(bed1.getBackLocation(), minX, minY, minZ);
             bed1.setFrontLocation(bed1FrontLocation);
             bed1.setBackLocation(bed1BackLocation);
-            this.setBed(bed1BackLocation, bed1FrontLocation);
+            this.setBed(bed1BackLocation, bed1FrontLocation, bed1.getType());
 
             BedObject bed2 = template.getBedObjects()[1].clone();
             Location bed2FrontLocation = this.getNewLocation(bed2.getFrontLocation(), minX, minY, minZ);
             Location bed2BackLocation = this.getNewLocation(bed2.getBackLocation(), minX, minY, minZ);
             bed2.setFrontLocation(bed2FrontLocation);
             bed2.setBackLocation(bed2BackLocation);
-            this.setBed(bed2BackLocation, bed2FrontLocation);
+            this.setBed(bed2BackLocation, bed2FrontLocation, bed2.getType());
 
             Location[] spawnLocations = new Location[] {spawnLocation1, spawnLocation2};
             BedObject[] bedObjects = new BedObject[] {bed1, bed2};
@@ -94,13 +140,19 @@ public class MapPaster {
             int deathHeight = this.getNewLocation(this.template.getDeathLocation(), minX, minY, minZ).getBlockY();
             int maxBuildHeight = this.getNewLocation(this.template.getMaxBuildLocation(), minX, minY, minZ).getBlockY();
 
+            for (Location spawnLocation : spawnLocations) {
+                spawnLocation.getWorld().loadChunk(spawnLocation.getChunk());
+                spawnLocation.getChunk().setForceLoaded(true);
+            }
+
             Map map = new Map(this.x, region, bedObjects, spawnLocations, this.template, deathHeight, maxBuildHeight);
 
             callback.accept(map);
         });
     }
 
-    private void setBed(Location bedHeadLocation, Location bedFootLocation) {
+
+    private void setBed(Location bedHeadLocation, Location bedFootLocation, Material type) {
         try {
             Block bedHeadBlock = bedHeadLocation.getBlock();
             Block bedFootBlock = bedFootLocation.getBlock();
@@ -109,41 +161,54 @@ public class MapPaster {
             BlockState bedFootState = bedFootBlock.getState();
             BlockState bedHeadState = bedHeadBlock.getState();
 
-            if(MLGRush.getInstance().isLegacy()) {
+            if (MLGRush.getInstance().isLegacy()) {
                 bedFootState.setType(Materials.BED_BLOCK.getMaterial());
                 bedHeadState.setType(Materials.BED_BLOCK.getMaterial());
 
-                Bed bedFootData = new Bed(Materials.BED_BLOCK.getMaterial());
+                org.bukkit.material.Bed bedFootData =
+                        new org.bukkit.material.Bed(Materials.BED_BLOCK.getMaterial());
                 bedFootData.setHeadOfBed(false);
                 bedFootData.setFacingDirection(face);
                 bedFootState.setData(bedFootData);
 
-                Bed bedHeadData = new Bed(Materials.BED_BLOCK.getMaterial());
+                org.bukkit.material.Bed bedHeadData =
+                        new org.bukkit.material.Bed(Materials.BED_BLOCK.getMaterial());
                 bedHeadData.setHeadOfBed(true);
                 bedHeadData.setFacingDirection(face);
                 bedHeadState.setData(bedHeadData);
-            }else {
+            } else {
                 bedHeadBlock.setType(Material.AIR);
                 bedFootBlock.setType(Material.AIR);
-                Bukkit.getScheduler().runTaskLater(MLGRush.getInstance(), () -> {
-                    bedHeadBlock.setType(Materials.BED_BLOCK.getMaterial());
-                    bedFootBlock.setType(Materials.BED_BLOCK.getMaterial());
-                    bedHeadBlock.setBlockData(Bukkit.createBlockData(Materials.BED_BLOCK.getMaterial(), (data) -> {
-                        ((org.bukkit.block.data.type.Bed) data).setPart(org.bukkit.block.data.type.Bed.Part.HEAD);
-                        ((org.bukkit.block.data.type.Bed) data).setFacing(face);
-                    }));
-                    bedFootBlock.setBlockData(Bukkit.createBlockData(Materials.BED_BLOCK.getMaterial(), (data) -> {
-                        ((org.bukkit.block.data.type.Bed) data).setPart(org.bukkit.block.data.type.Bed.Part.FOOT);
-                        ((org.bukkit.block.data.type.Bed) data).setFacing(face);
-                    }));
-                }, 20);
+                Bukkit.getScheduler()
+                        .runTaskLater(
+                                MLGRush.getInstance(),
+                                () -> {
+                                    bedHeadBlock.setType(type);
+                                    bedFootBlock.setType(type);
+                                    bedHeadBlock.setBlockData(
+                                            Bukkit.createBlockData(
+                                                    type,
+                                                    (data) -> {
+                                                        Bed bed = (Bed) data;
+                                                        bed.setPart(Bed.Part.HEAD);
+                                                        bed.setFacing(face);
+                                                    }));
+                                    bedFootBlock.setBlockData(
+                                            Bukkit.createBlockData(
+                                                    type,
+                                                    (data) -> {
+                                                        Bed bed = (Bed) data;
+                                                        bed.setPart(Bed.Part.FOOT);
+                                                        bed.setFacing(face);
+                                                    }));
+                                },
+                                20);
             }
             bedFootState.update(true);
             bedHeadState.update(true);
-        }catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
-
     }
 
     private void pasteBlocksAsync(final ArrayList<Block> blocks, final HashMap<Block, Block> blockMap, final Consumer<Boolean> callback) {
@@ -204,6 +269,7 @@ public class MapPaster {
     }
 
     private Location getNewLocation(Location location, int minX, int minY, int minZ) {
+
         double x = this.x + (location.getX() - minX);
         double y = this.y + location.getY() - minY;
         double z = location.getZ() - minZ;

@@ -120,7 +120,13 @@ public class GameSession {
         player.teleport(location);
 
         if(death) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int)Math.round(20D * MLGRush.getInstance().getConfig().getDouble("no_move_time")), 10));
+            String slowEffectName;
+            if(MLGRush.getInstance().isVersionHigherThan1_19()) {
+                slowEffectName = "SLOWNESS";
+            }else {
+                slowEffectName = "SLOW";
+            }
+            player.addPotionEffect(new PotionEffect(PotionEffectType.getByName(slowEffectName), (int)Math.round(5D * MLGRush.getInstance().getConfig().getDouble("no_move_time")), 10));
             StatsCach.getStats(player).addDeaths();
             StatsCach.getStats(otherPlayer).addKill();
             otherPlayer.playSound(otherPlayer.getLocation(), Sounds.LEVEL_UP.getSound(), 3, 2);

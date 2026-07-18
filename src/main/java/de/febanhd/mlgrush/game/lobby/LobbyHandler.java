@@ -8,10 +8,7 @@ import de.febanhd.mlgrush.nms.NMSUtil;
 import de.febanhd.mlgrush.util.ItemBuilder;
 import de.febanhd.mlgrush.util.LocationUtil;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -117,9 +114,15 @@ public class LobbyHandler {
 
     public void setLobbyItems(Player player) {
         player.getInventory().clear();
-        player.getInventory().setItem(getSlot("lobby.slots.challanger", 0), new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName(MLGRush.getString("items.challanger")).build());
-        player.getInventory().setItem(getSlot("lobby.slots.inventory_sorting", 3), new ItemBuilder(Material.CHEST).setDisplayName(InventorySortingGui.GUI_NAME).build());
-        player.getInventory().setItem(getSlot("lobby.slots.spectate", 5), this.spectatorHandler.getSpectatorItem());
+        if (getSlot("lobby.slots.challanger", 0) >= 0) {
+            player.getInventory().setItem(getSlot("lobby.slots.challanger", 0), new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName(MLGRush.getString("items.challanger")).build());
+        }
+        if (getSlot("lobby.slots.inventory_sorting", 3) >= 0) {
+            player.getInventory().setItem(getSlot("lobby.slots.inventory_sorting", 3), new ItemBuilder(Material.CHEST).setDisplayName(InventorySortingGui.GUI_NAME).build());
+        }
+        if (getSlot("lobby.slots.spectate", 5) >= 0) {
+            player.getInventory().setItem(getSlot("lobby.slots.spectate", 5), this.spectatorHandler.getSpectatorItem());
+        }
     }
 
     private int getSlot(String configPath, int defaultValue) {

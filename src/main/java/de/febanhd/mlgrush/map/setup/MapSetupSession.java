@@ -39,6 +39,7 @@ public class MapSetupSession  {
     private final boolean english;
 
     private final Location[] bedLocations1 = new Location[2], bedLocations2 = new Location[2];
+    private Material bedType1 = Material.RED_BED, bedType2 = Material.RED_BED;
 
 
     public MapSetupSession(Player player, boolean english) {
@@ -130,7 +131,7 @@ public class MapSetupSession  {
             player.sendMessage(MLGRush.PREFIX + "§7Generate World...");
 
             MapTemplate template = new MapTemplate(this.mapName, region, spawnLocation1, spawnLocation2,
-                    new BedObject(bedLocations1[0], bedLocations1[1]), new BedObject(bedLocations2[0], bedLocations2[1]), this.deathLocation, this.maxBuildLocation);
+                    new BedObject(bedLocations1[0], bedLocations1[1], bedType1), new BedObject(bedLocations2[0], bedLocations2[1], bedType2), this.deathLocation, this.maxBuildLocation);
 
             player.sendMessage(MLGRush.PREFIX + "§aWorld generated");
 
@@ -191,6 +192,7 @@ public class MapSetupSession  {
             case 4:
                 this.bedLocations1[0] = player.getLocation().getBlock().getLocation();
                 this.bedLocations1[1] = this.getTargetBlock(player, 5).getLocation();
+                this.bedType1 = player.getLocation().getBlock().getType();
                 this.nextStep();
                 break;
             case 5:
@@ -200,6 +202,7 @@ public class MapSetupSession  {
             case 6:
                 this.bedLocations2[0] = player.getLocation().getBlock().getLocation();
                 this.bedLocations2[1] = this.getTargetBlock(player, 5).getLocation();
+                this.bedType2 = player.getLocation().getBlock().getType();
                 this.nextStep();
                 break;
             case 7:

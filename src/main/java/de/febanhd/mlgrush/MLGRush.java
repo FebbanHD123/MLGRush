@@ -8,10 +8,7 @@ import de.febanhd.mlgrush.gui.InventorySortingGui;
 import de.febanhd.mlgrush.gui.MapChoosingGui;
 import de.febanhd.mlgrush.gui.RoundChoosingGui;
 import de.febanhd.mlgrush.gui.SpectatorGui;
-import de.febanhd.mlgrush.listener.GameListener;
-import de.febanhd.mlgrush.listener.InteractListener;
-import de.febanhd.mlgrush.listener.InventoryListener;
-import de.febanhd.mlgrush.listener.PlayerConnectionListener;
+import de.febanhd.mlgrush.listener.*;
 import de.febanhd.mlgrush.map.MapManager;
 import de.febanhd.mlgrush.map.WorldManager;
 import de.febanhd.mlgrush.map.generator.VoidGeneratorProvider;
@@ -26,8 +23,10 @@ import lombok.Getter;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -95,6 +94,8 @@ public class MLGRush extends JavaPlugin {
         pm.registerEvents(new InventoryListener(), this);
         pm.registerEvents(new PlayerConnectionListener(), this);
         pm.registerEvents(new InteractListener(), this);
+        pm.registerEvents(new SpectatorListener(), this);
+        pm.registerEvents(new ProtectionListener(), this);
         Bukkit.getPluginManager().registerEvents(new GameListener(this.gameHandler, this.getConfig().getBoolean("no-damage")), this);
 
         this.startProtectionTask();
@@ -230,11 +231,6 @@ public class MLGRush extends JavaPlugin {
                 world.setThundering(false);
                 world.setStorm(false);
                 world.setTime(10000);
-//                world.getEntities().forEach(entity -> {
-//                    if (entity instanceof Monster && entity.getEntityId() != this.getGameHandler().getLobbyHandler().getQueueEntity().getEntityId()) {
-//                        entity.remove();
-//                    }
-//                });
             }
         }, 0, 20);
     }
@@ -256,6 +252,12 @@ public class MLGRush extends JavaPlugin {
         else
             message = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(MLGRush.getInstance().getMessageConfig().getString(key)));
         return message;
+    }
+
+    public boolean isVersionHigherThan1_19() {
+        String version = Bukkit.getServer().getBukkitVersion();
+        return !version.contains("1.8") && !version.contains("1.9") && !version.contains("1.10") && !version.contains("1.11") && !version.contains("1.12")
+                && !version.contains("1.13") && !version.contains("1.14") && !version.contains("1.15") && !version.contains("1.16") && !version.contains("1.17") && !version.contains("1.18") && !version.contains("1.19");
     }
 
 }
