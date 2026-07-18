@@ -94,7 +94,7 @@ public class InventorySortingDataHandler {
     }
 
     public void updateSorting(InventorySorting sorting) {
-        this.databaseHandler.createBuilder("UPDATE mlg_inv SET `value`=?").addObjects(sorting.toString()).updateAsync();
+        this.databaseHandler.createBuilder("UPDATE mlg_inv SET `value`=? WHERE UUID=?").addObjects(sorting.toString(), sorting.getPlayer().getUniqueId()).updateAsync();
     }
 
     @SneakyThrows

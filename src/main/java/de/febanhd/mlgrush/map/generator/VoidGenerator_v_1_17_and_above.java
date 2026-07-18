@@ -5,7 +5,7 @@ import org.bukkit.block.Biome;
 
 import java.util.Random;
 
-public class VoidGenerator_v_1_17 extends VoidGenerator {
+public class VoidGenerator_v_1_17_and_above extends VoidGenerator {
 
     @Override
     public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid paramBiomeGrid) {

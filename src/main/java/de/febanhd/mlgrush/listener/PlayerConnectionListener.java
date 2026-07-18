@@ -27,6 +27,7 @@ public class PlayerConnectionListener implements Listener {
             player.setFoodLevel(40);
             player.setMaxHealth(20);
             player.setHealth(player.getMaxHealth());
+            player.getInventory().clear();
             if(!player.isOp())
                 player.setGameMode(GameMode.ADVENTURE);
             MLGRush.getInstance().getGameHandler().getLobbyHandler().setLobbyItems(player);

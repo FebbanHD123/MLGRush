@@ -34,7 +34,11 @@ public class SpectatorGui {
             ItemStack stack = Materials.PLAYER_HEAD.getStack().build();
 
             SkullMeta meta = (SkullMeta) stack.getItemMeta();
-            meta.setOwner(target.getName());
+            if(MLGRush.getInstance().isLegacy()) {
+                meta.setOwner(target.getName());
+            }else {
+                meta.setOwningPlayer(target);
+            }
             meta.setDisplayName("§e" + target.getDisplayName());
             meta.setLore(Arrays.asList("§7Map: §e" + session.getMapTemplate().getName(), "§7GameID: §e" + session.getId()));
             stack.setItemMeta(meta);

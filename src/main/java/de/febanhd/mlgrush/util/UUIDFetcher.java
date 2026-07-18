@@ -45,6 +45,9 @@ public class UUIDFetcher {
      * @param action Do what you want to do with the uuid her
      */
     public static void getUUID(String name, Consumer<UUID> action) {
+        if(Bukkit.getPlayer(name) != null) {
+            action.accept(Bukkit.getPlayer(name).getUniqueId());
+        }
         pool.execute(() -> action.accept(getUUID(name)));
     }
 

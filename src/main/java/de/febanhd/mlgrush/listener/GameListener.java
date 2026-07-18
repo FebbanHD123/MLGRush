@@ -11,6 +11,7 @@ import de.febanhd.mlgrush.map.elements.BedObject;
 import de.febanhd.mlgrush.util.Materials;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -41,14 +42,15 @@ public class GameListener implements Listener {
             GameSession session = gameHandler.getSessionByPlayer(player);
             if(gameHandler.isInSession(player) && gameHandler.getSessionByPlayer(player).isIngame()) {
                 if (noDamage) {
-                    event.setDamage(0);
+                    event.setDamage(0.1);
+                    player.setHealth(player.getMaxHealth());
                 } else if (session.isPlayer1Respawning() && session.isPlayer1(player)) {
                     event.setDamage(0);
                     event.setCancelled(true);
                 } else if (session.isPlayer2Respawning() && !session.isPlayer1(player)) {
-                    event.setDamage(0);
-                    event.setCancelled(true);
-                }
+                event.setDamage(0);
+                event.setCancelled(true);
+            }
             }else {
                 event.setCancelled(true);
             }
@@ -143,7 +145,7 @@ public class GameListener implements Listener {
                 return;
             }
             Map map = session.getMap();
-            if(event.getBlock().getType() == Materials.BED_BLOCK.getMaterial()) {
+            if(event.getBlock().getType() == Materials.BED_BLOCK.getMaterial() || event.getBlock().getBlockData() instanceof Bed) {
                 event.setCancelled(true);
                 BedObject bedObject = map.getBedOfPlayer2(player);
                 if(bedObject.isBlockOfBed(event.getBlock())) {
@@ -204,7 +206,7 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void onEntitySpawn(EntitySpawnEvent event) {
-        if(event.getEntityType().equals(EntityType.DROPPED_ITEM)) {
+        if(event.getEntityType().equals(EntityType.ITEM)) {
             event.setCancelled(true);
         }
     }

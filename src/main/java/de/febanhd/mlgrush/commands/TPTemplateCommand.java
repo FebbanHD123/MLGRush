@@ -2,6 +2,7 @@ package de.febanhd.mlgrush.commands;
 
 import de.febanhd.mlgrush.MLGRush;
 import de.febanhd.mlgrush.map.setup.MapSetupSession;
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,7 +22,9 @@ public class TPTemplateCommand implements CommandExecutor {
                 return false;
             }
             MLGRush.getInstance().getMapTemplateWorld().teleportPlayer(player);
-            player.sendMessage("§aTeleportiert...");
+            player.setGameMode(GameMode.CREATIVE);
+            player.setFlying(true);
+            player.sendMessage("§aTeleport");
         }
 
         return false;

@@ -2,9 +2,11 @@ package de.febanhd.mlgrush.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import de.febanhd.mlgrush.MLGRush;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -82,6 +84,30 @@ public class Cuboid implements Cloneable, ConfigurationSerializable, Iterable<Bl
         }
         return blockList;
     }
+
+//    public List<Entity> getEntities() {
+//        List<Entity> entityList = Lists.newArrayList();
+//        World world = this.getWorld();
+//        loadChunks();
+//        if (world != null) {
+//            double minX = this.minimumPoint.getX();
+//            double maxX = this.maximumPoint.getX();
+//            double minY = this.minimumPoint.getY();
+//            double maxY = this.maximumPoint.getY();
+//            double minZ = this.minimumPoint.getZ();
+//            double maxZ = this.maximumPoint.getZ();
+//
+//            for(Entity e : world.getEntities()) {
+//                Location loc = e.getLocation();
+//                if (loc.getX() >= minX && loc.getX() <= maxX &&
+//                        loc.getY() >= minY && loc.getY() <= maxY &&
+//                        loc.getZ() >= minZ && loc.getZ() <= maxZ) {
+//                    entityList.add(e);
+//                }
+//            }
+//        }
+//        return entityList;
+//    }
 
     public Location getLowerLocation() {
         return this.minimumPoint.toLocation(this.getWorld());
